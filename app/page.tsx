@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Activity, User, Mail, Settings } from "lucide-react"
+import { BarChart3, Activity, User, Mail } from "lucide-react"
 import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
 import { FallbackImage } from "@/components/fallback-image"
@@ -53,7 +53,7 @@ function RotatingCube() {
   }, [animationComplete])
 
   return (
-    <div className="cube-container h-16 relative perspective-1000">
+    <div className="cube-container h-24 relative perspective-1000">
       <div
         className="cube w-full h-full relative transform-style-3d transition-transform duration-1000 ease-in-out"
         style={{ transform: `rotateX(${currentFace * -90}deg)` }}
@@ -61,8 +61,8 @@ function RotatingCube() {
         {faces.map((face, index) => (
           <div
             key={index}
-            className={`cube-face absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl md:text-4xl lg:text-5xl font-bold backface-hidden`}
-            style={{ transform: `rotateX(${index * 90}deg) translateZ(2rem)` }}
+            className={`cube-face absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden`}
+            style={{ transform: `rotateX(${index * 90}deg) translateZ(3rem)` }}
           >
             {face}
           </div>
@@ -109,20 +109,15 @@ export default function Home() {
                 <FallbackImage
                   type="rumi_logo"
                   alt="Rumi Logo"
-                  width={150}
-                  height={50}
+                  width={300}
+                  height={100}
                   priority
-                  className="h-12 w-auto"
+                  className="h-24 w-auto"
                 />
               </Link>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/setup" className="mr-2">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-yellow-400">
-                <Settings size={20} />
-              </Button>
-            </Link>
+          <div className="flex items-center ml-auto">
             <Link href="#get-in-touch" scroll={false}>
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300">Start your journey</Button>
             </Link>
@@ -134,20 +129,20 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <div className="md:hidden mb-6 text-center">
-                <div className="text-yellow-400 text-4xl font-bold">Partner</div>
+                <div className="text-yellow-400 text-5xl font-bold">Partner</div>
               </div>
-              <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                <div className="relative max-w-sm md:max-w-md lg:max-w-lg">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-12">
+                <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
                   <FallbackImage
                     type="feeling_agent"
                     alt="Rumi notification detecting user's mood"
-                    width={500}
-                    height={900}
-                    className="rounded-xl shadow-lg object-contain"
+                    width={700}
+                    height={1260}
+                    className="rounded-xl shadow-lg object-contain max-h-[80vh]"
                     priority
                   />
                 </div>
-                <div className="hidden md:block w-40">
+                <div className="hidden md:block w-60">
                   <RotatingCube />
                 </div>
               </div>
@@ -161,7 +156,7 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-yellow-400 px-3 py-1 text-sm text-black">Features</div>
                 <div className="text-3xl font-bold tracking-tighter sm:text-5xl">The Rumi AI Approach</div>
-                <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-xl/relaxed xl:text-2xl/relaxed">
                   Our AI-powered platform adapts to your unique needs, providing personalized guidance for your
                   self-improvement journey.
                 </p>
@@ -170,9 +165,9 @@ export default function Home() {
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12">
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <BarChart3 className="h-10 w-10 text-yellow-400" />
-                  <CardTitle className="mt-4">Adaptive Recommendations</CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <BarChart3 className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Adaptive Recommendations</CardTitle>
+                  <CardDescription className="text-gray-300 text-base md:text-lg">
                     Our AI continuously learns from your progress and adjusts recommendations to optimize your personal
                     growth journey.
                   </CardDescription>
@@ -180,9 +175,9 @@ export default function Home() {
               </Card>
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <Activity className="h-10 w-10 text-yellow-400" />
-                  <CardTitle className="mt-4">Real-Time Mood Integration</CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <Activity className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Real-Time Mood Integration</CardTitle>
+                  <CardDescription className="text-gray-300 text-base md:text-lg">
                     Rumi adapts to your emotional state, providing support and guidance tailored to how you're feeling
                     in the moment.
                   </CardDescription>
@@ -190,9 +185,9 @@ export default function Home() {
               </Card>
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <User className="h-10 w-10 text-yellow-400" />
-                  <CardTitle className="mt-4">Personality-Driven Experiences</CardTitle>
-                  <CardDescription className="text-gray-300">
+                  <User className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Personality-Driven Experiences</CardTitle>
+                  <CardDescription className="text-gray-300 text-base md:text-lg">
                     Experience a self-improvement journey uniquely tailored to your personality traits, preferences, and
                     learning style.
                   </CardDescription>
@@ -208,8 +203,8 @@ export default function Home() {
               <Card className="bg-gray-900 text-white border-yellow-400 w-full max-w-md mx-auto">
                 {!formState?.success && !formState?.alreadyJoined && (
                   <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Start your journey with Rumi</CardTitle>
-                    <CardDescription className="text-gray-300">
+                    <CardTitle className="text-2xl md:text-3xl">Start your journey with Rumi</CardTitle>
+                    <CardDescription className="text-gray-300 text-base md:text-lg">
                       Be the first to receive the product link for the beta launch
                     </CardDescription>
                   </CardHeader>
@@ -221,14 +216,14 @@ export default function Home() {
                         <div className="space-y-2">
                           <label
                             htmlFor="name"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="text-base md:text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
                             Name
                           </label>
                           <input
                             id="name"
                             name="name"
-                            className="flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex h-12 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-lg text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="John Doe"
                             required
                           />
@@ -236,7 +231,7 @@ export default function Home() {
                         <div className="space-y-2">
                           <label
                             htmlFor="email"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="text-base md:text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
                             Email
                           </label>
@@ -244,13 +239,13 @@ export default function Home() {
                             id="email"
                             name="email"
                             type="email"
-                            className="flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex h-12 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-lg text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="john.doe@example.com"
                             required
                           />
                         </div>
                         {formState?.error && (
-                          <div className="text-red-500 text-sm mt-2 p-2 bg-red-950 bg-opacity-30 rounded border border-red-800">
+                          <div className="text-red-500 text-base md:text-lg mt-2 p-2 bg-red-950 bg-opacity-30 rounded border border-red-800">
                             {formState.error}
                           </div>
                         )}
@@ -264,29 +259,29 @@ export default function Home() {
                   <CardContent className="text-center py-8">
                     {formState?.success ? (
                       <div className="space-y-4">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mx-auto">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 text-green-500 mx-auto">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
-                            className="w-8 h-8"
+                            className="w-10 h-10"
                           >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <h3 className="text-xl font-medium text-white">Thank You!</h3>
-                        <p className="text-gray-300">{formState.message}</p>
+                        <h3 className="text-2xl font-medium text-white">Thank You!</h3>
+                        <p className="text-gray-300 text-lg">{formState.message}</p>
                       </div>
                     ) : formState?.alreadyJoined ? (
                       <div className="space-y-4">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 text-yellow-500 mx-auto">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-100 text-yellow-500 mx-auto">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
-                            className="w-8 h-8"
+                            className="w-10 h-10"
                           >
                             <path
                               strokeLinecap="round"
@@ -296,15 +291,15 @@ export default function Home() {
                             />
                           </svg>
                         </div>
-                        <h3 className="text-xl font-medium text-white">Already Joined</h3>
-                        <p className="text-gray-300">{formState.message}</p>
+                        <h3 className="text-2xl font-medium text-white">Already Joined</h3>
+                        <p className="text-gray-300 text-lg">{formState.message}</p>
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <p className="text-red-500">Something went wrong. Please try again.</p>
+                        <p className="text-red-500 text-lg">Something went wrong. Please try again.</p>
                         <Button
                           onClick={() => setShowForm(true)}
-                          className="mt-4 bg-yellow-400 text-black hover:bg-yellow-300"
+                          className="mt-4 bg-yellow-400 text-black hover:bg-yellow-300 text-base"
                         >
                           Try Again
                         </Button>
@@ -322,12 +317,12 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             {/* Left: Logo */}
             <div className="mb-4 md:mb-0">
-              <FallbackImage type="rumi_logo" alt="Rumi Logo" width={150} height={50} className="h-12 w-auto" />
+              <FallbackImage type="rumi_logo" alt="Rumi Logo" width={300} height={100} className="h-24 w-auto" />
             </div>
 
             {/* Center: Copyright */}
             <div className="mb-4 md:mb-0 text-center">
-              <p className="text-sm text-gray-400">© 2025 Rumi Team LLC. All rights reserved.</p>
+              <p className="text-base text-gray-400">© 2025 Rumi Team LLC. All rights reserved.</p>
             </div>
 
             {/* Right: Contact */}
@@ -335,9 +330,9 @@ export default function Home() {
               <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors"
+                className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-base"
               >
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="h-5 w-5 mr-2" />
                 support@rumi.team
               </button>
             </div>

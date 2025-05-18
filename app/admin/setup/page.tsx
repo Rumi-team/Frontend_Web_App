@@ -132,8 +132,8 @@ export default function SetupPage() {
 
         <Card className="bg-gray-900 border-gray-800 mb-8">
           <CardHeader>
-            <CardTitle className="text-xl text-yellow-400">Storage Setup</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-xl md:text-2xl text-yellow-400">Storage Setup</CardTitle>
+            <CardDescription className="text-gray-300 text-base md:text-lg">
               Follow these steps to set up image storage for your Rumi website
             </CardDescription>
           </CardHeader>
@@ -153,13 +153,13 @@ export default function SetupPage() {
                 )}
               </div>
               <div className="flex-grow">
-                <h3 className="text-lg font-medium text-white">Create the "images" bucket in Supabase</h3>
-                <p className="text-gray-400 mt-1 mb-3">
+                <h3 className="text-lg md:text-xl font-medium text-white">Create the "images" bucket in Supabase</h3>
+                <p className="text-gray-400 text-base md:text-lg mt-1 mb-3">
                   You need to manually create a storage bucket named "images" in your Supabase dashboard.
                 </p>
 
                 <div className="bg-gray-800 rounded-lg p-4 mb-4">
-                  <ol className="list-decimal list-inside space-y-2 text-gray-300">
+                  <ol className="list-decimal list-inside space-y-2 text-gray-300 text-base md:text-lg">
                     <li>Go to your Supabase dashboard</li>
                     <li>Navigate to "Storage" in the left sidebar</li>
                     <li>Click "Create a new bucket"</li>
@@ -173,18 +173,18 @@ export default function SetupPage() {
                   href="https://supabase.com/dashboard"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-yellow-400 hover:text-yellow-300"
+                  className="inline-flex items-center text-yellow-400 hover:text-yellow-300 text-base md:text-lg"
                 >
                   <ExternalLink size={16} className="mr-1" />
                   Open Supabase Dashboard
                 </a>
 
-                <Button onClick={refreshStatus} className="ml-4 bg-gray-700 hover:bg-gray-600 text-white">
+                <Button onClick={refreshStatus} className="ml-4 bg-gray-700 hover:bg-gray-600 text-white text-base">
                   Check Status
                 </Button>
 
                 {bucketStatus.exists && (
-                  <div className="mt-2 text-green-500 text-sm flex items-center">
+                  <div className="mt-2 text-green-500 text-base md:text-lg flex items-center">
                     <Check size={16} className="mr-1" />
                     Bucket "images" exists!
                   </div>
@@ -209,16 +209,18 @@ export default function SetupPage() {
                     )}
                   </div>
                   <div className="flex-grow">
-                    <h3 className="text-lg font-medium text-white">Upload Rumi Logo</h3>
-                    <p className="text-gray-400 mt-1 mb-3">Upload your logo image as "rumi_logo.png"</p>
+                    <h3 className="text-lg md:text-xl font-medium text-white">Upload Rumi Logo</h3>
+                    <p className="text-gray-400 text-base md:text-lg mt-1 mb-3">
+                      Upload your logo image as "rumi_logo.png"
+                    </p>
 
                     <div className="bg-gray-800 p-4 rounded-lg mb-4 flex justify-center">
                       <FallbackImage
                         type="rumi_logo"
                         alt="Rumi Logo"
-                        width={150}
-                        height={50}
-                        className="h-12 w-auto"
+                        width={300}
+                        height={100}
+                        className="h-24 w-auto"
                         trySupabase={false}
                       />
                     </div>
@@ -233,7 +235,7 @@ export default function SetupPage() {
                       />
                       <Button
                         type="button"
-                        className="bg-yellow-400 text-black hover:bg-yellow-300 flex items-center gap-2"
+                        className="bg-yellow-400 text-black hover:bg-yellow-300 flex items-center gap-2 text-base"
                         disabled={uploading !== null}
                       >
                         {uploading === "rumi_logo.png" ? (
@@ -267,16 +269,18 @@ export default function SetupPage() {
                     )}
                   </div>
                   <div className="flex-grow">
-                    <h3 className="text-lg font-medium text-white">Upload Feeling Agent</h3>
-                    <p className="text-gray-400 mt-1 mb-3">Upload your feeling agent image as "feeling_agent.png"</p>
+                    <h3 className="text-lg md:text-xl font-medium text-white">Upload Feeling Agent</h3>
+                    <p className="text-gray-400 text-base md:text-lg mt-1 mb-3">
+                      Upload your feeling agent image as "feeling_agent.png"
+                    </p>
 
                     <div className="bg-gray-800 p-4 rounded-lg mb-4 flex justify-center">
                       <FallbackImage
                         type="feeling_agent"
                         alt="Feeling Agent"
-                        width={100}
-                        height={180}
-                        className="h-32 w-auto object-contain"
+                        width={200}
+                        height={360}
+                        className="h-48 w-auto object-contain"
                         trySupabase={false}
                       />
                     </div>
@@ -291,7 +295,7 @@ export default function SetupPage() {
                       />
                       <Button
                         type="button"
-                        className="bg-yellow-400 text-black hover:bg-yellow-300 flex items-center gap-2"
+                        className="bg-yellow-400 text-black hover:bg-yellow-300 flex items-center gap-2 text-base"
                         disabled={uploading !== null}
                       >
                         {uploading === "feeling_agent.png" ? (
@@ -313,14 +317,14 @@ export default function SetupPage() {
             )}
 
             {error && (
-              <div className="mt-4 text-red-500 text-sm flex items-center gap-1 p-3 bg-red-950 bg-opacity-30 rounded border border-red-800">
+              <div className="mt-4 text-red-500 text-base md:text-lg flex items-center gap-1 p-3 bg-red-950 bg-opacity-30 rounded border border-red-800">
                 <AlertCircle size={16} />
                 {error}
               </div>
             )}
 
             {success && (
-              <div className="mt-4 text-green-500 text-sm flex items-center gap-1 p-3 bg-green-950 bg-opacity-30 rounded border border-green-800">
+              <div className="mt-4 text-green-500 text-base md:text-lg flex items-center gap-1 p-3 bg-green-950 bg-opacity-30 rounded border border-green-800">
                 <Check size={16} />
                 {success}
               </div>
@@ -328,15 +332,15 @@ export default function SetupPage() {
 
             {bucketStatus.exists && logoStatus.exists && agentStatus.exists && (
               <div className="mt-6 p-4 bg-green-900 bg-opacity-20 border border-green-800 rounded-lg">
-                <h3 className="text-lg font-medium text-green-400 flex items-center">
+                <h3 className="text-lg md:text-xl font-medium text-green-400 flex items-center">
                   <Check size={20} className="mr-2" />
                   Setup Complete!
                 </h3>
-                <p className="text-gray-300 mt-2">
+                <p className="text-gray-300 text-base md:text-lg mt-2">
                   Your images are now properly configured. You can return to the home page to see your real images.
                 </p>
                 <Link href="/">
-                  <Button className="mt-4 bg-green-600 hover:bg-green-700 text-white">Go to Homepage</Button>
+                  <Button className="mt-4 bg-green-600 hover:bg-green-700 text-white text-base">Go to Homepage</Button>
                 </Link>
               </div>
             )}
