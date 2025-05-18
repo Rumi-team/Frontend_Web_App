@@ -3,159 +3,108 @@
 import { createServerSupabaseClient } from "@/lib/supabase"
 
 export type FormState = {
+  error?: string | null
+  message?: string | null
   success?: boolean
-  message?: string
-  error?: string
+  alreadyJoined?: boolean
 }
 
-export async function submitWaitlistEntry(prevState: FormState, formData: FormData): Promise<FormState> {
-  try {
-    const email = formData.get("email") as string
-    const name = formData.get("name") as string
+export const submitWaitlistEntry = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+  const name = formData.get("name") as string
+  const email = formData.get("email") as string
 
-    // Validate inputs
-    if (!email) {
-      return {
-        success: false,
-        error: "Please provide your email address",
-      }
-    }
-
-    if (!email.includes("@")) {
-      return {
-        success: false,
-        error: "Please provide a valid email address",
-      }
-    }
-
-    if (!name) {
-      return {
-        success: false,
-        error: "Please provide your name",
-      }
-    }
-
-    try {
-      // Log environment variables (without revealing sensitive data)
-      console.log("Supabase environment check:", {
-        hasSupabaseUrl: !!process.env.SUPABASE_URL,
-        hasNextPublicSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-        hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      })
-
-      // Initialize Supabase client
-      const supabase = createServerSupabaseClient()
-
-      // Validate the data before insertion
-      const userData = {
-        email: email.trim(),
-        name: name.trim(),
-        created_at: new Date().toISOString(),
-      }
-
-      console.log("Attempting to insert user data:", { ...userData, email: '[REDACTED]' })
-
-      // First, check if the table exists and is accessible
-      const { data: tableCheck, error: tableError } = await supabase
-        .from('users')
-        .select('count')
-        .limit(1)
-
-      if (tableError) {
-        console.error("Error checking users table:", tableError)
-        return {
-          success: false,
-          error: `Database table error: ${tableError.message}`,
-        }
-      }
-
-      // Insert into the new users table
-      const { data, error: usersError } = await supabase
-        .from("users")
-        .insert([userData])
-        .select()
-
-      console.log("Insert response:", { 
-        success: !usersError, 
-        error: usersError ? usersError.message : null,
-        data: data ? '[REDACTED]' : null 
-      })
-
-      if (usersError) {
-        console.error("Error inserting into users table:", usersError)
-
-        // Check if it's a duplicate email error
-        if (
-          usersError.message &&
-          (usersError.message.includes("duplicate key") ||
-            usersError.message.includes("unique constraint") ||
-            usersError.message.includes("already exists"))
-        ) {
-          return {
-            success: false,
-            error: "This email is already registered with us",
-          }
-        }
-
-        return {
-          success: false,
-          error: `Failed to register: ${usersError.message}`,
-        }
-      }
-
-      // Verify the insertion by querying the inserted data
-      const { data: verifyData, error: verifyError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("email", userData.email)
-        .single()
-
-      if (verifyError) {
-        console.error("Error verifying insertion:", verifyError)
-      } else {
-        console.log("Successfully verified insertion:", { 
-          email: '[REDACTED]',
-          name: verifyData.name,
-          created_at: verifyData.created_at 
-        })
-      }
-
-      // Also insert into the website_waiting_list table for backward compatibility
-      try {
-        const { error: waitlistError } = await supabase
-          .from("website_waiting_list")
-          .insert([
-            {
-              email: userData.email,
-              message: userData.name,
-              created_at: userData.created_at,
-            },
-          ])
-
-        if (waitlistError) {
-          console.warn("Could not insert into legacy waitlist table:", waitlistError)
-        }
-      } catch (waitlistError) {
-        console.warn("Could not insert into legacy waitlist table:", waitlistError)
-      }
-
-      return {
-        success: true,
-        message: "Thank you for joining! We'll be in touch soon.",
-      }
-    } catch (supabaseError) {
-      console.error("Supabase error:", supabaseError)
-      return {
-        success: false,
-        error: "Database connection error. Please try again later.",
-      }
-    }
-  } catch (error) {
-    console.error("Error in submitWaitlistEntry:", error)
+  if (!name || !email) {
     return {
+      error: "Please provide your name and email.",
       success: false,
-      error: "An unexpected error occurred. Please try again later.",
+      message: null,
+    }
+  }
+
+  // Basic email validation
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return {
+      error: "Please provide a valid email address.",
+      success: false,
+      message: null,
+    }
+  }
+
+  try {
+    // Use the server Supabase client
+    const supabase = createServerSupabaseClient()
+
+    console.log("Checking if email exists:", email)
+
+    // Check if the email already exists
+    const { data: existingUser, error: checkError } = await supabase
+      .from("users")
+      .select("email")
+      .eq("email", email.trim())
+      .maybeSingle()
+
+    if (checkError) {
+      console.error("Error checking for existing user:", checkError)
+      return {
+        error: "An error occurred while checking your email. Please try again.",
+        success: false,
+        message: null,
+      }
+    }
+
+    // If user already exists, return a specific message
+    if (existingUser) {
+      console.log("User already exists:", email)
+      return {
+        success: false,
+        message: "You have already joined Rumi.",
+        error: null,
+        alreadyJoined: true,
+      }
+    }
+
+    // Insert the new user
+    const { error: insertError } = await supabase.from("users").insert([
+      {
+        name: name.trim(),
+        email: email.trim(),
+        created_at: new Date().toISOString(),
+      },
+    ])
+
+    if (insertError) {
+      console.error("Error inserting user:", insertError)
+
+      // Check if it's a duplicate key error (just in case)
+      if (insertError.code === "23505") {
+        return {
+          success: false,
+          message: "You have already joined Rumi.",
+          error: null,
+          alreadyJoined: true,
+        }
+      }
+
+      return {
+        error: `Registration failed: ${insertError.message}`,
+        success: false,
+        message: null,
+      }
+    }
+
+    console.log("User registered successfully:", { name, email })
+
+    return {
+      success: true,
+      message: `Thank you, ${name}! You've been added to our waitlist.`,
+      error: null,
+    }
+  } catch (error: any) {
+    console.error("Failed to submit waitlist entry:", error)
+    return {
+      error: "Failed to submit. Please try again.",
+      success: false,
+      message: null,
     }
   }
 }

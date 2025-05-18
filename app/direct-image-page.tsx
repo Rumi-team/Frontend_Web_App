@@ -6,10 +6,10 @@ import { useFormStatus } from "react-dom"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Activity, User, Mail, Settings } from "lucide-react"
+import { BarChart3, Activity, User, Mail } from "lucide-react"
 import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
-import { FallbackImage } from "@/components/fallback-image"
+import { SupabaseClientImage } from "@/components/supabase-client-image"
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -72,7 +72,7 @@ function RotatingCube() {
   )
 }
 
-export default function Home() {
+export default function DirectImagePage() {
   const initialState: FormState = {}
   const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
   const [showForm, setShowForm] = useState(true)
@@ -106,8 +106,9 @@ export default function Home() {
           <div className="flex items-center">
             <div className="flex items-center relative">
               <Link href="/" className="flex items-center">
-                <FallbackImage
-                  type="rumi_logo"
+                <SupabaseClientImage
+                  bucket="images"
+                  path="rumi_logo.png"
                   alt="Rumi Logo"
                   width={150}
                   height={50}
@@ -118,11 +119,6 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/admin/setup" className="mr-2">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-yellow-400">
-                <Settings size={20} />
-              </Button>
-            </Link>
             <Link href="#get-in-touch" scroll={false}>
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300">Start your journey</Button>
             </Link>
@@ -138,8 +134,9 @@ export default function Home() {
               </div>
               <div className="flex flex-col md:flex-row items-center justify-center gap-8">
                 <div className="relative max-w-sm md:max-w-md lg:max-w-lg">
-                  <FallbackImage
-                    type="feeling_agent"
+                  <SupabaseClientImage
+                    bucket="images"
+                    path="feeling_agent.png"
                     alt="Rumi notification detecting user's mood"
                     width={500}
                     height={900}
@@ -322,7 +319,14 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             {/* Left: Logo */}
             <div className="mb-4 md:mb-0">
-              <FallbackImage type="rumi_logo" alt="Rumi Logo" width={150} height={50} className="h-12 w-auto" />
+              <SupabaseClientImage
+                bucket="images"
+                path="rumi_logo.png"
+                alt="Rumi Logo"
+                width={150}
+                height={50}
+                className="h-12 w-auto"
+              />
             </div>
 
             {/* Center: Copyright */}

@@ -1,30 +1,39 @@
-# Yellow and Black Website
+# Rumi Self-Improvement Website
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+## Image Setup Instructions
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/rumi-ai/v0-yellow-and-black-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/GlyaNmMmHCp)
+This project requires two images to be placed in the `/public` directory:
 
-## Overview
+1. `rumi_logo.png` - The Rumi logo used in the header and footer
+2. `feeling_agent.png` - The main image shown on the homepage
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+### How to Add Images
 
-## Deployment
+1. Create a `/public` directory in the root of your project if it doesn't exist
+2. Add your images to this directory with the exact filenames mentioned above
+3. Make sure the images are in PNG format
+4. For best results:
+   - `rumi_logo.png` should be approximately 150x50 pixels
+   - `feeling_agent.png` should be approximately 500x900 pixels
 
-Your project is live at:
+### Deployment
 
-**[https://vercel.com/rumi-ai/v0-yellow-and-black-website](https://vercel.com/rumi-ai/v0-yellow-and-black-website)**
+When deploying to Vercel or another hosting platform, make sure to include the `/public` directory with your images.
 
-## Build your app
+## Development
 
-Continue building your app on:
+To run the project locally:
 
-**[https://v0.dev/chat/projects/GlyaNmMmHCp](https://v0.dev/chat/projects/GlyaNmMmHCp)**
+\`\`\`bash
+npm run dev
+\`\`\`
 
-## How It Works
+## Environment Variables
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Make sure you have the following environment variables set up for Supabase:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+\`\`\`
+
+Let's also create a simple script to help upload images to the public directory:
