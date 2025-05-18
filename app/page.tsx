@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { BarChart3, Activity, User, Mail } from "lucide-react"
 import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
-import { FallbackImage } from "@/components/fallback-image"
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -78,7 +77,6 @@ export default function Home() {
   const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
   const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
-  const [useLocalImages, setUseLocalImages] = useState(false)
 
   // Reset form when success state changes
   useEffect(() => {
@@ -135,9 +133,8 @@ export default function Home() {
               </div>
               <div className="flex flex-col md:flex-row items-center justify-center gap-16">
                 <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
-                  {/* Use FallbackImage as a reliable fallback */}
-                  <FallbackImage
-                    type="feeling_agent"
+                  <Image
+                    src="/feeling_agent.png"
                     alt="Rumi notification detecting user's mood"
                     width={500}
                     height={900}

@@ -7,7 +7,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ArrowLeft, Check, AlertCircle, Upload } from "lucide-react"
-import { FallbackImage } from "@/components/fallback-image"
 import { checkImagesBucket, checkImageExists, createImagesBucket } from "@/app/actions/storage-actions"
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser"
 import Image from "next/image"
@@ -308,13 +307,12 @@ export default function SetupPage() {
                     </p>
 
                     <div className="bg-gray-800 p-4 rounded-lg mb-4 flex justify-center">
-                      <FallbackImage
-                        type="feeling_agent"
+                      <Image
+                        src="/feeling_agent.png"
                         alt="Feeling Agent"
                         width={300}
                         height={540}
                         className="h-64 w-auto object-contain"
-                        trySupabase={false}
                       />
                     </div>
 
