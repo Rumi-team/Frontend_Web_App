@@ -91,6 +91,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
       <style jsx global>{`
+        html {
+          scroll-behavior: smooth;
+        }
         .perspective-1000 {
           perspective: 1000px;
         }
@@ -118,7 +121,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center ml-auto">
-            <Link href="#get-in-touch" scroll={false}>
+            <Link href="#get-in-touch">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300">Start your journey</Button>
             </Link>
           </div>
