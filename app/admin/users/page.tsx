@@ -29,7 +29,7 @@ export default async function UsersPage() {
       <header className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
         <div className="flex items-center gap-4">
           <Link href="/">
-            <Image src="/rumi_logo.png" alt="Rumi Logo" width={150} height={50} className="h-12 w-auto" />
+            <Image src="/rumi_logo.png" alt="Rumi Logo" width={303} height={101} className="h-[24.3px] w-auto" />
           </Link>
           <span className="text-xl font-bold text-yellow-400">Admin Dashboard</span>
         </div>

@@ -7,9 +7,9 @@ import { createBrowserSupabaseClient } from "@/lib/supabase-browser"
 // Base64 encoded placeholder images
 const PLACEHOLDER_IMAGES = {
   rumiLogo:
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgNDAwIDEwMCI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMxMTExMTEiLz48dGV4dCB4PSIyMDAiIHk9IjUwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IiNmYWNjMTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIj5SVU1JPC90ZXh0Pjwvc3ZnPg==",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iMjI1IiB2aWV3Qm94PSIwIDAgOTAwIDIyNSI+PHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSIyMjUiIGZpbGw9IiMxMTExMTEiLz48dGV4dCB4PSI0NTAiIHk9IjExMi41IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTA4IiBmaWxsPSIjZmFjYzE1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSI+UlVNSTwvdGV4dD48L3N2Zz4=",
   feelingAgent:
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3MDAiIGhlaWdodD0iMTI2MCIgdmlld0JveD0iMCAwIDcwMCAxMjYwIj48cmVjdCB3aWR0aD0iNzAwIiBoZWlnaHQ9IjEyNjAiIGZpbGw9IiMxMTExMTEiLz48cmVjdCB4PSI3MCIgeT0iMTQwIiB3aWR0aD0iNTYwIiBoZWlnaHQ9Ijk4MCIgcng9IjI4IiByeT0iMjgiIGZpbGw9IiMyMjIyMjIiIHN0cm9rZT0iI2ZhY2MxNSIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHRleHQgeD0iMzUwIiB5PSI2MzAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZmlsbD0iI2ZhY2MxNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPkZlZWxpbmcgQWdlbnQ8L3RleHQ+PC9zdmc+",
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iMTYyMCIgdmlld0JveD0iMCAwIDkwMCAxNjIwIj48cmVjdCB3aWR0aD0iOTAwIiBoZWlnaHQ9IjE2MjAiIGZpbGw9IiMxMTExMTEiLz48cmVjdCB4PSI5MCIgeT0iMTgwIiB3aWR0aD0iNzIwIiBoZWlnaHQ9IjEyNjAiIHJ4PSIzNiIgcnk9IjM2IiBmaWxsPSIjMjIyMjIyIiBzdHJva2U9IiNmYWNjMTUiIHN0cm9rZS13aWR0aD0iOCIvPjx0ZXh0IHg9IjQ1MCIgeT0iODEwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IiNmYWNjMTUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIj5GZWVsaW5nIEFnZW50PC90ZXh0Pjwvc3ZnPg==",
 }
 
 interface FallbackImageProps {
@@ -86,8 +86,8 @@ export function FallbackImage({
         style={{ width, height }}
       >
         <div className="text-center">
-          <ImageIcon className="h-16 w-16 text-gray-700 mx-auto mb-2" />
-          <p className="text-gray-600 text-lg">Loading...</p>
+          <ImageIcon className="h-20 w-20 text-gray-700 mx-auto mb-2" />
+          <p className="text-gray-600 text-xl">Loading...</p>
         </div>
       </div>
     )
@@ -113,8 +113,8 @@ export function FallbackImage({
     return (
       <div className={`bg-gray-900 flex items-center justify-center rounded-lg ${className}`} style={{ width, height }}>
         <div className="text-center">
-          <ImageIcon className="h-16 w-16 text-yellow-400 mx-auto mb-2" />
-          <p className="text-gray-300 text-lg">{alt}</p>
+          <ImageIcon className="h-20 w-20 text-yellow-400 mx-auto mb-2" />
+          <p className="text-gray-300 text-xl">{alt}</p>
         </div>
       </div>
     )

@@ -6,10 +6,11 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ArrowLeft, Check, AlertCircle, Upload, ExternalLink } from "lucide-react"
+import { ArrowLeft, Check, AlertCircle, Upload } from "lucide-react"
 import { FallbackImage } from "@/components/fallback-image"
-import { checkImagesBucket, checkImageExists } from "@/app/actions/storage-actions"
+import { checkImagesBucket, checkImageExists, createImagesBucket } from "@/app/actions/storage-actions"
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser"
+import Image from "next/image"
 
 export default function SetupPage() {
   const [bucketStatus, setBucketStatus] = useState<{ exists: boolean; checking: boolean }>({
@@ -27,6 +28,7 @@ export default function SetupPage() {
   const [uploading, setUploading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [creatingBucket, setCreatingBucket] = useState(false)
 
   // Check bucket and image status
   useEffect(() => {
@@ -52,6 +54,27 @@ export default function SetupPage() {
     checkStatus()
   }, [])
 
+  const handleCreateBucket = async () => {
+    setCreatingBucket(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const result = await createImagesBucket()
+
+      if (result.success) {
+        setBucketStatus({ exists: true, checking: false })
+        setSuccess("Images bucket created successfully!")
+      } else {
+        setError(result.error || "Failed to create bucket")
+      }
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setCreatingBucket(false)
+    }
+  }
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileName: string) => {
     if (!e.target.files || e.target.files.length === 0) {
       return
@@ -63,6 +86,15 @@ export default function SetupPage() {
     setSuccess(null)
 
     try {
+      // First ensure the bucket exists
+      if (!bucketStatus.exists) {
+        const bucketResult = await createImagesBucket()
+        if (!bucketResult.success) {
+          throw new Error(`Failed to create bucket: ${bucketResult.error}`)
+        }
+        setBucketStatus({ exists: true, checking: false })
+      }
+
       const supabase = createBrowserSupabaseClient()
 
       // Upload the file
@@ -155,33 +187,35 @@ export default function SetupPage() {
               <div className="flex-grow">
                 <h3 className="text-lg md:text-xl font-medium text-white">Create the "images" bucket in Supabase</h3>
                 <p className="text-gray-400 text-base md:text-lg mt-1 mb-3">
-                  You need to manually create a storage bucket named "images" in your Supabase dashboard.
+                  You need to create a storage bucket named "images" in your Supabase project.
                 </p>
 
                 <div className="bg-gray-800 rounded-lg p-4 mb-4">
-                  <ol className="list-decimal list-inside space-y-2 text-gray-300 text-base md:text-lg">
-                    <li>Go to your Supabase dashboard</li>
-                    <li>Navigate to "Storage" in the left sidebar</li>
-                    <li>Click "Create a new bucket"</li>
-                    <li>Enter "images" as the bucket name</li>
-                    <li>Make sure "Public bucket" is checked</li>
-                    <li>Click "Create bucket"</li>
-                  </ol>
+                  <p className="text-gray-300 text-base mb-4">
+                    You can create the bucket automatically by clicking the button below, or manually through the
+                    Supabase dashboard.
+                  </p>
+                  <Button
+                    onClick={handleCreateBucket}
+                    className="bg-yellow-400 text-black hover:bg-yellow-300 mr-4"
+                    disabled={bucketStatus.exists || creatingBucket}
+                  >
+                    {creatingBucket ? (
+                      <>
+                        <div className="animate-spin h-4 w-4 border-2 border-black border-t-transparent rounded-full mr-2"></div>
+                        Creating Bucket...
+                      </>
+                    ) : bucketStatus.exists ? (
+                      "Bucket Already Exists"
+                    ) : (
+                      "Create Images Bucket"
+                    )}
+                  </Button>
+
+                  <Button onClick={refreshStatus} className="bg-gray-700 hover:bg-gray-600 text-white text-base">
+                    Check Status
+                  </Button>
                 </div>
-
-                <a
-                  href="https://supabase.com/dashboard"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-yellow-400 hover:text-yellow-300 text-base md:text-lg"
-                >
-                  <ExternalLink size={16} className="mr-1" />
-                  Open Supabase Dashboard
-                </a>
-
-                <Button onClick={refreshStatus} className="ml-4 bg-gray-700 hover:bg-gray-600 text-white text-base">
-                  Check Status
-                </Button>
 
                 {bucketStatus.exists && (
                   <div className="mt-2 text-green-500 text-base md:text-lg flex items-center">
@@ -215,13 +249,12 @@ export default function SetupPage() {
                     </p>
 
                     <div className="bg-gray-800 p-4 rounded-lg mb-4 flex justify-center">
-                      <FallbackImage
-                        type="rumi_logo"
+                      <Image
+                        src="/rumi_logo.png"
                         alt="Rumi Logo"
-                        width={300}
-                        height={100}
-                        className="h-24 w-auto"
-                        trySupabase={false}
+                        width={607}
+                        height={202}
+                        className="h-[48.6px] w-auto object-contain"
                       />
                     </div>
 
@@ -278,9 +311,9 @@ export default function SetupPage() {
                       <FallbackImage
                         type="feeling_agent"
                         alt="Feeling Agent"
-                        width={200}
-                        height={360}
-                        className="h-48 w-auto object-contain"
+                        width={300}
+                        height={540}
+                        className="h-64 w-auto object-contain"
                         trySupabase={false}
                       />
                     </div>

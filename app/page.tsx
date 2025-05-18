@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Activity, User, Mail } from "lucide-react"
@@ -77,6 +78,7 @@ export default function Home() {
   const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
   const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const [useLocalImages, setUseLocalImages] = useState(false)
 
   // Reset form when success state changes
   useEffect(() => {
@@ -106,13 +108,13 @@ export default function Home() {
           <div className="flex items-center">
             <div className="flex items-center relative">
               <Link href="/" className="flex items-center">
-                <FallbackImage
-                  type="rumi_logo"
+                <Image
+                  src="/rumi_logo.png"
                   alt="Rumi Logo"
-                  width={300}
-                  height={100}
+                  width={607}
+                  height={202}
                   priority
-                  className="h-24 w-auto"
+                  className="h-[48.6px] w-auto"
                 />
               </Link>
             </div>
@@ -131,14 +133,15 @@ export default function Home() {
               <div className="md:hidden mb-6 text-center">
                 <div className="text-yellow-400 text-5xl font-bold">Partner</div>
               </div>
-              <div className="flex flex-col md:flex-row items-center justify-center gap-12">
-                <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-16">
+                <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
+                  {/* Use FallbackImage as a reliable fallback */}
                   <FallbackImage
                     type="feeling_agent"
                     alt="Rumi notification detecting user's mood"
-                    width={700}
-                    height={1260}
-                    className="rounded-xl shadow-lg object-contain max-h-[80vh]"
+                    width={500}
+                    height={900}
+                    className="rounded-xl shadow-lg object-contain max-h-[90vh] w-auto"
                     priority
                   />
                 </div>
@@ -317,7 +320,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             {/* Left: Logo */}
             <div className="mb-4 md:mb-0">
-              <FallbackImage type="rumi_logo" alt="Rumi Logo" width={300} height={100} className="h-24 w-auto" />
+              <Image src="/rumi_logo.png" alt="Rumi Logo" width={607} height={202} className="h-[48.6px] w-auto" />
             </div>
 
             {/* Center: Copyright */}

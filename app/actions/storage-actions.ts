@@ -54,7 +54,13 @@ export async function createImagesBucket() {
     const supabase = createServerSupabaseClient()
 
     // Check if bucket exists
-    const { data: buckets } = await supabase.storage.listBuckets()
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets()
+
+    if (listError) {
+      console.error("Error listing buckets:", listError)
+      return { success: false, error: listError.message }
+    }
+
     const bucketExists = buckets?.some((bucket) => bucket.name === "images")
 
     if (!bucketExists) {
@@ -69,7 +75,28 @@ export async function createImagesBucket() {
       }
 
       console.log(`Bucket images created successfully`)
+
+      // Update bucket to be public
+      const { error: updateError } = await supabase.storage.updateBucket("images", {
+        public: true,
+      })
+
+      if (updateError) {
+        console.error("Error updating bucket visibility:", updateError)
+        // We still return success since the bucket was created
+      }
+
       return { success: true, created: true }
+    }
+
+    // If bucket exists, ensure it's public
+    const { error: updateError } = await supabase.storage.updateBucket("images", {
+      public: true,
+    })
+
+    if (updateError) {
+      console.error("Error updating bucket visibility:", updateError)
+      return { success: false, error: updateError.message }
     }
 
     return { success: true, created: false }
