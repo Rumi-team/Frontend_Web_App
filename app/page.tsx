@@ -24,7 +24,6 @@ function SubmitButton() {
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  // 7 faces: 2 full rotations, ending on last "Psychologist"
   const faces = ["Psychologist", "Partner", "Friend", "Psychologist", "Partner", "Friend", "Psychologist"]
   const rotationCount = useRef(0)
 
@@ -35,12 +34,7 @@ function RotatingCube() {
       setCurrentFace((prev) => {
         const nextFace = (prev + 1) % faces.length
 
-        // If we've reached the last face (the last "Psychologist")
         if (nextFace === faces.length - 1) {
-          rotationCount.current += 1
-
-          // If we've completed two full rotations (we reach 6 after 2*3 faces + 1)
-          // But since we want to stop at the last face (index 6), just stop here.
           setAnimationComplete(true)
           clearInterval(interval)
         }
@@ -53,16 +47,18 @@ function RotatingCube() {
   }, [animationComplete])
 
   return (
-    <div className="cube-container h-24 relative perspective-1000">
+    <div className="relative w-48 h-48 perspective-1000">
       <div
-        className="cube w-full h-full relative transform-style-3d transition-transform duration-1000 ease-in-out"
+        className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
         style={{ transform: `rotateX(${currentFace * -90}deg)` }}
       >
         {faces.map((face, index) => (
           <div
             key={index}
-            className={`cube-face absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden`}
-            style={{ transform: `rotateX(${index * 90}deg) translateZ(3rem)` }}
+            className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
+            style={{
+              transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
+            }}
           >
             {face}
           </div>
