@@ -24,7 +24,8 @@ function SubmitButton() {
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = ["Partner", "Psychologist", "Companion", "Partner"]
+  // 7 faces: 2 full rotations, ending on last "Psychologist"
+  const faces = ["Psychologist", "Partner", "Friend", "Psychologist", "Partner", "Friend", "Psychologist"]
   const rotationCount = useRef(0)
 
   useEffect(() => {
@@ -34,15 +35,14 @@ function RotatingCube() {
       setCurrentFace((prev) => {
         const nextFace = (prev + 1) % faces.length
 
-        // If we've reached the last face (Partner again)
-        if (nextFace === 3) {
+        // If we've reached the last face (the last "Psychologist")
+        if (nextFace === faces.length - 1) {
           rotationCount.current += 1
 
-          // If we've completed one full rotation
-          if (rotationCount.current >= 1) {
-            setAnimationComplete(true)
-            clearInterval(interval)
-          }
+          // If we've completed two full rotations (we reach 6 after 2*3 faces + 1)
+          // But since we want to stop at the last face (index 6), just stop here.
+          setAnimationComplete(true)
+          clearInterval(interval)
         }
 
         return nextFace
