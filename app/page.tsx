@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -24,8 +24,15 @@ function SubmitButton() {
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = ["Psychologist", "Partner", "Friend", "Psychologist", "Partner", "Friend", "Psychologist"]
-  const rotationCount = useRef(0)
+  const faces = [
+    "Psychologist",
+    "Partner",
+    "Friend",
+    "Psychologist",
+    "Partner",
+    "Friend",
+    "Psychologist"
+  ]
 
   useEffect(() => {
     if (animationComplete) return

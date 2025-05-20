@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Rumi Team",
   description: "Your AI-powered self-improvement partner",
-    generator: 'v0.dev'
+  generator: 'Rumi.Team'
 }
 
 export default function RootLayout({
