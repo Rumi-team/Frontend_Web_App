@@ -63,7 +63,7 @@ function RotatingCube() {
           index === currentFace && (
             <div
               key={index}
-              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
+              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
               style={{
                 transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
               }}
@@ -92,9 +92,16 @@ export default function Home() {
       return () => clearTimeout(timer)
     }
   }, [formState?.success, formState?.alreadyJoined])
-
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+        <div
+          className="flex flex-col min-h-screen bg-black text-white"
+          style={{
+            /* clear the iOS notch */
+            paddingTop:    "env(safe-area-inset-top)",
+            /* lift above the bottom toolbar */
+            paddingBottom: "env(safe-area-inset-bottom)"
+          }}
+        >
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
@@ -150,8 +157,9 @@ export default function Home() {
                     priority
                   />
                   {/* Mobile‑only overlay for rotating words */}
+                  {/* Mobile-only overlay: centered & scaled-down */}
                   <div className="absolute inset-0 flex items-center justify-center md:hidden z-10">
-                    <div className="w-36">
+                    <div className="transform scale-75">
                       <RotatingCube />
                     </div>
                   </div>
