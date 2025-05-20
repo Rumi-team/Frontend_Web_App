@@ -149,8 +149,14 @@ export default function Home() {
                     className="rounded-xl shadow-lg object-contain max-h-[90vh] w-auto"
                     priority
                   />
+                  {/* Mobile‑only overlay for rotating words */}
+                  <div className="absolute inset-x-0 -top-10 flex justify-center md:hidden z-10">
+                    <div className="w-36">
+                      <RotatingCube />
+                    </div>
+                  </div>
                 </div>
-                <div className="block w-48 md:w-60">
+                <div className="hidden md:block w-60">
                   <RotatingCube />
                 </div>
               </div>
