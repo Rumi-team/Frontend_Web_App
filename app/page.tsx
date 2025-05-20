@@ -150,7 +150,7 @@ export default function Home() {
                     priority
                   />
                   {/* Mobile‑only overlay for rotating words */}
-                  <div className="absolute inset-x-0 -top-10 flex justify-center md:hidden z-10">
+                  <div className="absolute inset-x-0 -top-16 flex justify-center md:hidden z-10">
                     <div className="w-36">
                       <RotatingCube />
                     </div>
