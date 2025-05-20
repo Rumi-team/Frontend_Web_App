@@ -134,7 +134,7 @@ export default function Home() {
       </header>
       <main className="flex-1">
         <section id="about" className="w-full min-h-screen flex items-center justify-center bg-black text-white">
-          <div className="container px-4 md:px-6">
+          <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <div className="md:hidden mb-6 text-center">
                 <div className="text-yellow-400 text-5xl font-bold">Partner</div>
@@ -159,7 +159,7 @@ export default function Home() {
         </section>
 
         <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-black text-white">
-          <div className="container px-4 md:px-6">
+          <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-yellow-400 px-3 py-1 text-sm text-black">Features</div>
@@ -206,7 +206,7 @@ export default function Home() {
         </section>
 
         <section id="get-in-touch" className="w-full py-12 md:py-24 lg:py-32 bg-black text-white">
-          <div className="container px-4 md:px-6">
+          <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <Card className="bg-gray-900 text-white border-yellow-400 w-full max-w-md mx-auto">
                 {!formState?.success && !formState?.alreadyJoined && (
@@ -321,7 +321,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="w-full py-6 bg-black text-white border-t border-gray-800">
-        <div className="container px-4 md:px-6">
+        <div className="w-full px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             {/* Left: Logo */}
             <div className="mb-4 md:mb-0">
