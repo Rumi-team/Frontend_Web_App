@@ -59,17 +59,19 @@ function RotatingCube() {
         className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
         style={{ transform: `rotateX(${currentFace * -90}deg)` }}
       >
-        {faces.map((face, index) => (
-          <div
-            key={index}
-            className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
-            style={{
-              transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
-            }}
-          >
-            {face}
-          </div>
-        ))}
+        {faces.map((face, index) =>
+          index === currentFace && (
+            <div
+              key={index}
+              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
+              style={{
+                transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
+              }}
+            >
+              {face}
+            </div>
+          )
+        )}
       </div>
     </div>
   )
