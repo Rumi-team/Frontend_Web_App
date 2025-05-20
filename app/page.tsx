@@ -101,12 +101,15 @@ export default function Home() {
         }
         .perspective-1000 {
           perspective: 1000px;
+          -webkit-perspective: 1000px;
         }
         .transform-style-3d {
           transform-style: preserve-3d;
+          -webkit-transform-style: preserve-3d;
         }
         .backface-hidden {
           backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
       `}</style>
       <header className="sticky top-0 z-40 w-full border-b border-gray-800 bg-black">
@@ -136,9 +139,6 @@ export default function Home() {
         <section id="about" className="w-full min-h-screen flex items-center justify-center bg-black text-white">
           <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
-              <div className="md:hidden mb-6 text-center">
-                <div className="text-yellow-400 text-5xl font-bold">Partner</div>
-              </div>
               <div className="flex flex-col md:flex-row items-center justify-center gap-16">
                 <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
                   <Image
@@ -150,7 +150,7 @@ export default function Home() {
                     priority
                   />
                 </div>
-                <div className="hidden md:block w-60">
+                <div className="block w-48 md:w-60">
                   <RotatingCube />
                 </div>
               </div>
