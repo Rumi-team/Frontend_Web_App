@@ -334,7 +334,7 @@ export default function Home() {
             </div>
 
             {/* Right: Contact */}
-            <div className="text-right">
+            <div className="w-full text-center md:w-auto md:text-right">
               <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
