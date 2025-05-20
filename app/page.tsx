@@ -338,7 +338,7 @@ export default function Home() {
               <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-base"
+                className="inline-flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-base"
               >
                 <Mail className="h-5 w-5 mr-2" />
                 support@rumi.team
