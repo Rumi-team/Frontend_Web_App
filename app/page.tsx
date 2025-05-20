@@ -110,7 +110,7 @@ export default function Home() {
         }
       `}</style>
       <header className="sticky top-0 z-40 w-full border-b border-gray-800 bg-black">
-        <div className="container flex items-center justify-between h-16 px-4 md:px-6">
+        <div className="flex items-center justify-between w-full h-16 px-4 md:px-6">
           <div className="flex items-center">
             <div className="flex items-center relative">
               <Link href="/" className="flex items-center">
