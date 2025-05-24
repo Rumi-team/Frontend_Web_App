@@ -344,7 +344,7 @@ export default function Home() {
 
             {/* Center: Copyright */}
             <div className="mb-4 md:mb-0 text-center">
-              <p className="text-base text-gray-400">© 2025 Rumi Team LLC. All rights reserved.</p>
+              <p className="text-base text-gray-400">© 2025 Rumi Inc., All rights reserved.</p>
             </div>
 
             {/* Right: Contact */}
