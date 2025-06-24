@@ -2,6 +2,27 @@
 
 import { createServerSupabaseClient } from "@/lib/supabase"
 
+// --------------------------------------------
+// Google Apps Script webhook for wait‑list e‑mail
+const WEBHOOK_URL = process.env.RUMI_MAIL_WEBHOOK
+
+async function notifyAppsScript(name: string, email: string) {
+  if (!WEBHOOK_URL) {
+    console.warn("RUMI_MAIL_WEBHOOK env var not set.")
+    return
+  }
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email })
+    })
+  } catch (err) {
+    console.error("Failed to notify Apps Script:", err)
+  }
+}
+// --------------------------------------------
+
 export type FormState = {
   error?: string | null
   message?: string | null
@@ -92,7 +113,23 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
       }
     }
 
+    // -- Also upsert into survey_users to track survey leads --
+    const { error: surveyUsersError } = await supabase
+      .from("survey_users")
+      .upsert(
+        { name: name.trim(), email: email.trim() },
+        { onConflict: "email" } // email must be UNIQUE in survey_users
+      )
+
+    if (surveyUsersError) {
+      console.error("survey_users upsert error:", surveyUsersError.message)
+      // Note: we don't fail the whole request if this table insert fails
+    }
+
     console.log("User registered successfully:", { name, email })
+
+    // Fire‑and‑forget email with Google Apps Script
+    notifyAppsScript(name.trim(), email.trim()).catch(console.error)
 
     return {
       success: true,

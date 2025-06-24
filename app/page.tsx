@@ -293,7 +293,12 @@ export default function Home() {
                           </svg>
                         </div>
                         <h3 className="text-2xl font-medium text-white">Thank You!</h3>
-                        <p className="text-gray-300 text-lg">{formState.message}</p>
+                        <p className="text-gray-300 text-lg">
+                          {formState.message ?? "Thanks for joining the wait‑list!"}
+                        </p>
+                        <p className="text-gray-400 text-base">
+                          📧 Check your inbox (and spam folder) for a link to our short survey.
+                        </p>
                       </div>
                     ) : formState?.alreadyJoined ? (
                       <div className="space-y-4">
