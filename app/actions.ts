@@ -59,7 +59,7 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
 
     // Check if the email already exists
     const { data: existingUser, error: checkError } = await supabase
-      .from("users")
+      .from("website_waitlist")
       .select("email")
       .eq("email", email.trim())
       .maybeSingle()
@@ -85,7 +85,7 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
     }
 
     // Insert the new user
-    const { error: insertError } = await supabase.from("users").insert([
+    const { error: insertError } = await supabase.from("website_waitlist").insert([
       {
         name: name.trim(),
         email: email.trim(),
