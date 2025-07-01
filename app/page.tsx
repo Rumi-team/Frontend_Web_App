@@ -296,9 +296,9 @@ export default function Home() {
                         <p className="text-gray-300 text-lg">
                           {formState.message ?? "Thanks for joining the wait‑list!"}
                         </p>
-                        <p className="text-gray-400 text-base">
+                        {/* <p className="text-gray-400 text-base">
                           📧 Check your inbox (and spam folder) for a link to our short survey.
-                        </p>
+                        </p> */}
                       </div>
                     ) : formState?.alreadyJoined ? (
                       <div className="space-y-4">
