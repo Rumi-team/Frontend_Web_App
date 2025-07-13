@@ -24,15 +24,16 @@ function SubmitButton() {
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = [
-    "Psychologist",
-    "Partner",
-    "Friend",
-    "Psychologist",
-    "Partner",
-    "Friend",
-    "Psychologist"
-  ]
+  const faces = ["Your", "Personal", "Life Coach", "Your", "Personal", "Life Coach"]
+  // const faces = [
+  //   "Psychologist",
+  //   "pyschologist",
+  //   "Friend",
+  //   "Psychologist",
+  //   "pyschologist",
+  //   "Friend",
+  //   "Psychologist"
+  // ]
 
   useEffect(() => {
     if (animationComplete) return
