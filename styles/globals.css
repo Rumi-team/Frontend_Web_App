@@ -92,3 +92,18 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Customize HubSpot form submit button */
+.hs-form input[type="submit"] {
+  background-color: #FFD700; /* Rumi yellow */
+  color: #000000;           /* Black text */
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hs-form input[type="submit"]:hover {
+  background-color: #E6C200; /* Darker yellow on hover */
+}
