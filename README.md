@@ -34,6 +34,13 @@ Make sure you have the following environment variables set up for Supabase:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+
+### HubSpot
+
+The waitlist form integrates with HubSpot. Provide a private app token with access to contacts:
+
+- `HUBSPOT_ACCESS_TOKEN`
+
 \`\`\`
 
 Let's also create a simple script to help upload images to the public directory:

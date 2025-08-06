@@ -1,6 +1,7 @@
 "use server"
 
-import { createServerSupabaseClient } from "@/lib/supabase"
+// HubSpot integration
+const HUBSPOT_ACCESS_TOKEN = process.env.HUBSPOT_ACCESS_TOKEN
 
 // --------------------------------------------
 // Google Apps Script webhook for wait‑list e‑mail
@@ -52,20 +53,36 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
   }
 
   try {
-    // Use the server Supabase client
-    const supabase = createServerSupabaseClient()
+    if (!HUBSPOT_ACCESS_TOKEN) {
+      console.error("HUBSPOT_ACCESS_TOKEN env var not set.")
+      return {
+        error: "Server configuration error. Please try again later.",
+        success: false,
+        message: null,
+      }
+    }
 
-    console.log("Checking if email exists:", email)
+    console.log("Checking HubSpot for existing contact:", email)
 
-    // Check if the email already exists
-    const { data: existingUser, error: checkError } = await supabase
-      .from("website_waitlist")
-      .select("email")
-      .eq("email", email.trim())
-      .maybeSingle()
+    const searchRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${HUBSPOT_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        filterGroups: [
+          {
+            filters: [{ propertyName: "email", operator: "EQ", value: email.trim() }],
+          },
+        ],
+        properties: ["email"],
+        limit: 1,
+      }),
+    })
 
-    if (checkError) {
-      console.error("Error checking for existing user:", checkError)
+    if (!searchRes.ok) {
+      console.error("HubSpot search error:", await searchRes.text())
       return {
         error: "An error occurred while checking your email. Please try again.",
         success: false,
@@ -73,9 +90,9 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
       }
     }
 
-    // If user already exists, return a specific message
-    if (existingUser) {
-      console.log("User already exists:", email)
+    const searchData = (await searchRes.json()) as { total?: number }
+    if (searchData.total && searchData.total > 0) {
+      console.log("Contact already exists in HubSpot:", email)
       return {
         success: false,
         message: "You have already joined Rumi.",
@@ -84,49 +101,31 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
       }
     }
 
-    // Insert the new user
-    const { error: insertError } = await supabase.from("website_waitlist").insert([
-      {
-        name: name.trim(),
-        email: email.trim(),
-        created_at: new Date().toISOString(),
+    const createRes = await fetch("https://api.hubapi.com/crm/v3/objects/contacts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${HUBSPOT_ACCESS_TOKEN}`,
       },
-    ])
+      body: JSON.stringify({
+        properties: {
+          email: email.trim(),
+          firstname: name.trim(),
+        },
+      }),
+    })
 
-    if (insertError) {
-      console.error("Error inserting user:", insertError)
-
-      // Check if it's a duplicate key error (just in case)
-      if (insertError.code === "23505") {
-        return {
-          success: false,
-          message: "You have already joined Rumi.",
-          error: null,
-          alreadyJoined: true,
-        }
-      }
-
+    if (!createRes.ok) {
+      const errorData = await createRes.json().catch(() => ({}))
+      console.error("HubSpot create contact error:", errorData)
       return {
-        error: `Registration failed: ${insertError.message}`,
+        error: `Registration failed: ${errorData.message || createRes.statusText}`,
         success: false,
         message: null,
       }
     }
 
-    // -- Also upsert into survey_users to track survey leads --
-    const { error: surveyUsersError } = await supabase
-      .from("survey_users")
-      .upsert(
-        { name: name.trim(), email: email.trim() },
-        { onConflict: "email" } // email must be UNIQUE in survey_users
-      )
-
-    if (surveyUsersError) {
-      console.error("survey_users upsert error:", surveyUsersError.message)
-      // Note: we don't fail the whole request if this table insert fails
-    }
-
-    console.log("User registered successfully:", { name, email })
+    console.log("HubSpot contact created:", { name, email })
 
     // Fire‑and‑forget email with Google Apps Script
     notifyAppsScript(name.trim(), email.trim()).catch(console.error)
