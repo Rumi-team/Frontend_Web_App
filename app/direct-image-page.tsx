@@ -1,25 +1,13 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { useActionState } from "react"
-import { useFormStatus } from "react-dom"
 import Link from "next/link"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Activity, User, Mail } from "lucide-react"
-import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
 import { SupabaseClientImage } from "@/components/supabase-client-image"
-
-function SubmitButton() {
-  const { pending } = useFormStatus()
-
-  return (
-    <Button type="submit" className="w-full bg-yellow-400 text-black hover:bg-yellow-300" disabled={pending}>
-      {pending ? "Submitting..." : "Join Rumi"}
-    </Button>
-  )
-}
 
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
@@ -73,20 +61,7 @@ function RotatingCube() {
 }
 
 export default function DirectImagePage() {
-  const initialState: FormState = {}
-  const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
-  const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
-
-  // Reset form when success state changes
-  useEffect(() => {
-    if (formState?.success || formState?.alreadyJoined) {
-      const timer = setTimeout(() => {
-        setShowForm(false)
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [formState?.success, formState?.alreadyJoined])
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
@@ -203,112 +178,21 @@ export default function DirectImagePage() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <Card className="bg-gray-900 text-white border-yellow-400 w-full max-w-md mx-auto">
-                {!formState?.success && !formState?.alreadyJoined && (
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Start your journey with Rumi</CardTitle>
-                    <CardDescription className="text-gray-300">
-                      Be the first to receive the product link for the beta launch
-                    </CardDescription>
-                  </CardHeader>
-                )}
-                {showForm && !formState?.success && !formState?.alreadyJoined ? (
-                  <>
-                    <CardContent>
-                      <form action={formAction} className="grid gap-4">
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="name"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            Name
-                          </label>
-                          <input
-                            id="name"
-                            name="name"
-                            className="flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            placeholder="John Doe"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="email"
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            className="flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            placeholder="john.doe@example.com"
-                            required
-                          />
-                        </div>
-                        {formState?.error && (
-                          <div className="text-red-500 text-sm mt-2 p-2 bg-red-950 bg-opacity-30 rounded border border-red-800">
-                            {formState.error}
-                          </div>
-                        )}
-                        <CardFooter className="px-0 pt-4">
-                          <SubmitButton />
-                        </CardFooter>
-                      </form>
-                    </CardContent>
-                  </>
-                ) : (
-                  <CardContent className="text-center py-8">
-                    {formState?.success ? (
-                      <div className="space-y-4">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mx-auto">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            className="w-8 h-8"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <h3 className="text-xl font-medium text-white">Thank You!</h3>
-                        <p className="text-gray-300">{formState.message}</p>
-                      </div>
-                    ) : formState?.alreadyJoined ? (
-                      <div className="space-y-4">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 text-yellow-500 mx-auto">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            className="w-8 h-8"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                            />
-                          </svg>
-                        </div>
-                        <h3 className="text-xl font-medium text-white">Already Joined</h3>
-                        <p className="text-gray-300">{formState.message}</p>
-                      </div>
-                    ) : (
-                      <div className="text-center py-8">
-                        <p className="text-red-500">Something went wrong. Please try again.</p>
-                        <Button
-                          onClick={() => setShowForm(true)}
-                          className="mt-4 bg-yellow-400 text-black hover:bg-yellow-300"
-                        >
-                          Try Again
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                )}
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Start your journey with Rumi</CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Be the first to receive the product link for the beta launch
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Script src="https://js-na2.hsforms.net/forms/embed/243471579.js" defer />
+                  <div
+                    className="hs-form-frame"
+                    data-region="na2"
+                    data-form-id="435b79ca-013f-4a23-bf5a-8a59224cab64"
+                    data-portal-id="243471579"
+                  ></div>
+                </CardContent>
               </Card>
             </div>
           </div>
