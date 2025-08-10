@@ -35,5 +35,3 @@ Make sure you have the following environment variables set up for Supabase:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 \`\`\`
-
-Let's also create a simple script to help upload images to the public directory:
