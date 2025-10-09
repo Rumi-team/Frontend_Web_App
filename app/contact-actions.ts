@@ -40,13 +40,17 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
 
     console.log("Attempting to save contact message:", { name, email, messageLength: message.length })
 
-    // First check if the email exists in the users table
-    const { data: existingUser } = await supabase.from("users").select("email").eq("email", email.trim()).maybeSingle()
+    // First check if the email exists in the waitlist table
+    const { data: existingUser } = await supabase
+      .from("website_waitlist")
+      .select("email")
+      .eq("email", email.trim())
+      .maybeSingle()
 
     if (existingUser) {
       // Update the existing user's message and name
       const { error: updateError } = await supabase
-        .from("users")
+        .from("website_waitlist")
         .update({
           message: message.trim(),
           name: name.trim(),
@@ -62,7 +66,7 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
       }
     } else {
       // Insert a new user with the message
-      const { error: insertError } = await supabase.from("users").insert([
+      const { error: insertError } = await supabase.from("website_waitlist").insert([
         {
           email: email.trim(),
           name: name.trim(),

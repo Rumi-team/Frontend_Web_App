@@ -17,7 +17,10 @@ export default async function UsersPage() {
   const supabase = createClient(supabaseUrl, supabaseKey)
 
   // Fetch users from the database
-  const { data: users, error } = await supabase.from("users").select("*").order("created_at", { ascending: false })
+  const { data: users, error } = await supabase
+    .from("website_waitlist")
+    .select("*")
+    .order("created_at", { ascending: false })
 
   if (error) {
     console.error("Error fetching users:", error)
@@ -43,7 +46,7 @@ export default async function UsersPage() {
       <main>
         <Card className="bg-gray-900 border-gray-800 mb-6">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-yellow-400">Registered Users</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-yellow-400">Waitlist Signups</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
