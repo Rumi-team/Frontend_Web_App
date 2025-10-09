@@ -64,30 +64,33 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
   }, [animationComplete, onComplete])
 
   return (
-    <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
-      <span className="text-white">{topLine}</span>
-      <div className="relative w-48 md:w-64 h-20 perspective-1000 text-yellow-400">
-        <div
-          className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
-          style={{ transform: `rotateX(${currentFace * -90}deg)` }}
-        >
-          {rotatingWords.map((word, index) =>
-            index === currentFace && (
-              <div
-                key={index}
-                className="absolute w-full h-full flex items-center justify-center backface-hidden whitespace-nowrap text-center px-4"
-                style={{
-                  transform: `rotateX(${index * 90}deg) translateZ(4.5rem)`,
-                }}
-              >
-                {word}
-              </div>
-            )
-          )}
+    <>
+      <style jsx>{`
+        .word-anim {
+          display: inline-block;
+          animation: growWord 0.9s ease forwards;
+        }
+        @keyframes growWord {
+          from {
+            transform: scale(0.7);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
+      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+        <span className="text-white">{topLine}</span>
+        <div className="h-20 flex items-center justify-center text-yellow-400">
+          <span key={`${currentFace}-${rotatingWords[currentFace]}`} className="word-anim px-4 whitespace-nowrap">
+            {rotatingWords[currentFace]}
+          </span>
         </div>
+        <span className="text-white">{bottomLine}</span>
       </div>
-      <span className="text-white">{bottomLine}</span>
-    </div>
+    </>
   )
 }
 
