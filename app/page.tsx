@@ -80,7 +80,7 @@ function RotatingCube({ onComplete }: RotatingCubeProps) {
           index === currentFace && (
             <div
               key={index}
-              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden"
+              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden whitespace-nowrap"
               style={{
                 transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
               }}
@@ -164,15 +164,20 @@ export default function Home() {
         </div>
       </header>
       <main className="flex-1">
-        <section id="about" className="w-full min-h-screen flex items-center justify-center bg-black text-white">
+        <section
+          id="about"
+          className="w-full min-h-screen flex items-center md:items-start justify-center pt-6 md:pt-12 bg-black text-white"
+        >
           <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <div
-                className={`flex flex-col items-center justify-center gap-16 ${!isCubeComplete ? "md:flex-row" : ""}`}
+                className={`flex flex-col md:flex-row items-center md:items-start justify-center transition-all duration-700 ease-in-out ${
+                  isCubeComplete ? "gap-8 md:gap-0" : "gap-10 md:gap-16"
+                }`}
               >
                 <div
-                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl ${
-                    isCubeComplete ? "mx-auto" : ""
+                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${
+                    isCubeComplete ? "md:mx-auto" : "md:mx-0"
                   }`}
                 >
                   <Image
@@ -193,11 +198,14 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                {!isCubeComplete && (
-                  <div className="hidden md:block w-60">
-                    <RotatingCube onComplete={handleCubeComplete} />
-                  </div>
-                )}
+                <div
+                  className={`hidden md:flex overflow-hidden transition-all duration-700 ease-in-out ${
+                    isCubeComplete ? "md:w-0 md:opacity-0 md:translate-x-6" : "md:w-60 md:opacity-100 md:translate-x-0"
+                  }`}
+                  aria-hidden={isCubeComplete}
+                >
+                  {!isCubeComplete && <RotatingCube onComplete={handleCubeComplete} />}
+                </div>
               </div>
             </div>
           </div>
