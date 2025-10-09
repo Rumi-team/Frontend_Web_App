@@ -71,7 +71,7 @@ function RotatingCube({ onComplete }: RotatingCubeProps) {
   }, [animationComplete, onComplete])
 
   return (
-    <div className="relative w-48 h-48 perspective-1000">
+    <div className="relative w-48 md:w-64 h-48 perspective-1000">
       <div
         className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
         style={{ transform: `rotateX(${currentFace * -90}deg)` }}
@@ -80,7 +80,7 @@ function RotatingCube({ onComplete }: RotatingCubeProps) {
           index === currentFace && (
             <div
               key={index}
-              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden whitespace-nowrap"
+              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden whitespace-nowrap text-center px-4"
               style={{
                 transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
               }}
@@ -166,13 +166,13 @@ export default function Home() {
       <main className="flex-1">
         <section
           id="about"
-          className="w-full min-h-screen flex items-center md:items-start justify-center pt-6 md:pt-12 bg-black text-white"
+          className="w-full min-h-screen flex items-center justify-center pt-6 md:pt-12 bg-black text-white"
         >
           <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <div
-                className={`flex flex-col md:flex-row items-center md:items-start justify-center transition-all duration-700 ease-in-out ${
-                  isCubeComplete ? "gap-8 md:gap-0" : "gap-10 md:gap-16"
+                className={`flex flex-col md:flex-row items-center md:items-center justify-center transition-all duration-700 ease-in-out ${
+                  isCubeComplete ? "gap-8 md:gap-6" : "gap-10 md:gap-16"
                 }`}
               >
                 <div
@@ -199,8 +199,10 @@ export default function Home() {
                   )}
                 </div>
                 <div
-                  className={`hidden md:flex overflow-hidden transition-all duration-700 ease-in-out ${
-                    isCubeComplete ? "md:w-0 md:opacity-0 md:translate-x-6" : "md:w-60 md:opacity-100 md:translate-x-0"
+                  className={`hidden md:flex transition-all duration-700 ease-in-out ${
+                    isCubeComplete
+                      ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
+                      : "md:w-72 md:opacity-100 md:translate-x-0"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
