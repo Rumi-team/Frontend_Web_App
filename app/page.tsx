@@ -24,7 +24,7 @@ function SubmitButton() {
 function RotatingCube() {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = ["Your", "Personal", "Life Coach", "Your", "Personal", "Life Coach"]
+  const faces = ["Your", "Personal", "Coach", "Your", "non judgemental", "Coach", "Your", "AI-powered", "Coach", "Rumi"]
   // const faces = [
   //   "Psychologist",
   //   "pyschologist",
@@ -150,7 +150,7 @@ export default function Home() {
               <div className="flex flex-col md:flex-row items-center justify-center gap-16">
                 <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
                   <Image
-                    src="/feeling_agent.png"
+                    src="/app_landing_page.png"
                     alt="Rumi notification detecting user's mood"
                     width={500}
                     height={900}
@@ -178,7 +178,7 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-yellow-400 px-3 py-1 text-sm text-black">Features</div>
-                <div className="text-3xl font-bold tracking-tighter sm:text-5xl">The Rumi Approach</div>
+                <div className="text-3xl font-bold tracking-tighter sm:text-5xl">Rumi  Coaching Platform</div>
                 <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-xl/relaxed xl:text-2xl/relaxed">
                   Our AI-powered platform adapts to your unique needs, providing personalized guidance for your
                   self-improvement journey.
@@ -350,7 +350,11 @@ export default function Home() {
 
             {/* Center: Copyright */}
             <div className="mb-4 md:mb-0 text-center">
-              <p className="text-base text-gray-400"> Copyright ©2025, Rumi, Inc. - All rights reserved.</p>
+              <p className="text-base text-gray-400">
+                Copyright ©2025, Rumi, Inc.
+                <br />
+                All rights reserved.
+              </p>
             </div>
 
             {/* Right: Contact */}
