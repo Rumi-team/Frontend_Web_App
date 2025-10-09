@@ -64,9 +64,9 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
   }, [animationComplete, onComplete])
 
   return (
-    <div className="flex flex-col items-center md:items-start text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-4 leading-tight">
-      <span className="text-center md:text-left">{topLine}</span>
-      <div className="relative w-48 md:w-64 h-20 perspective-1000">
+    <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+      <span className="text-white">{topLine}</span>
+      <div className="relative w-48 md:w-64 h-20 perspective-1000 text-yellow-400">
         <div
           className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
           style={{ transform: `rotateX(${currentFace * -90}deg)` }}
@@ -86,7 +86,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           )}
         </div>
       </div>
-      <span className="text-center md:text-left">{bottomLine}</span>
+      <span className="text-white">{bottomLine}</span>
     </div>
   )
 }
