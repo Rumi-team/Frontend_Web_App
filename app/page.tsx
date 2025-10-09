@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -21,10 +21,14 @@ function SubmitButton() {
   )
 }
 
-function RotatingCube() {
+type RotatingCubeProps = {
+  onComplete?: () => void
+}
+
+function RotatingCube({ onComplete }: RotatingCubeProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = ["Your", "Personal", "Coach", "Your", "non judgemental", "Coach", "Your", "AI-powered", "Coach", "Rumi"]
+  const faces = ["Your", "Personal", "AI-powered", "Unbiased", "Coach"]
   // const faces = [
   //   "Psychologist",
   //   "pyschologist",
@@ -53,6 +57,18 @@ function RotatingCube() {
 
     return () => clearInterval(interval)
   }, [animationComplete])
+
+  useEffect(() => {
+    if (!animationComplete || !onComplete) {
+      return
+    }
+
+    const timer = setTimeout(() => {
+      onComplete()
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [animationComplete, onComplete])
 
   return (
     <div className="relative w-48 h-48 perspective-1000">
@@ -83,6 +99,10 @@ export default function Home() {
   const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
   const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+  const [isCubeComplete, setIsCubeComplete] = useState(false)
+  const handleCubeComplete = useCallback(() => {
+    setIsCubeComplete(true)
+  }, [])
 
   // Reset form when success state changes
   useEffect(() => {
@@ -147,8 +167,14 @@ export default function Home() {
         <section id="about" className="w-full min-h-screen flex items-center justify-center bg-black text-white">
           <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-16">
-                <div className="relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
+              <div
+                className={`flex flex-col items-center justify-center gap-16 ${!isCubeComplete ? "md:flex-row" : ""}`}
+              >
+                <div
+                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl ${
+                    isCubeComplete ? "mx-auto" : ""
+                  }`}
+                >
                   <Image
                     src="/app_landing_page.png"
                     alt="Rumi notification detecting user's mood"
@@ -159,15 +185,19 @@ export default function Home() {
                   />
                   {/* Mobile‑only overlay for rotating words */}
                   {/* Mobile-only overlay: centered & scaled-down */}
-                  <div className="absolute inset-0 flex items-center justify-center md:hidden z-10">
-                    <div className="transform scale-75">
-                      <RotatingCube />
+                  {!isCubeComplete && (
+                    <div className="absolute inset-0 flex items-center justify-center md:hidden z-10">
+                      <div className="transform scale-75">
+                        <RotatingCube onComplete={handleCubeComplete} />
+                      </div>
                     </div>
+                  )}
+                </div>
+                {!isCubeComplete && (
+                  <div className="hidden md:block w-60">
+                    <RotatingCube onComplete={handleCubeComplete} />
                   </div>
-                </div>
-                <div className="hidden md:block w-60">
-                  <RotatingCube />
-                </div>
+                )}
               </div>
             </div>
           </div>
