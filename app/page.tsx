@@ -30,7 +30,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [animationComplete, setAnimationComplete] = useState(false)
   const topLine = "Your"
   const bottomLine = "Coach"
-  const rotatingWords = ["Personal", "AI-powered", "Unbiased", "Personal", "AI-powered", "Unbiased"]
+  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
 
   useEffect(() => {
     if (animationComplete) return
@@ -46,7 +46,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
 
         return nextFace
       })
-    }, 2000)
+    }, 3000)
 
     return () => clearInterval(interval)
   }, [animationComplete])
@@ -205,7 +205,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-72 md:opacity-100 md:translate-x-0"
+                      : "md:w-[22rem] md:opacity-100 md:translate-x-0"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
