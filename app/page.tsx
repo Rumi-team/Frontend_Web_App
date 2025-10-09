@@ -67,24 +67,27 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     <>
       <style jsx>{`
         .word-anim {
-          display: inline-block;
           animation: growWord 0.9s ease forwards;
+          will-change: transform, opacity;
         }
         @keyframes growWord {
           from {
-            transform: scale(0.7);
+            transform: perspective(700px) translateZ(-120px) scale(0.7);
             opacity: 0;
           }
           to {
-            transform: scale(1);
+            transform: perspective(700px) translateZ(0) scale(1);
             opacity: 1;
           }
         }
       `}</style>
-      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl gap-6 leading-none text-center">
         <span className="text-white">{topLine}</span>
-        <div className="h-20 flex items-center justify-center text-yellow-400">
-          <span key={`${currentFace}-${rotatingWords[currentFace]}`} className="word-anim px-4 whitespace-nowrap">
+        <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
+          <span
+            key={`${currentFace}-${rotatingWords[currentFace]}`}
+            className="word-anim absolute inset-0 flex items-center justify-center px-4 whitespace-nowrap"
+          >
             {rotatingWords[currentFace]}
           </span>
         </div>
