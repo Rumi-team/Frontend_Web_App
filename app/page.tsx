@@ -21,32 +21,25 @@ function SubmitButton() {
   )
 }
 
-type RotatingCubeProps = {
+type RotatingWordsProps = {
   onComplete?: () => void
 }
 
-function RotatingCube({ onComplete }: RotatingCubeProps) {
+function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const faces = ["Your", "Personal", "AI-powered", "Unbiased", "Coach"]
-  // const faces = [
-  //   "Psychologist",
-  //   "pyschologist",
-  //   "Friend",
-  //   "Psychologist",
-  //   "pyschologist",
-  //   "Friend",
-  //   "Psychologist"
-  // ]
+  const topLine = "Your"
+  const bottomLine = "Coach"
+  const rotatingWords = ["Personal", "AI-powered", "Unbiased", "Personal", "AI-powered", "Unbiased"]
 
   useEffect(() => {
     if (animationComplete) return
 
     const interval = setInterval(() => {
       setCurrentFace((prev) => {
-        const nextFace = (prev + 1) % faces.length
+        const nextFace = (prev + 1) % rotatingWords.length
 
-        if (nextFace === faces.length - 1) {
+        if (nextFace === rotatingWords.length - 1) {
           setAnimationComplete(true)
           clearInterval(interval)
         }
@@ -71,25 +64,29 @@ function RotatingCube({ onComplete }: RotatingCubeProps) {
   }, [animationComplete, onComplete])
 
   return (
-    <div className="relative w-48 md:w-64 h-48 perspective-1000">
-      <div
-        className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
-        style={{ transform: `rotateX(${currentFace * -90}deg)` }}
-      >
-        {faces.map((face, index) =>
-          index === currentFace && (
-            <div
-              key={index}
-              className="absolute w-full h-full flex items-center justify-center text-yellow-400 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold backface-hidden whitespace-nowrap text-center px-4"
-              style={{
-                transform: `rotateX(${index * 90}deg) translateZ(6rem)`,
-              }}
-            >
-              {face}
-            </div>
-          )
-        )}
+    <div className="flex flex-col items-center md:items-start text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-4 leading-tight">
+      <span className="text-center md:text-left">{topLine}</span>
+      <div className="relative w-48 md:w-64 h-20 perspective-1000">
+        <div
+          className="relative w-full h-full transform-style-3d transition-transform duration-1000 ease-in-out"
+          style={{ transform: `rotateX(${currentFace * -90}deg)` }}
+        >
+          {rotatingWords.map((word, index) =>
+            index === currentFace && (
+              <div
+                key={index}
+                className="absolute w-full h-full flex items-center justify-center backface-hidden whitespace-nowrap text-center px-4"
+                style={{
+                  transform: `rotateX(${index * 90}deg) translateZ(4.5rem)`,
+                }}
+              >
+                {word}
+              </div>
+            )
+          )}
+        </div>
       </div>
+      <span className="text-center md:text-left">{bottomLine}</span>
     </div>
   )
 }
@@ -193,7 +190,7 @@ export default function Home() {
                   {!isCubeComplete && (
                     <div className="absolute inset-0 flex items-center justify-center md:hidden z-10">
                       <div className="transform scale-75">
-                        <RotatingCube onComplete={handleCubeComplete} />
+                        <RotatingWords onComplete={handleCubeComplete} />
                       </div>
                     </div>
                   )}
@@ -206,7 +203,7 @@ export default function Home() {
                   }`}
                   aria-hidden={isCubeComplete}
                 >
-                  {!isCubeComplete && <RotatingCube onComplete={handleCubeComplete} />}
+                  {!isCubeComplete && <RotatingWords onComplete={handleCubeComplete} />}
                 </div>
               </div>
             </div>
