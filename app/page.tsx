@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -28,8 +28,9 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const rotatingWords = useMemo(() => ["Personal", "AI-powered", "Unbiased"], [])
-  const maxWordLength = useMemo(() => rotatingWords.reduce((max, word) => Math.max(max, word.length), 0), [rotatingWords])
+  const topLine = "Your"
+  const bottomLine = "Coach"
+  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
 
   useEffect(() => {
     if (animationComplete) return
@@ -83,18 +84,17 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           }
         }
       `}</style>
-      <div className="flex flex-col items-center text-center">
-        <div className="relative inline-flex items-center justify-center font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-none whitespace-nowrap">
-          <span className="text-white">Your&nbsp;</span>
+      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+        <span className="text-white">{topLine}</span>
+        <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim text-yellow-400 px-0"
-            style={{ width: `${maxWordLength + 0.5}ch` }}
+            className="word-anim px-4 whitespace-nowrap"
           >
             {rotatingWords[currentFace]}
           </span>
-          <span className="text-white">&nbsp;Coach</span>
         </div>
+        <span className="text-white">{bottomLine}</span>
       </div>
     </>
   )
@@ -220,7 +220,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[26rem] md:opacity-100 md:translate-x-0 md:pl-14"
+                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-12"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
