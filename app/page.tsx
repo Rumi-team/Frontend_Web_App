@@ -72,6 +72,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           justify-content: center;
           animation: growWord 0.9s ease forwards;
           will-change: transform, opacity;
+          transform-origin: center center;
         }
         @keyframes growWord {
           from {
@@ -89,7 +90,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
         <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim px-4 whitespace-nowrap"
+            className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap"
           >
             {rotatingWords[currentFace]}
           </span>
