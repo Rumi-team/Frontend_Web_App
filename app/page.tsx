@@ -244,8 +244,8 @@ export default function Home() {
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12">
-              <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
-                <CardHeader>
+              <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem]">
+                <CardHeader className="h-full flex flex-col justify-center">
                   <MessageSquareText className="h-12 w-12 text-yellow-400" />
                   <CardTitle className="mt-4 text-xl md:text-2xl">AI-powered Conversations</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
@@ -253,19 +253,19 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
-                <CardHeader>
+              <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem]">
+                <CardHeader className="h-full flex flex-col justify-center">
                   <BookOpen className="h-12 w-12 text-yellow-400" />
                   <CardTitle className="mt-4 text-xl md:text-2xl">Proven Coaching Programs</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
-                    Inspired by proven coaching programs and evidence-backed frameworks, structured into clear, practical steps.
+                    Inspired by proven coaching programs and evidence-backed frameworks, structured into clear, practical step, guided by AI coach.
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
-                <CardHeader>
+              <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem]">
+                <CardHeader className="h-full flex flex-col justify-center">
                   <Sliders className="h-12 w-12 text-yellow-400" />
-                  <CardTitle className="mt-4 text-xl md:text-2xl">Personalized Coach</CardTitle>
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Hyper Personalization</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
                     Learns your character, goals, and mood, adapting and growing with you to keep you on track.
                   </CardDescription>
