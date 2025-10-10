@@ -191,7 +191,7 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center">
               <div
                 className={`flex flex-col md:flex-row items-center md:items-center justify-center transition-all duration-700 ease-in-out ${
-                  isCubeComplete ? "gap-8 md:gap-6" : "gap-10 md:gap-16"
+                  isCubeComplete ? "gap-8 md:gap-6" : "gap-12 md:gap-24"
                 }`}
               >
                 <div
@@ -221,7 +221,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-20 md:ml-14"
+                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-8"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
