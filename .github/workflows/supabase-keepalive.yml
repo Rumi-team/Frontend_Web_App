@@ -2,29 +2,31 @@ name: Supabase Keepalive (REST)
 
 on:
   schedule:
-    # Twice a week at 08:00 UTC on Mon/Thu. Adjust to taste.
-    - cron: "0 8 * * 1,4"
-  # Manual trigger button in the Actions tab
+    - cron: "0 8 * * 1,4"   # Mon & Thu @ 08:00 UTC
   workflow_dispatch: {}
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_TABLE: ${{ secrets.SUPABASE_TABLE }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_SELECT: ${{ secrets.SUPABASE_SELECT }} # optional
     steps:
       - name: Query a tiny row via PostgREST
         run: |
           set -euo pipefail
+          SELECT_COL="${SUPABASE_SELECT:-*}"
+          URL="${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=${SELECT_COL}&limit=1"
 
-          # Build the URL to read a single row (fast and cheap)
-          URL="${{ secrets.SUPABASE_URL }}/rest/v1/${{ secrets.SUPABASE_TABLE }}?select=id&limit=1"
-
-          # Perform the GET with anon key headers
-          code=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+          resp=$(curl -s -w "\n%{http_code}" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
             "$URL")
 
-          echo "HTTP $code"
+          echo "Raw response:"
+          echo "$resp"
 
-          # Make the job fail if not 2xx/3xx (helps you notice issues)
+          code=$(echo "$resp" | tail -n1)
           test "$code" -ge 200 -a "$code" -lt 400

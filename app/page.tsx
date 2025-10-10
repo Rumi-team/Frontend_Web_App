@@ -88,8 +88,8 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           <span className="text-white">Your&nbsp;</span>
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim text-yellow-400 px-1"
-            style={{ width: `${maxWordLength + 2}ch` }}
+            className="word-anim text-yellow-400 px-0"
+            style={{ width: `${maxWordLength + 0.5}ch` }}
           >
             {rotatingWords[currentFace]}
           </span>
