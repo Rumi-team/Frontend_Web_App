@@ -28,7 +28,9 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const rotatingWords = ["Your Personal Coach", "Your AI-powered Coach", "Your Unbiased Coach"]
+  const topLine = "Your"
+  const bottomLine = "Coach"
+  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
 
   useEffect(() => {
     if (animationComplete) return
@@ -80,6 +82,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
         }
       `}</style>
       <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl gap-6 leading-none text-center">
+        <span className="text-white">{topLine}</span>
         <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
@@ -88,6 +91,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
             {rotatingWords[currentFace]}
           </span>
         </div>
+        <span className="text-white">{bottomLine}</span>
       </div>
     </>
   )
@@ -213,7 +217,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0"
+                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-10"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
