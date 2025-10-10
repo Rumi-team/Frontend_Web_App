@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -28,9 +28,7 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const topLine = "Your"
-  const bottomLine = "Coach"
-  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
+  const rotatingWords = ["Your Personal Coach", "Your AI-powered Coach", "Your Unbiased Coach"]
 
   useEffect(() => {
     if (animationComplete) return
@@ -82,7 +80,6 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
         }
       `}</style>
       <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl gap-6 leading-none text-center">
-        <span className="text-white">{topLine}</span>
         <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
@@ -91,7 +88,6 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
             {rotatingWords[currentFace]}
           </span>
         </div>
-        <span className="text-white">{bottomLine}</span>
       </div>
     </>
   )
@@ -103,9 +99,21 @@ export default function Home() {
   const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isCubeComplete, setIsCubeComplete] = useState(false)
+  const cubeCompleteTimeout = useRef<NodeJS.Timeout | null>(null)
   const handleCubeComplete = useCallback(() => {
-    setIsCubeComplete(true)
+    if (cubeCompleteTimeout.current) {
+      clearTimeout(cubeCompleteTimeout.current)
+    }
+    cubeCompleteTimeout.current = setTimeout(() => setIsCubeComplete(true), 3000)
   }, [])
+  useEffect(
+    () => () => {
+      if (cubeCompleteTimeout.current) {
+        clearTimeout(cubeCompleteTimeout.current)
+      }
+    },
+    []
+  )
 
   // Reset form when success state changes
   useEffect(() => {
@@ -205,7 +213,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[22rem] md:opacity-100 md:translate-x-0"
+                      : "md:w-[24rem] md:opacity-100 md:translate-x-0"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
