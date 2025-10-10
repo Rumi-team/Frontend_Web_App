@@ -7,7 +7,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Activity, User, Mail } from "lucide-react"
+import { MessageSquareText, BookOpen, Sliders, Mail } from "lucide-react"
 import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
 
@@ -239,39 +239,35 @@ export default function Home() {
                 <div className="inline-block rounded-lg bg-yellow-400 px-3 py-1 text-sm text-black">Features</div>
                 <div className="text-3xl font-bold tracking-tighter sm:text-5xl">Rumi  Coaching Platform</div>
                 <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-xl/relaxed xl:text-2xl/relaxed">
-                  Our AI-powered platform adapts to your unique needs, providing personalized guidance for your
-                  self-improvement journey.
+                AI-powered conversational coaching built on proven programs, tailored to your character and mood.               
                 </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12">
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <BarChart3 className="h-12 w-12 text-yellow-400" />
-                  <CardTitle className="mt-4 text-xl md:text-2xl">Adaptive Recommendations</CardTitle>
+                  <MessageSquareText className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">AI-powered Conversations</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
-                    Our AI continuously learns from your progress and adjusts recommendations to optimize your personal
-                    growth journey.
+                    Real-time, natural dialogue with an AI coach that listens, reflects, and responds like a human, without judgement 24/7.
                   </CardDescription>
                 </CardHeader>
               </Card>
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <Activity className="h-12 w-12 text-yellow-400" />
-                  <CardTitle className="mt-4 text-xl md:text-2xl">Real-Time Mood Integration</CardTitle>
+                  <BookOpen className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Proven Coaching Programs</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
-                    Rumi adapts to your emotional state, providing support and guidance tailored to how you're feeling
-                    in the moment.
+                    Inspired by proven coaching programs and evidence-backed frameworks, structured into clear, practical steps.
                   </CardDescription>
                 </CardHeader>
               </Card>
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white">
                 <CardHeader>
-                  <User className="h-12 w-12 text-yellow-400" />
-                  <CardTitle className="mt-4 text-xl md:text-2xl">Personality-Driven Experiences</CardTitle>
+                  <Sliders className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Personalized Coach</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
-                    Experience a self-improvement journey uniquely tailored to your personality traits, preferences, and
-                    learning style.
+                    Learns your character, goals, and mood, adapting and growing with you to keep you on track.
                   </CardDescription>
                 </CardHeader>
               </Card>
