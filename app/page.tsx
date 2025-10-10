@@ -221,7 +221,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-30"
+                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-16 md:ml-12"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
