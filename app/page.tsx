@@ -28,8 +28,6 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const topLine = "Your"
-  const bottomLine = "Coach"
   const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
 
   useEffect(() => {
@@ -67,6 +65,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     <>
       <style jsx>{`
         .word-anim {
+          display: inline-block;
           animation: growWord 0.9s ease forwards;
           will-change: transform, opacity;
         }
@@ -81,17 +80,17 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           }
         }
       `}</style>
-      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl gap-6 leading-none text-center">
-        <span className="text-white">{topLine}</span>
-        <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
+      <div className="flex flex-col items-center text-center">
+        <div className="relative inline-flex items-center justify-center font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-none whitespace-nowrap">
+          <span className="text-white">Your&nbsp;</span>
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim absolute inset-0 flex items-center justify-center px-4 whitespace-nowrap"
+            className="word-anim text-yellow-400 px-1"
           >
             {rotatingWords[currentFace]}
           </span>
+          <span className="text-white">&nbsp;Coach</span>
         </div>
-        <span className="text-white">{bottomLine}</span>
       </div>
     </>
   )
@@ -217,7 +216,7 @@ export default function Home() {
                   className={`hidden md:flex transition-all duration-700 ease-in-out ${
                     isCubeComplete
                       ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-10"
+                      : "md:w-[26rem] md:opacity-100 md:translate-x-0 md:pl-14"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
