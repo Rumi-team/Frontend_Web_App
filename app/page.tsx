@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -28,7 +28,8 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
-  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
+  const rotatingWords = useMemo(() => ["Personal", "AI-powered", "Unbiased"], [])
+  const maxWordLength = useMemo(() => rotatingWords.reduce((max, word) => Math.max(max, word.length), 0), [rotatingWords])
 
   useEffect(() => {
     if (animationComplete) return
@@ -65,7 +66,9 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     <>
       <style jsx>{`
         .word-anim {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           animation: growWord 0.9s ease forwards;
           will-change: transform, opacity;
         }
@@ -86,6 +89,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
             className="word-anim text-yellow-400 px-1"
+            style={{ width: `${maxWordLength + 2}ch` }}
           >
             {rotatingWords[currentFace]}
           </span>
