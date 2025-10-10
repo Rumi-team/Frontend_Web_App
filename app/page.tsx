@@ -7,7 +7,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { MessageSquareText, BookOpen, Sliders, Mail } from "lucide-react"
+import { MessageSquareText, BookOpen, UserCog, Mail } from "lucide-react"
 import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
 
@@ -243,7 +243,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12 items-start">
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 mt-12">
               <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem]">
                 <CardHeader className="h-full flex flex-col justify-center">
                   <MessageSquareText className="h-12 w-12 text-yellow-400" />
@@ -262,10 +262,10 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem] self-start">
+              <Card className="border-2 border-yellow-400 bg-gray-900 text-white min-h-[22rem]">
                 <CardHeader className="h-full flex flex-col justify-center">
-                  <Sliders className="h-12 w-12 text-yellow-400" />
-                  <CardTitle className="mt-4 text-xl md:text-2xl">Hyper personalization</CardTitle>
+                  <UserCog className="h-12 w-12 text-yellow-400" />
+                  <CardTitle className="mt-4 text-xl md:text-2xl">Hyper Personalization</CardTitle>
                   <CardDescription className="text-gray-300 text-base md:text-lg">
                     Learns your character, goals, and mood, adapting and growing with you to keep you on track.
                   </CardDescription>
