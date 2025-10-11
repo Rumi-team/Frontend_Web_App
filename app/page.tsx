@@ -96,12 +96,12 @@ function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) 
         mobileRevealTriggered.current = true
         setMobilePhase("hidden")
         onMobilePhaseChange?.("image")
-      }, 350)
+      }, 2000)
 
       const completionTimer = setTimeout(() => {
         completionScheduled.current = true
         onComplete?.()
-      }, 2000)
+      }, 2800)
 
       return () => {
         clearTimeout(revealTimer)
@@ -237,16 +237,16 @@ export default function Home() {
         }
         .mobile-hero-image {
           transform-origin: center center;
-          transition: transform 1.3s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.9s ease;
+          transition: transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s ease;
           will-change: transform, opacity;
         }
         @media (max-width: 767px) {
           .mobile-hero-image {
-            transform: perspective(1100px) translateZ(-260px) scale(0.6);
+            transform: perspective(1400px) rotateX(16deg) rotateY(-10deg) translateZ(-360px) scale(0.42);
             opacity: 0;
           }
           .mobile-hero-image--visible {
-            transform: perspective(1100px) translateZ(0) scale(1);
+            transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateZ(0) scale(1);
             opacity: 1;
           }
         }
