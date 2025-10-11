@@ -144,20 +144,21 @@ function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) 
         }
       `}</style>
       {isMobile ? (
-        mobilePhase === "text" ? (
-          <div className="w-full h-full flex items-center justify-center px-6 text-center font-bold">
-            <div className="relative w-full max-w-[22rem] aspect-square">
-              <span className="absolute top-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{topLine}</span>
-              <span
-                key={`${currentFace}-${rotatingWords[currentFace]}`}
-                className="word-anim absolute inset-0 flex items-center justify-center text-yellow-400 text-giant whitespace-nowrap"
-              >
-                {rotatingWords[currentFace]}
-              </span>
-              <span className="absolute bottom-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{bottomLine}</span>
-            </div>
+        <div
+          className="w-full h-full flex items-center justify-center px-6 text-center font-bold"
+          aria-hidden={mobilePhase !== "text"}
+        >
+          <div className="relative w-full max-w-[22rem] aspect-square">
+            <span className="absolute top-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{topLine}</span>
+            <span
+              key={`${currentFace}-${rotatingWords[currentFace]}`}
+              className="word-anim absolute inset-0 flex items-center justify-center text-yellow-400 text-giant whitespace-nowrap"
+            >
+              {rotatingWords[currentFace]}
+            </span>
+            <span className="absolute bottom-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{bottomLine}</span>
           </div>
-        ) : null
+        </div>
       ) : (
         <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
           <span className="text-white">{topLine}</span>
@@ -293,18 +294,24 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 mobile-hero-image ${
+                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${
                     isCubeComplete ? "md:mx-auto" : "md:mx-0"
-                  } ${mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""}`}
+                  }`}
                 >
-                  <Image
-                    src="/app_landing_page.png"
-                    alt="Rumi notification detecting user's mood"
-                    width={500}
-                    height={900}
-                    className="rounded-xl shadow-lg object-contain max-h-[90vh] w-auto"
-                    priority
-                  />
+                  <div
+                    className={`mobile-hero-image ${
+                      mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""
+                    }`}
+                  >
+                    <Image
+                      src="/app_landing_page.png"
+                      alt="Rumi notification detecting user's mood"
+                      width={500}
+                      height={900}
+                      className="rounded-xl shadow-lg object-contain max-h-[90vh] w-auto"
+                      priority
+                    />
+                  </div>
                   {/* Mobile‑only overlay for rotating words */}
                   {/* Mobile-only overlay: centered & scaled-down */}
                   {!isCubeComplete && (
