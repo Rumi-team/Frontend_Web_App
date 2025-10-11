@@ -23,14 +23,16 @@ function SubmitButton() {
 
 type RotatingWordsProps = {
   onComplete?: () => void
+  onMobilePhaseChange?: (phase: "text" | "image") => void
 }
 
-function RotatingWords({ onComplete }: RotatingWordsProps) {
+function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [mobilePhase, setMobilePhase] = useState<"text" | "sun">("sun")
+  const [mobilePhase, setMobilePhase] = useState<"text" | "hidden">("text")
   const completionScheduled = useRef(false)
+  const mobileRevealTriggered = useRef(false)
   const topLine = "Your"
   const bottomLine = "Coach"
   const rotatingWords = useMemo(() => ["Personal", "AI-powered", "Unbiased"], [])
@@ -52,8 +54,10 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     setCurrentFace(0)
     setAnimationComplete(false)
     completionScheduled.current = false
-    setMobilePhase(isMobile ? "text" : "sun")
-  }, [isMobile])
+    mobileRevealTriggered.current = false
+    setMobilePhase("text")
+    onMobilePhaseChange?.("text")
+  }, [isMobile, onMobilePhaseChange])
 
   useEffect(() => {
     if (isMobile && mobilePhase !== "text") {
@@ -85,9 +89,14 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     }
 
     if (isMobile) {
-      const phaseTimer = setTimeout(() => {
-        setMobilePhase((phase) => (phase === "sun" ? phase : "sun"))
-      }, 400)
+      const revealTimer = setTimeout(() => {
+        if (mobileRevealTriggered.current) {
+          return
+        }
+        mobileRevealTriggered.current = true
+        setMobilePhase("hidden")
+        onMobilePhaseChange?.("image")
+      }, 350)
 
       const completionTimer = setTimeout(() => {
         completionScheduled.current = true
@@ -95,7 +104,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
       }, 2000)
 
       return () => {
-        clearTimeout(phaseTimer)
+        clearTimeout(revealTimer)
         clearTimeout(completionTimer)
       }
     }
@@ -106,7 +115,7 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     }, 1500)
 
     return () => clearTimeout(timer)
-  }, [animationComplete, isMobile, onComplete])
+  }, [animationComplete, isMobile, onComplete, onMobilePhaseChange])
 
   return (
     <>
@@ -133,67 +142,22 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           font-size: clamp(2.75rem, 14vw, 4.8rem);
           line-height: 0.95;
         }
-        .sun-wrapper {
-          position: relative;
-          width: clamp(12rem, 60vw, 18rem);
-          aspect-ratio: 1 / 1;
-          border-radius: 50%;
-          animation: sunReveal 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-          transform-origin: center center;
-          will-change: transform, opacity;
-          opacity: 0;
-        }
-        .sun-core {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          background: radial-gradient(circle at 30% 30%, #fff7d6 0%, #facc15 45%, #f59e0b 100%);
-          box-shadow: 0 0 40px rgba(250, 204, 21, 0.45), 0 0 80px rgba(249, 168, 37, 0.35);
-        }
-        .sun-glow {
-          position: absolute;
-          inset: -15%;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(250, 204, 21, 0.4) 0%, rgba(250, 204, 21, 0) 70%);
-          filter: blur(16px);
-        }
-        @keyframes sunReveal {
-          0% {
-            transform: perspective(900px) translateZ(-260px) scale(0.2);
-            opacity: 0;
-          }
-          55% {
-            opacity: 1;
-          }
-          100% {
-            transform: perspective(900px) translateZ(0) scale(1);
-            opacity: 1;
-          }
-        }
       `}</style>
       {isMobile ? (
         mobilePhase === "text" ? (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-6 text-center font-bold">
-            <span className="text-white text-giant">{topLine}</span>
-            <span
-              key={`${currentFace}-${rotatingWords[currentFace]}`}
-              className="word-anim text-yellow-400 text-giant"
-            >
-              {rotatingWords[currentFace]}
-            </span>
-            <span className="text-white text-giant">{bottomLine}</span>
-          </div>
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-10 px-6 text-center font-bold">
-            <span className="text-white text-giant -translate-y-4">{topLine}</span>
-            <div className="sun-wrapper">
-              <div className="sun-glow" aria-hidden />
-              <div className="sun-core" aria-hidden />
+          <div className="w-full h-full flex items-center justify-center px-6 text-center font-bold">
+            <div className="relative w-full max-w-[22rem] aspect-square">
+              <span className="absolute top-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{topLine}</span>
+              <span
+                key={`${currentFace}-${rotatingWords[currentFace]}`}
+                className="word-anim absolute inset-0 flex items-center justify-center text-yellow-400 text-giant whitespace-nowrap"
+              >
+                {rotatingWords[currentFace]}
+              </span>
+              <span className="absolute bottom-[4%] left-1/2 -translate-x-1/2 text-white text-giant">{bottomLine}</span>
             </div>
-            <span className="text-white text-giant translate-y-4">{bottomLine}</span>
           </div>
-        )
+        ) : null
       ) : (
         <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
           <span className="text-white">{topLine}</span>
@@ -218,6 +182,7 @@ export default function Home() {
   const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isCubeComplete, setIsCubeComplete] = useState(false)
+  const [mobileHeroPhase, setMobileHeroPhase] = useState<"text" | "image">("text")
   const cubeCompleteTimeout = useRef<NodeJS.Timeout | null>(null)
   const handleCubeComplete = useCallback(() => {
     if (cubeCompleteTimeout.current) {
@@ -269,6 +234,28 @@ export default function Home() {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
         }
+        .mobile-hero-image {
+          transform-origin: center center;
+          transition: transform 1.3s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.9s ease;
+          will-change: transform, opacity;
+        }
+        @media (max-width: 767px) {
+          .mobile-hero-image {
+            transform: perspective(1100px) translateZ(-260px) scale(0.6);
+            opacity: 0;
+          }
+          .mobile-hero-image--visible {
+            transform: perspective(1100px) translateZ(0) scale(1);
+            opacity: 1;
+          }
+        }
+        @media (min-width: 768px) {
+          .mobile-hero-image,
+          .mobile-hero-image--visible {
+            transform: none;
+            opacity: 1;
+          }
+        }
       `}</style>
       <header className="sticky top-0 z-40 w-full border-b border-gray-800 bg-black">
         <div className="flex items-center justify-between w-full h-16 px-4 md:px-6">
@@ -306,9 +293,9 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${
+                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 mobile-hero-image ${
                     isCubeComplete ? "md:mx-auto" : "md:mx-0"
-                  }`}
+                  } ${mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""}`}
                 >
                   <Image
                     src="/app_landing_page.png"
@@ -321,8 +308,12 @@ export default function Home() {
                   {/* Mobile‑only overlay for rotating words */}
                   {/* Mobile-only overlay: centered & scaled-down */}
                   {!isCubeComplete && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden">
-                      <RotatingWords onComplete={handleCubeComplete} />
+                    <div
+                      className={`absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden transition-opacity duration-700 ${
+                        mobileHeroPhase === "image" ? "pointer-events-none opacity-0" : "opacity-100"
+                      }`}
+                    >
+                      <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
                     </div>
                   )}
                 </div>
