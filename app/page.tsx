@@ -85,17 +85,17 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
           }
         }
       `}</style>
-      <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
-        <span className="text-white">{topLine}</span>
-        <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
+      <div className="flex flex-col items-center font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+        <span className="text-white inline-block -translate-y-4 md:translate-y-0">{topLine}</span>
+        <div className="relative h-20 w-full flex items-center justify-center">
           <span
             key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap"
+            className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap text-white md:text-yellow-400"
           >
             {rotatingWords[currentFace]}
           </span>
         </div>
-        <span className="text-white">{bottomLine}</span>
+        <span className="text-white inline-block translate-y-4 md:translate-y-0">{bottomLine}</span>
       </div>
     </>
   )
