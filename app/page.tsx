@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
@@ -28,12 +28,40 @@ type RotatingWordsProps = {
 function RotatingWords({ onComplete }: RotatingWordsProps) {
   const [currentFace, setCurrentFace] = useState(0)
   const [animationComplete, setAnimationComplete] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [mobilePhase, setMobilePhase] = useState<"text" | "sun">("sun")
+  const completionScheduled = useRef(false)
   const topLine = "Your"
   const bottomLine = "Coach"
-  const rotatingWords = ["Personal", "AI-powered", "Unbiased"]
+  const rotatingWords = useMemo(() => ["Personal", "AI-powered", "Unbiased"], [])
 
   useEffect(() => {
-    if (animationComplete) return
+    const updateIsMobile = () => {
+      if (typeof window === "undefined") {
+        return
+      }
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    updateIsMobile()
+    window.addEventListener("resize", updateIsMobile)
+    return () => window.removeEventListener("resize", updateIsMobile)
+  }, [])
+
+  useEffect(() => {
+    setCurrentFace(0)
+    setAnimationComplete(false)
+    completionScheduled.current = false
+    setMobilePhase(isMobile ? "text" : "sun")
+  }, [isMobile])
+
+  useEffect(() => {
+    if (isMobile && mobilePhase !== "text") {
+      return
+    }
+    if (animationComplete) {
+      return
+    }
 
     const interval = setInterval(() => {
       setCurrentFace((prev) => {
@@ -49,19 +77,36 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [animationComplete])
+  }, [animationComplete, isMobile, mobilePhase, rotatingWords])
 
   useEffect(() => {
-    if (!animationComplete || !onComplete) {
+    if (!animationComplete || completionScheduled.current) {
       return
     }
 
+    if (isMobile) {
+      const phaseTimer = setTimeout(() => {
+        setMobilePhase((phase) => (phase === "sun" ? phase : "sun"))
+      }, 400)
+
+      const completionTimer = setTimeout(() => {
+        completionScheduled.current = true
+        onComplete?.()
+      }, 2000)
+
+      return () => {
+        clearTimeout(phaseTimer)
+        clearTimeout(completionTimer)
+      }
+    }
+
     const timer = setTimeout(() => {
-      onComplete()
+      completionScheduled.current = true
+      onComplete?.()
     }, 1500)
 
     return () => clearTimeout(timer)
-  }, [animationComplete, onComplete])
+  }, [animationComplete, isMobile, onComplete])
 
   return (
     <>
@@ -84,19 +129,85 @@ function RotatingWords({ onComplete }: RotatingWordsProps) {
             opacity: 1;
           }
         }
+        .text-giant {
+          font-size: clamp(2.75rem, 14vw, 4.8rem);
+          line-height: 0.95;
+        }
+        .sun-wrapper {
+          position: relative;
+          width: clamp(12rem, 60vw, 18rem);
+          aspect-ratio: 1 / 1;
+          border-radius: 50%;
+          animation: sunReveal 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+          transform-origin: center center;
+          will-change: transform, opacity;
+          opacity: 0;
+        }
+        .sun-core {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, #fff7d6 0%, #facc15 45%, #f59e0b 100%);
+          box-shadow: 0 0 40px rgba(250, 204, 21, 0.45), 0 0 80px rgba(249, 168, 37, 0.35);
+        }
+        .sun-glow {
+          position: absolute;
+          inset: -15%;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(250, 204, 21, 0.4) 0%, rgba(250, 204, 21, 0) 70%);
+          filter: blur(16px);
+        }
+        @keyframes sunReveal {
+          0% {
+            transform: perspective(900px) translateZ(-260px) scale(0.2);
+            opacity: 0;
+          }
+          55% {
+            opacity: 1;
+          }
+          100% {
+            transform: perspective(900px) translateZ(0) scale(1);
+            opacity: 1;
+          }
+        }
       `}</style>
-      <div className="flex flex-col items-center font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
-        <span className="text-white inline-block -translate-y-4 md:translate-y-0">{topLine}</span>
-        <div className="relative h-20 w-full flex items-center justify-center">
-          <span
-            key={`${currentFace}-${rotatingWords[currentFace]}`}
-            className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap text-white md:text-yellow-400"
-          >
-            {rotatingWords[currentFace]}
-          </span>
+      {isMobile ? (
+        mobilePhase === "text" ? (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-6 px-6 text-center font-bold">
+            <span className="text-white text-giant">{topLine}</span>
+            <span
+              key={`${currentFace}-${rotatingWords[currentFace]}`}
+              className="word-anim text-yellow-400 text-giant"
+            >
+              {rotatingWords[currentFace]}
+            </span>
+            <span className="text-white text-giant">{bottomLine}</span>
+          </div>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-10 px-6 text-center font-bold">
+            <span className="text-white text-giant -translate-y-4">{topLine}</span>
+            <div className="sun-wrapper">
+              <div className="sun-glow" aria-hidden />
+              <div className="sun-core" aria-hidden />
+            </div>
+            <span className="text-white text-giant translate-y-4">{bottomLine}</span>
+          </div>
+        )
+      ) : (
+        <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
+          <span className="text-white">{topLine}</span>
+          <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
+            <span
+              key={`${currentFace}-${rotatingWords[currentFace]}`}
+              className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap"
+            >
+              {rotatingWords[currentFace]}
+            </span>
+          </div>
+          <span className="text-white">{bottomLine}</span>
         </div>
-        <span className="text-white inline-block translate-y-4 md:translate-y-0">{bottomLine}</span>
-      </div>
+      )}
     </>
   )
 }
@@ -210,10 +321,8 @@ export default function Home() {
                   {/* Mobile‑only overlay for rotating words */}
                   {/* Mobile-only overlay: centered & scaled-down */}
                   {!isCubeComplete && (
-                    <div className="absolute inset-0 flex items-center justify-center md:hidden z-10">
-                      <div className="transform scale-75">
-                        <RotatingWords onComplete={handleCubeComplete} />
-                      </div>
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden">
+                      <RotatingWords onComplete={handleCubeComplete} />
                     </div>
                   )}
                 </div>
