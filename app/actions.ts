@@ -33,6 +33,7 @@ export type FormState = {
 export const submitWaitlistEntry = async (prevState: FormState, formData: FormData): Promise<FormState> => {
   const name = formData.get("name") as string
   const email = formData.get("email") as string
+  const message = formData.get("message") as string
 
   if (!name || !email) {
     return {
@@ -89,6 +90,7 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
       {
         name: name.trim(),
         email: email.trim(),
+        message: message?.trim() || null,
         created_at: new Date().toISOString(),
       },
     ])

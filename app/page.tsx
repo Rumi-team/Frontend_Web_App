@@ -429,6 +429,21 @@ export default function Home() {
                             required
                           />
                         </div>
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="message"
+                            className="text-base md:text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Message (Optional)
+                          </label>
+                          <textarea
+                            id="message"
+                            name="message"
+                            rows={4}
+                            className="flex w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-lg text-white ring-offset-background placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                            placeholder="Tell us about yourself or what you're hoping to achieve..."
+                          />
+                        </div>
                         {formState?.error && (
                           <div className="text-red-500 text-base md:text-lg mt-2 p-2 bg-red-950 bg-opacity-30 rounded border border-red-800">
                             {formState.error}
