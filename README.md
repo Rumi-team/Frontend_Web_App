@@ -32,6 +32,7 @@ npm run dev
 
 Make sure you have the following environment variables set up for Supabase:
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_rumi_SUPABASE_URL`
+- `NEXT_PUBLIC_rumi_SUPABASE_ANON_KEY`
+- `rumi_SUPABASE_SERVICE_ROLE_KEY`
 \`\`\`
