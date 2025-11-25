@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 // This is a server component
 export default async function UsersPage() {
   // Initialize Supabase client
-  const supabaseUrl = process.env.NEXT_PUBLIC_rumi_SUPABASE_URL
-  const supabaseKey = process.env.rumi_SUPABASE_SERVICE_ROLE_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !supabaseKey) {
     return <div>Error: Missing Supabase configuration</div>

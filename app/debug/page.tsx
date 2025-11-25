@@ -25,7 +25,7 @@ export default function DebugPage() {
       const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets()
 
       setResults({
-        supabaseUrl: process.env.NEXT_PUBLIC_rumi_SUPABASE_URL || "Not available",
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "Not available",
         authData: authData || null,
         authError: authError ? authError.message : null,
         buckets: buckets || [],

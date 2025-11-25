@@ -1,11 +1,14 @@
-import { createPagesServerClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
+import { createClient } from "@supabase/supabase-js"
 
 export const createServerSupabaseClient = () => {
-  const cookieStore = cookies()
-  return createPagesServerClient({
-    supabaseUrl: process.env.NEXT_PUBLIC_rumi_SUPABASE_URL!,
-    supabaseKey: process.env.rumi_SUPABASE_SERVICE_ROLE_KEY!,
-    cookies: () => cookieStore
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+  return createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false
+    }
   })
 }
