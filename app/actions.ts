@@ -115,19 +115,6 @@ export const submitWaitlistEntry = async (prevState: FormState, formData: FormDa
       }
     }
 
-    // -- Also upsert into survey_users to track survey leads --
-    const { error: surveyUsersError } = await supabase
-      .from("survey_users")
-      .upsert(
-        { name: name.trim(), email: email.trim() },
-        { onConflict: "email" } // email must be UNIQUE in survey_users
-      )
-
-    if (surveyUsersError) {
-      console.error("survey_users upsert error:", surveyUsersError.message)
-      // Note: we don't fail the whole request if this table insert fails
-    }
-
     console.log("User registered successfully:", { name, email })
 
     // Fire‑and‑forget email with Google Apps Script
