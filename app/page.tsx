@@ -210,15 +210,15 @@ export default function Home() {
     }
   }, [formState?.success, formState?.alreadyJoined])
   return (
-        <div
-          className="flex flex-col min-h-screen bg-black text-white"
-          style={{
-            /* clear the iOS notch */
-            paddingTop:    "env(safe-area-inset-top)",
-            /* lift above the bottom toolbar */
-            paddingBottom: "env(safe-area-inset-bottom)"
-          }}
-        >
+    <div
+      className="flex flex-col min-h-screen bg-black text-white"
+      style={{
+        /* clear the iOS notch */
+        paddingTop: "env(safe-area-inset-top)",
+        /* lift above the bottom toolbar */
+        paddingBottom: "env(safe-area-inset-bottom)"
+      }}
+    >
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
@@ -289,19 +289,16 @@ export default function Home() {
           <div className="w-full px-4 md:px-6">
             <div className="flex flex-col items-center justify-center">
               <div
-                className={`flex flex-col md:flex-row items-center md:items-center justify-center transition-all duration-700 ease-in-out ${
-                  isCubeComplete ? "gap-8 md:gap-6" : "gap-12 md:gap-24"
-                }`}
+                className={`flex flex-col md:flex-row items-center md:items-center justify-center transition-all duration-700 ease-in-out ${isCubeComplete ? "gap-8 md:gap-6" : "gap-12 md:gap-24"
+                  }`}
               >
                 <div
-                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${
-                    isCubeComplete ? "md:mx-auto" : "md:mx-0"
-                  }`}
+                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${isCubeComplete ? "md:mx-auto" : "md:mx-0"
+                    }`}
                 >
                   <div
-                    className={`mobile-hero-image ${
-                      mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""
-                    }`}
+                    className={`mobile-hero-image ${mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""
+                      }`}
                   >
                     <Image
                       src="/app_landing_page.png"
@@ -316,20 +313,18 @@ export default function Home() {
                   {/* Mobile-only overlay: centered & scaled-down */}
                   {!isCubeComplete && (
                     <div
-                      className={`absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden transition-opacity duration-700 ${
-                        mobileHeroPhase === "image" ? "pointer-events-none opacity-0" : "opacity-100"
-                      }`}
+                      className={`absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden transition-opacity duration-700 ${mobileHeroPhase === "image" ? "pointer-events-none opacity-0" : "opacity-100"
+                        }`}
                     >
                       <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
                     </div>
                   )}
                 </div>
                 <div
-                  className={`hidden md:flex transition-all duration-700 ease-in-out ${
-                    isCubeComplete
-                      ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-8"
-                  }`}
+                  className={`hidden md:flex transition-all duration-700 ease-in-out ${isCubeComplete
+                    ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
+                    : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-8"
+                    }`}
                   aria-hidden={isCubeComplete}
                 >
                   {!isCubeComplete && <RotatingWords onComplete={handleCubeComplete} />}
@@ -346,7 +341,7 @@ export default function Home() {
                 <div className="inline-block rounded-lg bg-yellow-400 px-3 py-1 text-sm text-black">Features</div>
                 <div className="text-3xl font-bold tracking-tighter sm:text-5xl">Rumi  Coaching Platform</div>
                 <p className="max-w-[900px] text-gray-300 md:text-xl/relaxed lg:text-xl/relaxed xl:text-2xl/relaxed">
-                AI-powered conversational coaching built on proven programs, tailored to your character and mood.               
+                  AI-powered conversational coaching built on proven programs, tailored to your character and mood.
                 </p>
               </div>
             </div>
@@ -528,7 +523,7 @@ export default function Home() {
             {/* Center: Copyright */}
             <div className="mb-4 md:mb-0 text-center">
               <p className="text-base text-gray-400">
-                Copyright ©2025, Rumi, Inc.
+                Copyright ©2026, Rumi, Inc. Los Angeles, California
                 <br />
                 All rights reserved.
               </p>
