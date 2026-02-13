@@ -336,12 +336,11 @@ export default function DirectImagePage() {
 
             {/* Right: Contact */}
             <div className="text-right">
-              <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors"
+                className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-xl font-medium"
               >
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="h-6 w-6 mr-2" />
                 Contact Support
               </button>
             </div>

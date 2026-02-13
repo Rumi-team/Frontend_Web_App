@@ -531,12 +531,11 @@ export default function Home() {
 
             {/* Right: Contact */}
             <div className="w-full text-center md:w-auto md:text-right">
-              <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-base"
+                className="inline-flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-xl font-medium"
               >
-                <Mail className="h-5 w-5 mr-2" />
+                <Mail className="h-6 w-6 mr-2" />
                 Contact Support
               </button>
             </div>
