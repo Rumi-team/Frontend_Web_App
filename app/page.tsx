@@ -537,7 +537,7 @@ export default function Home() {
                 className="inline-flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors text-base"
               >
                 <Mail className="h-5 w-5 mr-2" />
-                support@rumi.team
+                Contact Support
               </button>
             </div>
           </div>

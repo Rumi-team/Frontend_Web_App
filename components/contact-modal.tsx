@@ -89,6 +89,25 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             </div>
 
             <div>
+              <label htmlFor="subject" className="block text-base md:text-lg font-medium text-gray-200 mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                placeholder="What is this regarding?"
+              />
+            </div>
+
+            {/* Honeypot field - hidden from users but visible to bots */}
+            <div className="hidden">
+              <label htmlFor="website">Website</label>
+              <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+            </div>
+
+            <div>
               <label htmlFor="message" className="block text-base md:text-lg font-medium text-gray-200 mb-1">
                 Message
               </label>

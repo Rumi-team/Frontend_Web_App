@@ -342,7 +342,7 @@ export default function DirectImagePage() {
                 className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors"
               >
                 <Mail className="h-4 w-4 mr-2" />
-                support@rumi.team
+                Contact Support
               </button>
             </div>
           </div>
