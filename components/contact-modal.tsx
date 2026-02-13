@@ -1,15 +1,16 @@
 "use client"
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { useFormStatus } from "react-dom"
+import Script from "next/script"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { submitContactForm, type ContactFormState } from "@/app/contact-actions"
 
-function SubmitButton() {
+function SubmitButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus()
 
   return (
-    <Button type="submit" className="w-full bg-yellow-400 text-black hover:bg-yellow-300 text-base" disabled={pending}>
+    <Button type="submit" className="w-full bg-yellow-400 text-black hover:bg-yellow-300 text-base" disabled={pending || disabled}>
       {pending ? "Sending..." : "Send Message"}
     </Button>
   )
@@ -23,6 +24,8 @@ interface ContactModalProps {
 export function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const initialState: ContactFormState = {}
   const [formState, formAction] = useActionState(submitContactForm, initialState)
+  const [formStartedAt] = useState(() => Date.now().toString())
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   if (!isOpen) return null
 
@@ -59,7 +62,12 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             </Button>
           </div>
         ) : (
-          <form action={formAction} className="space-y-4">
+          <form action={formAction} className="space-y-4 relative">
+            <input type="hidden" name="form_started_at" value={formStartedAt} />
+            <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+              <label htmlFor="website">Website</label>
+              <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
             <div>
               <label htmlFor="name" className="block text-base md:text-lg font-medium text-gray-200 mb-1">
                 Your Name
@@ -89,6 +97,21 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
             </div>
 
             <div>
+              <label htmlFor="subject" className="block text-base md:text-lg font-medium text-gray-200 mb-1">
+                Subject
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                required
+                maxLength={200}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                placeholder="What is this about?"
+              />
+            </div>
+
+            <div>
               <label htmlFor="message" className="block text-base md:text-lg font-medium text-gray-200 mb-1">
                 Message
               </label>
@@ -100,6 +123,17 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
                 placeholder="How can we help you?"
               ></textarea>
+            </div>
+
+            <div>
+              <label className="block text-base md:text-lg font-medium text-gray-200 mb-2">Verification</label>
+              {turnstileSiteKey ? (
+                <div className="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="dark" data-action="contact_form" />
+              ) : (
+                <div className="text-red-500 text-sm p-2 bg-red-950 bg-opacity-30 rounded border border-red-800">
+                  Verification is unavailable. Please try again later.
+                </div>
+              )}
             </div>
 
             {formState?.error && (
@@ -117,11 +151,12 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
               >
                 Cancel
               </Button>
-              <SubmitButton />
+              <SubmitButton disabled={!turnstileSiteKey} />
             </div>
           </form>
         )}
       </div>
+      {turnstileSiteKey && <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />}
     </div>
   )
 }

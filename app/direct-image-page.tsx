@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Activity, User, Mail } from "lucide-react"
@@ -335,14 +336,33 @@ export default function DirectImagePage() {
             </div>
 
             {/* Right: Contact */}
-            <div className="text-right">
+            <div className="w-full text-center md:w-auto md:text-right">
+              <div className="mb-4">
+                <h3 className="text-sm font-semibold text-yellow-400 mb-2 uppercase tracking-wide">Official Partners</h3>
+                <div className="flex items-center justify-center md:justify-end gap-3">
+                  <Image
+                    src="/partners/google-cloud.svg"
+                    alt="Google Cloud"
+                    width={138}
+                    height={28}
+                    className="h-7 w-auto opacity-95"
+                  />
+                  <Image
+                    src="/partners/founder-institute.svg"
+                    alt="Founder Institute"
+                    width={160}
+                    height={28}
+                    className="h-7 w-auto opacity-95"
+                  />
+                </div>
+              </div>
               <h3 className="text-xl font-semibold text-yellow-400 mb-2">Contact Us</h3>
               <button
                 onClick={() => setIsContactModalOpen(true)}
                 className="flex items-center justify-center md:justify-end text-gray-300 hover:text-yellow-400 transition-colors"
               >
                 <Mail className="h-4 w-4 mr-2" />
-                support@rumi.team
+                Contact us
               </button>
             </div>
           </div>
