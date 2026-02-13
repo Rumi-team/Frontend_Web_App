@@ -321,13 +321,13 @@ function GoogleCloudLogo() {
 function FounderInstituteLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
-      <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="h-24 md:h-32 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
         <Image
-          src="/fi_logo.svg"
+          src="/fi_logo.png"
           alt="Founder Institute"
-          width={240}
-          height={72}
-          className="h-14 md:h-16 w-auto"
+          width={400}
+          height={120}
+          className="h-20 md:h-28 w-auto"
         />
       </div>
     </div>
@@ -337,13 +337,13 @@ function FounderInstituteLogo() {
 function LandmarkLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
-      <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="h-24 md:h-32 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
         <Image
-          src="/landmark_logo.svg"
+          src="/landmark_logo.png"
           alt="Landmark Worldwide"
-          width={240}
-          height={72}
-          className="h-14 md:h-16 w-auto"
+          width={400}
+          height={120}
+          className="h-20 md:h-28 w-auto"
         />
       </div>
     </div>
