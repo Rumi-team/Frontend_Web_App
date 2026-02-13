@@ -103,6 +103,22 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
 
     console.log("Message saved successfully to contact_list")
 
+    // Explicitly invoke Edge Function to send email
+    // We swallow errors here because the primary action (saving to DB) succeeded
+    try {
+      const { error: funcError } = await supabase.functions.invoke('contact-email', {
+        body: { record: { name, email, subject, message } }
+      })
+
+      if (funcError) {
+        console.error("Failed to invoke contact-email function:", funcError)
+      } else {
+        console.log("Invoked contact-email function successfully")
+      }
+    } catch (err) {
+      console.error("Exception invoking contact-email function:", err)
+    }
+
     return {
       success: true,
       message: "Your message has been sent successfully. We'll get back to you soon!",
