@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Rumi Team",
-  description: "Your AI-powered self-improvement partner",
+  title: "Rumi - Your AI-Powered Personal Coach",
+  description: "The world's first agentic AI coaching platform that delivers real transformation. Structured programs, emotional intelligence, and personalized guidance — starting at $40/month.",
   generator: 'Rumi.Team'
 }
 
