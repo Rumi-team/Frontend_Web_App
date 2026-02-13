@@ -38,7 +38,7 @@ function SubmitButton() {
       className="w-full bg-yellow-400 text-black hover:bg-yellow-300 text-lg h-14 font-semibold transition-all duration-300 hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]"
       disabled={pending}
     >
-      {pending ? "Submitting..." : "Join the Waitlist"}
+      {pending ? "Submitting..." : "Get Early Access"}
     </Button>
   )
 }
@@ -322,11 +322,14 @@ function FounderInstituteLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
       <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="h-14 md:h-16 w-14 md:w-16 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-          <span className="text-white text-2xl md:text-3xl font-black tracking-tight">FI</span>
-        </div>
+        <Image
+          src="/fi_logo.svg"
+          alt="Founder Institute"
+          width={240}
+          height={72}
+          className="h-14 md:h-16 w-auto"
+        />
       </div>
-      <span className="text-gray-400 text-xs md:text-sm font-medium tracking-widest uppercase">Founder Institute</span>
     </div>
   )
 }
@@ -335,11 +338,14 @@ function LandmarkLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
       <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="h-14 md:h-16 px-5 md:px-6 rounded-lg bg-gradient-to-r from-red-700 to-red-500 flex items-center justify-center shadow-lg shadow-red-500/20">
-          <span className="text-white text-lg md:text-xl font-bold tracking-[0.2em] uppercase">Landmark</span>
-        </div>
+        <Image
+          src="/landmark_logo.svg"
+          alt="Landmark Worldwide"
+          width={240}
+          height={72}
+          className="h-14 md:h-16 w-auto"
+        />
       </div>
-      <span className="text-gray-400 text-xs md:text-sm font-medium tracking-widest uppercase">Landmark Forum</span>
     </div>
   )
 }
@@ -348,9 +354,13 @@ function TonyRobbinsLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
       <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="h-14 md:h-16 px-5 md:px-6 rounded-lg bg-gradient-to-r from-amber-700 to-yellow-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-          <span className="text-white text-lg md:text-xl font-bold tracking-[0.15em] uppercase">Tony Robbins</span>
-        </div>
+        <Image
+          src="/tony_robbins_logo.svg"
+          alt="Tony Robbins"
+          width={240}
+          height={48}
+          className="h-10 md:h-12 w-auto"
+        />
       </div>
       <span className="text-gray-400 text-xs md:text-sm font-medium tracking-widest uppercase">Transformational Programs</span>
     </div>
@@ -563,7 +573,7 @@ export default function Home() {
           <div className="flex items-center">
             <Link href="#waitlist">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-sm px-6 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                Join Waitlist
+                Get Early Access
               </Button>
             </Link>
           </div>
@@ -636,10 +646,14 @@ export default function Home() {
                   isCubeComplete ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                 }`}
               >
-                <p className="text-gray-400 text-base md:text-lg leading-relaxed mb-8">
+                <p className="text-gray-400 text-base md:text-lg leading-relaxed mb-4">
                   The world&apos;s first agentic AI coaching platform that delivers real transformation — not just advice.
                   Powered by emotional intelligence and structured programs that adapt to you.
                 </p>
+                <div className="flex items-center justify-center gap-2 mb-8">
+                  <Shield className="h-4 w-4 text-yellow-400" />
+                  <span className="text-sm text-gray-500">Your data is private. Never shared with third parties.</span>
+                </div>
                 <Link href="#waitlist">
                   <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-12 transition-all duration-300 hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]">
                     Get Early Access
@@ -875,7 +889,7 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden glow-yellow">
-                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
+                <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
                   <AnimatedStat
                     icon={Zap}
                     value="$40"
@@ -901,6 +915,12 @@ export default function Home() {
                     value="Agentic"
                     label="AI-Powered"
                     description="Learns and adapts to your unique patterns"
+                  />
+                  <AnimatedStat
+                    icon={Shield}
+                    value="100%"
+                    label="Private"
+                    description="Your data is never shared with third parties"
                   />
                 </div>
               </div>
@@ -957,8 +977,8 @@ export default function Home() {
                 },
                 {
                   icon: Shield,
-                  title: "Safe & Private",
-                  desc: "Your conversations are confidential. Built on Google Cloud infrastructure with enterprise-grade security.",
+                  title: "Your Data Stays Yours",
+                  desc: "Your conversations are confidential and your data is never shared with third parties. Built on Google Cloud with enterprise-grade security and encryption.",
                 },
               ].map((feature, i) => (
                 <RevealSection key={feature.title} delay={i * 100}>
@@ -986,13 +1006,17 @@ export default function Home() {
                 Ready to Meet the Coach{" "}
                 <span className="gradient-text">Who Truly Knows You?</span>
               </h2>
-              <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+              <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4">
                 Experience coaching that understands who you are, meets you where you are,
-                and helps you become who you want to be. Join thousands of others on the waitlist.
+                and helps you become who you want to be.
               </p>
+              <div className="flex items-center justify-center gap-2 mb-10">
+                <Shield className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
+              </div>
               <Link href="#waitlist">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
-                  Join the Waitlist
+                  Get Early Access
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" fill="none">
+  <polygon points="45,45 75,30 105,45 75,60" fill="#3b82f6"/>
+  <rect x="72" y="45" width="6" height="20" fill="#3b82f6"/>
+  <line x1="105" y1="45" x2="105" y2="65" stroke="#3b82f6" stroke-width="2"/>
+  <circle cx="105" cy="67" r="3" fill="#3b82f6"/>
+  <text x="125" y="52" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#e2e8f0">Founder</text>
+  <text x="125" y="80" font-family="'Helvetica Neue', Arial, sans-serif" font-size="28" font-weight="bold" fill="#3b82f6">Institute</text>
+</svg>
