@@ -15,6 +15,7 @@ interface AuthContextValue {
   user: User | null
   session: Session | null
   isLoading: boolean
+  isSigningIn: boolean
   providerUserId: string | null
   displayName: string | null
   signInWithGoogle: () => Promise<void>
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSigningIn, setIsSigningIn] = useState(false)
 
   useEffect(() => {
     // Get initial session
@@ -50,12 +52,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase])
 
   const signInWithGoogle = useCallback(async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
-      },
-    })
+    try {
+      setIsSigningIn(true)
+      console.log("Starting Google OAuth flow...")
+      console.log("Redirect URL:", `${window.location.origin}/api/auth/callback`)
+      const result = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+        },
+      })
+      console.log("OAuth result:", result)
+      if (result.error) {
+        console.error("OAuth error:", result.error)
+      }
+    } catch (error) {
+      console.error("Failed to sign in with Google:", error)
+    } finally {
+      setIsSigningIn(false)
+    }
   }, [supabase])
 
   const signOut = useCallback(async () => {
@@ -79,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         session,
         isLoading,
+        isSigningIn,
         providerUserId,
         displayName,
         signInWithGoogle,

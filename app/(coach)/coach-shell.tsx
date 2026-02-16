@@ -1,13 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
-import { AccessCodeGate } from "@/components/access-code-gate"
 import { Button } from "@/components/ui/button"
-import { Mic, BookOpen, LogOut, Loader2 } from "lucide-react"
+import { Mic, BookOpen, LogOut, Loader2, ShieldX } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface CoachShellProps {
@@ -31,9 +29,8 @@ function CoachShellInner({
   authenticated,
   hasAccess,
 }: CoachShellProps) {
-  const { signInWithGoogle, signOut, isLoading, displayName } = useAuth()
+  const { signInWithGoogle, signOut, isLoading, isSigningIn, displayName } = useAuth()
   const pathname = usePathname()
-  const [accessGranted, setAccessGranted] = useState(hasAccess)
 
   if (isLoading) {
     return (
@@ -62,9 +59,17 @@ function CoachShellInner({
           </div>
           <Button
             onClick={signInWithGoogle}
-            className="h-12 w-full bg-white text-black hover:bg-gray-100 font-semibold"
+            disabled={isSigningIn}
+            className="h-12 w-full bg-white text-black hover:bg-gray-100 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
+            {isSigningIn ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Redirecting to Google...
+              </>
+            ) : (
+              <>
+                <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
                 fill="#4285F4"
@@ -82,16 +87,66 @@ function CoachShellInner({
                 fill="#EA4335"
               />
             </svg>
-            Continue with Google
+                Continue with Google
+              </>
+            )}
           </Button>
         </div>
       </div>
     )
   }
 
-  // Authenticated but no access code
-  if (!accessGranted) {
-    return <AccessCodeGate onActivated={() => setAccessGranted(true)} />
+  // Authenticated but no access — show not-authorized message
+  if (!hasAccess) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black p-4">
+        <div className="w-full max-w-md space-y-6 text-center">
+          <div className="space-y-4">
+            <Image
+              src="/rumi_logo.png"
+              alt="Rumi"
+              width={303}
+              height={101}
+              className="mx-auto h-12 w-auto"
+            />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-400/10 border border-yellow-400/20 mx-auto">
+              <ShieldX className="h-8 w-8 text-yellow-400" />
+            </div>
+            <h2 className="text-xl font-semibold text-white">
+              Access Not Granted
+            </h2>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              Your Gmail account does not have an active access code assigned.
+              Please contact the Rumi team to get access.
+            </p>
+            {displayName && (
+              <p className="text-gray-500 text-xs">
+                Signed in as {displayName}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col gap-3">
+            <Link href="/">
+              <Button
+                variant="outline"
+                className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+              >
+                Back to Home
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              className="text-gray-500 hover:text-white"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign out and try a different account
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // Fully authenticated with access
