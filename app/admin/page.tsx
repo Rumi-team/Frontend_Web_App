@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Settings, Home } from "lucide-react"
+import { Users, Settings, Home, KeyRound } from "lucide-react"
 
 export default function AdminPage() {
   return (
@@ -36,6 +36,21 @@ export default function AdminPage() {
               <CardContent>
                 <p className="text-sm text-gray-300">
                   Access the complete list of users who have registered for the waitlist.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/access-codes">
+            <Card className="bg-gray-900 border-gray-800 hover:border-yellow-400 transition-all cursor-pointer h-full">
+              <CardHeader>
+                <KeyRound className="h-8 w-8 text-yellow-400 mb-2" />
+                <CardTitle>Access Codes</CardTitle>
+                <CardDescription className="text-gray-400">Manage invite codes for the coaching app</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-300">
+                  Generate and manage access codes for beta testers and early users.
                 </p>
               </CardContent>
             </Card>
