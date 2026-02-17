@@ -1,20 +1,14 @@
-import { createClient } from "@supabase/supabase-js"
+import { createServerSupabaseClient } from "@/lib/supabase"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// This is a server component
+// Force dynamic rendering (not static) so env vars are available
+export const dynamic = "force-dynamic"
+
 export default async function UsersPage() {
-  // Initialize Supabase client
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!supabaseUrl || !supabaseKey) {
-    return <div>Error: Missing Supabase configuration</div>
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseKey)
+  const supabase = createServerSupabaseClient()
 
   // Fetch users from the database
   const { data: users, error } = await supabase
@@ -24,7 +18,7 @@ export default async function UsersPage() {
 
   if (error) {
     console.error("Error fetching users:", error)
-    return <div>Error loading users: {error.message}</div>
+    return <div className="p-8 bg-black text-red-400 min-h-screen">Error loading users: {error.message}</div>
   }
 
   return (

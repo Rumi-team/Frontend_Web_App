@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
-import { useActionState } from "react"
-import { useFormStatus } from "react-dom"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -12,36 +10,23 @@ import {
   UserCog,
   Mail,
   Shield,
-  Zap,
   Brain,
   Target,
   ArrowRight,
   ChevronDown,
   Clock,
   TrendingUp,
-  Fingerprint,
   Lock,
   RefreshCw,
   Heart,
+  Award,
+  ClipboardCheck,
+  Sliders,
+  LineChart,
+  BellRing,
+  Layers,
 } from "lucide-react"
-import { submitWaitlistEntry, type FormState } from "./actions"
 import { ContactModal } from "@/components/contact-modal"
-
-/* ═══════════════════════════════════════════════════════════
-   Submit Button
-   ═══════════════════════════════════════════════════════════ */
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  return (
-    <Button
-      type="submit"
-      className="w-full bg-yellow-400 text-black hover:bg-yellow-300 text-lg h-14 font-semibold transition-all duration-300 hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]"
-      disabled={pending}
-    >
-      {pending ? "Submitting..." : "Get Early Access"}
-    </Button>
-  )
-}
 
 /* ═══════════════════════════════════════════════════════════
    Scroll Reveal Hook
@@ -86,9 +71,8 @@ function RevealSection({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      } ${className}`}
+      className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
@@ -97,7 +81,7 @@ function RevealSection({
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Animated Counter
+   Animated Stat
    ═══════════════════════════════════════════════════════════ */
 function AnimatedStat({
   label,
@@ -117,7 +101,7 @@ function AnimatedStat({
   return (
     <div className="flex flex-col items-center text-center p-6 md:p-8">
       <Icon className="h-8 w-8 text-yellow-400 mb-4" />
-      <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
+      <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 whitespace-nowrap">
         {prefix}
         {value}
         {suffix}
@@ -129,7 +113,7 @@ function AnimatedStat({
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Rotating Words (original hero animation — preserved)
+   Rotating Words (hero animation)
    ═══════════════════════════════════════════════════════════ */
 type RotatingWordsProps = {
   onComplete?: () => void
@@ -144,8 +128,8 @@ function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) 
   const completionScheduled = useRef(false)
   const mobileRevealTriggered = useRef(false)
   const topLine = "Your"
-  const bottomLine = "Coach"
-  const rotatingWords = useMemo(() => ["Personal", "AI-powered", "Unbiased"], [])
+  const bottomLine = "Transformational Leader"
+  const rotatingWords = useMemo(() => ["Personal", "Confidential", "Unbiased"], [])
 
   useEffect(() => {
     const updateIsMobile = () => {
@@ -280,7 +264,8 @@ function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) 
               {rotatingWords[currentFace]}
             </span>
           </div>
-          <span className="text-white">{bottomLine}</span>
+          <span className="text-white">Transformational</span>
+          <span className="text-white">Leader</span>
         </div>
       )}
     </>
@@ -288,7 +273,7 @@ function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) 
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Partner / Inspiration Logo Components
+   Partner Logos
    ═══════════════════════════════════════════════════════════ */
 function GoogleCloudLogo() {
   return (
@@ -321,48 +306,15 @@ function GoogleCloudLogo() {
 function FounderInstituteLogo() {
   return (
     <div className="flex flex-col items-center gap-4 group">
-      <div className="h-24 md:h-32 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="h-48 md:h-64 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
         <Image
-          src="/fi_logo.png"
+          src="/founder-institute-logo.png"
           alt="Founder Institute"
-          width={400}
-          height={120}
-          className="h-20 md:h-28 w-auto"
+          width={500}
+          height={200}
+          className="h-40 md:h-56 w-auto"
         />
       </div>
-    </div>
-  )
-}
-
-function LandmarkLogo() {
-  return (
-    <div className="flex flex-col items-center gap-4 group">
-      <div className="h-24 md:h-32 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <Image
-          src="/landmark_logo.png"
-          alt="Landmark Worldwide"
-          width={400}
-          height={120}
-          className="h-20 md:h-28 w-auto"
-        />
-      </div>
-    </div>
-  )
-}
-
-function TonyRobbinsLogo() {
-  return (
-    <div className="flex flex-col items-center gap-4 group">
-      <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <Image
-          src="/tony_robbins_logo.svg"
-          alt="Tony Robbins"
-          width={240}
-          height={48}
-          className="h-10 md:h-12 w-auto"
-        />
-      </div>
-      <span className="text-gray-400 text-xs md:text-sm font-medium tracking-widest uppercase">Transformational Programs</span>
     </div>
   )
 }
@@ -371,13 +323,13 @@ function TonyRobbinsLogo() {
    Solution Card
    ═══════════════════════════════════════════════════════════ */
 function SolutionCard({
-  number,
+  title,
   problem,
   solution,
   icon: Icon,
   delay = 0,
 }: {
-  number: string
+  title: string
   problem: string
   solution: string
   icon: React.ElementType
@@ -386,15 +338,14 @@ function SolutionCard({
   return (
     <RevealSection delay={delay}>
       <div className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-8 md:p-10 hover:border-yellow-400/30 transition-all duration-500 hover:bg-white/[0.04] h-full">
-        {/* Glow effect on hover */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-400/10 border border-yellow-400/20">
               <Icon className="h-6 w-6 text-yellow-400" />
             </div>
-            <span className="text-yellow-400/60 text-sm font-mono font-medium">{number}</span>
           </div>
+          <h3 className="text-xl font-bold text-yellow-300 mb-3">{title}</h3>
           <div className="mb-4">
             <p className="text-gray-400 text-base leading-relaxed">{problem}</p>
           </div>
@@ -414,9 +365,6 @@ function SolutionCard({
    Main Page Component
    ═══════════════════════════════════════════════════════════ */
 export default function Home() {
-  const initialState: FormState = {}
-  const [formState, formAction] = useActionState(submitWaitlistEntry, initialState)
-  const [showForm, setShowForm] = useState(true)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isCubeComplete, setIsCubeComplete] = useState(false)
   const [mobileHeroPhase, setMobileHeroPhase] = useState<"text" | "image">("text")
@@ -438,15 +386,6 @@ export default function Home() {
     []
   )
 
-  useEffect(() => {
-    if (formState?.success || formState?.alreadyJoined) {
-      const timer = setTimeout(() => {
-        setShowForm(false)
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [formState?.success, formState?.alreadyJoined])
-
   return (
     <div
       className="flex flex-col min-h-screen bg-black text-white"
@@ -455,92 +394,6 @@ export default function Home() {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      {/* ── Global Styles ──────────────────────────────────── */}
-      <style jsx global>{`
-        html {
-          scroll-behavior: smooth;
-        }
-        .perspective-1000 {
-          perspective: 1000px;
-          -webkit-perspective: 1000px;
-        }
-        .transform-style-3d {
-          transform-style: preserve-3d;
-          -webkit-transform-style: preserve-3d;
-        }
-        .backface-hidden {
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-        }
-        .mobile-hero-image {
-          transform-origin: center center;
-          transition: transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.9s ease;
-          will-change: transform, opacity;
-        }
-        @media (max-width: 767px) {
-          .mobile-hero-image {
-            transform: perspective(1400px) rotateX(16deg) rotateY(-10deg) translateZ(-360px) scale(0.42);
-            opacity: 0;
-          }
-          .mobile-hero-image--visible {
-            transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateZ(0) scale(1);
-            opacity: 1;
-          }
-        }
-        @media (min-width: 768px) {
-          .mobile-hero-image,
-          .mobile-hero-image--visible {
-            transform: none;
-            opacity: 1;
-          }
-        }
-        .gradient-text {
-          background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #D97706 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .dot-pattern {
-          background-image: radial-gradient(circle, rgba(251, 191, 36, 0.04) 1px, transparent 1px);
-          background-size: 24px 24px;
-        }
-        .glow-yellow {
-          box-shadow: 0 0 60px rgba(251, 191, 36, 0.08), 0 0 120px rgba(251, 191, 36, 0.04);
-        }
-        .border-gradient {
-          border: 1px solid transparent;
-          background-clip: padding-box;
-          position: relative;
-        }
-        .border-gradient::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 1px;
-          background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.3));
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.1); }
-          50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.2); }
-        }
-        @keyframes scroll-bounce {
-          0%, 100% { transform: translateY(0); opacity: 1; }
-          50% { transform: translateY(8px); opacity: 0.5; }
-        }
-        .scroll-indicator {
-          animation: scroll-bounce 2s ease-in-out infinite;
-        }
-      `}</style>
-
       {/* ══════════════════════════════════════════════════════
           HEADER
           ══════════════════════════════════════════════════════ */}
@@ -554,26 +407,26 @@ export default function Home() {
                 width={607}
                 height={202}
                 priority
-                className="h-[42px] w-auto"
+                className="h-[56px] w-auto"
               />
             </Link>
           </div>
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="#solutions" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">
+          <nav className="hidden md:flex items-center gap-10">
+            <Link href="#solutions" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
               Solutions
             </Link>
-            <Link href="#partners" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">
+            <Link href="#partners" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
               Partners
             </Link>
-            <Link href="#how-it-works" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">
+            <Link href="#how-it-works" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
               How It Works
             </Link>
           </nav>
           <div className="flex items-center">
-            <Link href="#waitlist">
-              <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-sm px-6 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                Get Early Access
+            <Link href="/login">
+              <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+                Sign In
               </Button>
             </Link>
           </div>
@@ -593,74 +446,149 @@ export default function Home() {
 
           <div className="w-full px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center justify-center">
+
+              {/* ── Desktop layout: iPhone | Text | Web ── */}
               <div
-                className={`flex flex-col md:flex-row items-center md:items-center justify-center transition-all duration-700 ease-in-out ${
-                  isCubeComplete ? "gap-8 md:gap-6" : "gap-12 md:gap-24"
+                className={`hidden md:flex items-center justify-center max-w-6xl mx-auto transition-all duration-[8000ms] ease-in-out ${
+                  isCubeComplete ? "gap-0" : "gap-6 lg:gap-8"
                 }`}
               >
+                {/* iPhone — left */}
                 <div
-                  className={`relative max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl transition-all duration-700 ${
-                    isCubeComplete ? "md:mx-auto" : "md:mx-0"
+                  className={`transition-all duration-[8000ms] ease-in-out shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end z-10 ${
+                    isCubeComplete ? "translate-x-[50px] lg:translate-x-[60px]" : "translate-x-0"
                   }`}
                 >
-                  <div
-                    className={`mobile-hero-image ${
-                      mobileHeroPhase === "image" || isCubeComplete ? "mobile-hero-image--visible" : ""
-                    }`}
-                  >
-                    <Image
-                      src="/app_landing_page.png"
-                      alt="Rumi AI coaching app interface"
-                      width={500}
-                      height={900}
-                      className="rounded-2xl shadow-2xl shadow-yellow-400/5 object-contain max-h-[90vh] w-auto"
-                      priority
-                    />
-                  </div>
-                  {/* Mobile-only overlay for rotating words */}
-                  {!isCubeComplete && (
-                    <div
-                      className={`absolute inset-0 z-10 flex items-center justify-center bg-black px-4 md:hidden transition-opacity duration-700 ${
-                        mobileHeroPhase === "image" ? "pointer-events-none opacity-0" : "opacity-100"
-                      }`}
-                    >
-                      <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
-                    </div>
-                  )}
+                  <Image
+                    src="/app_landing_page.png"
+                    alt="Rumi iOS app"
+                    width={300}
+                    height={600}
+                    className="rounded-2xl shadow-2xl shadow-yellow-400/5 object-contain h-[340px] lg:h-[420px] w-auto"
+                    priority
+                  />
                 </div>
+
+                {/* Rotating text — center */}
                 <div
-                  className={`hidden md:flex transition-all duration-700 ease-in-out ${
+                  className={`flex overflow-hidden transition-all duration-[8000ms] ease-in-out ${
                     isCubeComplete
-                      ? "md:w-0 md:opacity-0 md:translate-x-6 md:overflow-hidden"
-                      : "md:w-[24rem] md:opacity-100 md:translate-x-0 md:pl-8"
+                      ? "max-w-0 opacity-0"
+                      : "max-w-[36rem] opacity-100"
                   }`}
                   aria-hidden={isCubeComplete}
                 >
                   {!isCubeComplete && <RotatingWords onComplete={handleCubeComplete} />}
                 </div>
+
+                {/* Web screenshot — right */}
+                <div
+                  className={`transition-all duration-[8000ms] ease-in-out shrink-0 ${
+                    isCubeComplete ? "-translate-x-[50px] lg:-translate-x-[60px]" : "translate-x-0"
+                  }`}
+                >
+                  <div className="relative rounded-xl overflow-hidden border border-white/[0.08] shadow-2xl shadow-yellow-400/5 w-[200px] lg:w-[240px]">
+                    {/* Browser chrome bar */}
+                    <div className="flex items-center gap-1.5 px-3 py-2 bg-white/[0.05] border-b border-white/[0.06]">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+                      <div className="flex-1 mx-2 h-5 rounded bg-white/[0.05] flex items-center justify-center">
+                        <span className="text-[10px] text-gray-500">rumi.team</span>
+                      </div>
+                    </div>
+                    <Image
+                      src="/app_web.png"
+                      alt="Rumi Web app"
+                      width={800}
+                      height={500}
+                      className="object-cover object-center h-[310px] lg:h-[390px] w-full"
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Hero subtitle — appears after animation */}
+              {/* Platform labels — appear after merge */}
               <div
-                className={`mt-8 md:mt-12 text-center max-w-2xl mx-auto transition-all duration-1000 ease-out ${
-                  isCubeComplete ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                className={`hidden md:flex items-center justify-center gap-16 lg:gap-24 transition-all duration-[6000ms] ease-in-out ${
+                  isCubeComplete ? "opacity-100 translate-y-0 mt-6" : "opacity-0 translate-y-4 mt-0"
                 }`}
               >
-                <p className="text-gray-400 text-base md:text-lg leading-relaxed mb-4">
-                  The world&apos;s first agentic AI coaching platform that delivers real transformation — not just advice.
-                  Powered by emotional intelligence and structured programs that adapt to you.
-                </p>
-                <div className="flex items-center justify-center gap-2 mb-8">
-                  <Shield className="h-4 w-4 text-yellow-400" />
-                  <span className="text-sm text-gray-500">Your data is private. Never shared with third parties.</span>
-                </div>
-                <Link href="#waitlist">
-                  <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-12 transition-all duration-300 hover:shadow-[0_0_30px_rgba(251,191,36,0.3)]">
-                    Get Early Access
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                <span className="text-gray-500 text-sm font-medium tracking-wider uppercase">iOS App</span>
+                <span className="text-gray-500 text-sm font-medium tracking-wider uppercase">Web App</span>
               </div>
+
+              {/* ── Mobile layout ── */}
+              <div className="md:hidden relative w-full">
+                {/* Mobile images — shown after text phase */}
+                <div
+                  className={`flex items-center justify-center gap-4 transition-all duration-700 ${
+                    mobileHeroPhase === "image" || isCubeComplete
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-8 pointer-events-none"
+                  }`}
+                >
+                  {/* iPhone */}
+                  <div className="shrink-0">
+                    <Image
+                      src="/app_landing_page.png"
+                      alt="Rumi iOS app"
+                      width={200}
+                      height={400}
+                      className="rounded-xl shadow-2xl shadow-yellow-400/5 object-contain h-[260px] w-auto"
+                      priority
+                    />
+                  </div>
+                  {/* Web */}
+                  <div className="shrink-0">
+                    <div className="relative rounded-lg overflow-hidden border border-white/[0.08] shadow-2xl shadow-yellow-400/5 w-[140px]">
+                      <div className="flex items-center gap-1 px-2 py-1.5 bg-white/[0.05] border-b border-white/[0.06]">
+                        <div className="w-2 h-2 rounded-full bg-red-500/60" />
+                        <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
+                        <div className="w-2 h-2 rounded-full bg-green-500/60" />
+                        <div className="flex-1 mx-1 h-4 rounded bg-white/[0.05] flex items-center justify-center">
+                          <span className="text-[8px] text-gray-500">rumi.team</span>
+                        </div>
+                      </div>
+                      <Image
+                        src="/app_web.png"
+                        alt="Rumi Web app"
+                        width={400}
+                        height={250}
+                        className="object-cover object-center h-[230px] w-full"
+                        priority
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile platform labels */}
+                <div
+                  className={`flex items-center justify-center gap-12 mt-4 transition-all duration-700 ${
+                    mobileHeroPhase === "image" || isCubeComplete
+                      ? "opacity-100"
+                      : "opacity-0"
+                  }`}
+                >
+                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">iOS</span>
+                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">Web</span>
+                </div>
+
+                {/* Mobile rotating words overlay */}
+                {!isCubeComplete && (
+                  <div
+                    className={`absolute inset-0 z-10 flex items-center justify-center bg-black px-4 transition-opacity duration-700 ${
+                      mobileHeroPhase === "image" ? "pointer-events-none opacity-0" : "opacity-100"
+                    }`}
+                  >
+                    <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
+                  </div>
+                )}
+              </div>
+
+              {/* Spacer after animation completes */}
+              <div className="mt-8 md:mt-12" />
             </div>
           </div>
 
@@ -677,10 +605,78 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SECTION 2 — THREE SOLUTIONS
+            SECTION 2 — TRANSFORMATIONAL LEADERS
+            ══════════════════════════════════════════════════════ */}
+        <section className="w-full py-24 md:py-32 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
+
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
+            <RevealSection>
+              <div className="text-center mb-16">
+                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
+                  Standing on the Shoulders of Giants
+                </span>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+                  The World&apos;s Greatest{" "}
+                  <span className="gradient-text">Transformational Leaders</span>
+                </h2>
+              </div>
+            </RevealSection>
+
+            <RevealSection delay={200}>
+              <div className="flex items-center justify-center gap-8 md:gap-16 lg:gap-20">
+                {[
+                  { src: "/leaders/mandela.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/gandhi.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/lincoln.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
+                ].map((leader) => (
+                  <div key={leader.src} className="relative">
+                    <div className="w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/10 hover:border-yellow-400/40 transition-all duration-500">
+                      <Image
+                        src={leader.src}
+                        alt={leader.alt}
+                        width={200}
+                        height={200}
+                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            SECTION 3 — INSPIRED BY
+            ══════════════════════════════════════════════════════ */}
+        <section id="inspired" className="w-full py-24 md:py-32 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.04)_0%,transparent_60%)] pointer-events-none" />
+
+          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8">
+            <RevealSection>
+              <div className="text-center">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
+                  Transformational programs proved, transformation is learnable.
+                  <br />
+                  <span className="gradient-text">We made it affordable for all.</span>
+                </h2>
+                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+                  Inspired by the world&apos;s most impactful programs — Landmark Forum &amp; Tony Robbins
+                  — and reimagined with AI that can actually deliver transformation in your pocket.
+                </p>
+              </div>
+            </RevealSection>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            SECTION 3 — THREE SOLUTIONS
             ══════════════════════════════════════════════════════ */}
         <section id="solutions" className="w-full py-24 md:py-32 lg:py-40 bg-black relative overflow-hidden">
-          {/* Background pattern */}
           <div className="absolute inset-0 dot-pattern opacity-50 pointer-events-none" />
 
           <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
@@ -700,27 +696,20 @@ export default function Home() {
               </div>
             </RevealSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
               <SolutionCard
-                number="01"
+                title="High Commitment Cost"
                 icon={Lock}
-                problem="World-class coaching costs $1,000+ and demands days of your time. For most people, personal transformation is priced out of reach."
-                solution="Rumi delivers the same depth of transformational coaching starting at $40/month — accessible anytime, anywhere, on your phone."
+                problem="World-class transformational programs require a large upfront commitment of $1,000–$12,000, plus 3–5 days of participation with an average of 12 hours of seat time per day."
+                solution="Rumi delivers the same depth of transformational leadership — accessible anytime, anywhere, right from your phone. No travel, no time off work."
                 delay={0}
               />
               <SolutionCard
-                number="02"
+                title="Fading Afterglow"
                 icon={RefreshCw}
-                problem="Even powerful breakthroughs fade within days. Without structured daily reinforcement, most personal growth gains disappear — leaving you right back where you started."
-                solution="Structured 30-90 day programs with daily micro-coaching, reflective exercises, and adaptive accountability turn fleeting insights into permanent behavioral shifts."
+                problem="Although you are highly likely to experience a breakthrough that truly excites you, recent research shows that for about 95% of participants, the breakthrough is not permanent and will revert back."
+                solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
                 delay={150}
-              />
-              <SolutionCard
-                number="03"
-                icon={Fingerprint}
-                problem="Generic self-help treats everyone the same. Cookie-cutter advice doesn't address your unique patterns, blind spots, and emotional state."
-                solution="Rumi's agentic AI builds a deep understanding of your character, detects your mood in real-time, and tailors every conversation to exactly where you are right now."
-                delay={300}
               />
             </div>
           </div>
@@ -730,7 +719,6 @@ export default function Home() {
             SECTION 3 — PARTNERS
             ══════════════════════════════════════════════════════ */}
         <section id="partners" className="w-full py-24 md:py-32 relative overflow-hidden">
-          {/* Subtle gradient divider at top */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
 
           <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
@@ -759,42 +747,7 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SECTION 4 — INSPIRED BY
-            ══════════════════════════════════════════════════════ */}
-        <section id="inspired" className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          {/* Radial glow background */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.04)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Built on the Shoulders of Giants
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                  Inspired by the World&apos;s Most{" "}
-                  <span className="gradient-text">Impactful Programs</span>
-                </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  Rumi&apos;s coaching methodology draws from decades of proven transformational frameworks
-                  — bringing the power of the world&apos;s best programs to your fingertips through AI.
-                </p>
-              </div>
-            </RevealSection>
-
-            <RevealSection delay={200}>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-16 md:gap-24 lg:gap-32">
-                <LandmarkLogo />
-                <div className="hidden sm:block w-px h-20 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-                <TonyRobbinsLogo />
-              </div>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 5 — HOW IT WORKS
+            SECTION 5 — HOW IT WORKS (no numbers)
             ══════════════════════════════════════════════════════ */}
         <section id="how-it-works" className="w-full py-24 md:py-32 lg:py-40 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
@@ -821,17 +774,13 @@ export default function Home() {
                     <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
                       <MessageSquareText className="h-7 w-7 text-yellow-400" />
                     </div>
-                    <div className="text-yellow-400/30 text-7xl font-black absolute -top-4 right-0 md:right-auto md:-left-2 select-none">
-                      1
-                    </div>
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
                       Start a Conversation
                     </h3>
                     <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Tell Rumi what&apos;s on your mind. Our AI coach listens deeply — no judgment, no agenda, no time limits. Available 24/7 whenever you need it.
+                      Tell Rumi what&apos;s on your mind. Your AI transformational leader listens deeply — no judgment, no agenda, no time limits. Available 24/7 whenever you need it.
                     </p>
                   </div>
-                  {/* Connector line (desktop only) */}
                   <div className="hidden md:block absolute top-8 right-0 w-1/3 h-px bg-gradient-to-r from-yellow-400/20 to-transparent translate-x-full" />
                 </div>
               </RevealSection>
@@ -843,17 +792,13 @@ export default function Home() {
                     <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
                       <Brain className="h-7 w-7 text-yellow-400" />
                     </div>
-                    <div className="text-yellow-400/30 text-7xl font-black absolute -top-4 right-0 md:right-auto md:-left-2 select-none">
-                      2
-                    </div>
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
-                      Discover Your Patterns
+                      Uncover What&apos;s Holding You Back
                     </h3>
                     <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Rumi surfaces the hidden beliefs, emotional reactions, and habitual interpretations that shape your decisions and relationships.
+                      Rumi surfaces the hidden beliefs, emotional reactions, and habitual patterns that shape your life — then measures the depth of your breakthrough in real-time.
                     </p>
                   </div>
-                  <div className="hidden md:block absolute top-8 right-0 w-1/3 h-px bg-gradient-to-r from-yellow-400/20 to-transparent translate-x-full" />
                 </div>
               </RevealSection>
 
@@ -864,14 +809,11 @@ export default function Home() {
                     <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
                       <Target className="h-7 w-7 text-yellow-400" />
                     </div>
-                    <div className="text-yellow-400/30 text-7xl font-black absolute -top-4 right-0 md:right-auto md:-left-2 select-none">
-                      3
-                    </div>
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
-                      Create Lasting Change
+                      Transform — and Stay Transformed
                     </h3>
                     <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Daily micro-coaching sessions, reflective journaling, and accountability check-ins transform insights into permanent behavioral shifts.
+                      Personalized assignments, daily check-ins, and transformation scoring ensure your insights become permanent behavioral shifts — not another forgotten seminar.
                     </p>
                   </div>
                 </div>
@@ -881,7 +823,7 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SECTION 6 — STATS / VALUE PROPS
+            SECTION 6 — STATS / VALUE PROPS (no price, updated)
             ══════════════════════════════════════════════════════ */}
         <section className="w-full py-24 md:py-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
@@ -889,32 +831,24 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden glow-yellow">
-                <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
-                  <AnimatedStat
-                    icon={Zap}
-                    value="$40"
-                    suffix="/mo"
-                    label="Starting Price"
-                    description="A fraction of traditional coaching costs"
-                  />
+                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
                   <AnimatedStat
                     icon={Clock}
                     value="24/7"
-                    label="Always Available"
-                    description="Coaching whenever you need it most"
+                    label="Always There"
+                    description="Transformational leadership whenever you need it most"
                   />
                   <AnimatedStat
                     icon={TrendingUp}
-                    value="30-90"
-                    suffix=" Days"
-                    label="Structured Programs"
-                    description="Designed for lasting behavioral change"
+                    value="Self-Paced"
+                    label="Your Schedule"
+                    description="Progress at your own speed, on your own terms"
                   />
                   <AnimatedStat
                     icon={Brain}
-                    value="Agentic"
-                    label="AI-Powered"
-                    description="Learns and adapts to your unique patterns"
+                    value="Agentic AI"
+                    label="First for Human Development"
+                    description="Evaluates, assigns, adapts, and holds you accountable"
                   />
                   <AnimatedStat
                     icon={Shield}
@@ -929,7 +863,7 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SECTION 7 — FEATURES GRID
+            SECTION 7 — FEATURES GRID (with all reinforcement layers)
             ══════════════════════════════════════════════════════ */}
         <section className="w-full py-24 md:py-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
@@ -942,8 +876,8 @@ export default function Home() {
                   Platform Features
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-                  Everything You Need to{" "}
-                  <span className="gradient-text">Transform</span>
+                  Everything You Need to Experience a{" "}
+                  <span className="gradient-text whitespace-nowrap">Lasting Transformation</span>
                 </h2>
               </div>
             </RevealSection>
@@ -953,12 +887,12 @@ export default function Home() {
                 {
                   icon: MessageSquareText,
                   title: "AI-Powered Conversations",
-                  desc: "Real-time, natural dialogue with an AI coach that listens, reflects, and responds with emotional intelligence — 24/7.",
+                  desc: "Real-time, natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — available 24/7.",
                 },
                 {
                   icon: BookOpen,
-                  title: "Proven Coaching Programs",
-                  desc: "Structured programs built on proven transformational frameworks, delivered as guided journeys with clear milestones.",
+                  title: "Proven Transformational Programs",
+                  desc: "Structured programs built on decades of proven transformational frameworks, delivered as guided journeys with clear milestones and measurable outcomes.",
                 },
                 {
                   icon: UserCog,
@@ -968,17 +902,47 @@ export default function Home() {
                 {
                   icon: Heart,
                   title: "Emotional Intelligence",
-                  desc: "Detects emotional tone and context in real-time, adjusting the coaching approach to meet you where you are.",
+                  desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are emotionally.",
+                },
+                {
+                  icon: Award,
+                  title: "Transformation Scoring",
+                  desc: "After every session, Rumi evaluates your progress with a multi-dimensional transformation score — tracking real breakthroughs, not just attendance.",
+                },
+                {
+                  icon: ClipboardCheck,
+                  title: "Smart Assignments",
+                  desc: "Personalized action items created exactly when you need them — with deadlines, accountability, and completion tracking that drive real change.",
+                },
+                {
+                  icon: Sliders,
+                  title: "Adaptive Leadership Style",
+                  desc: "Dynamically adjusts its approach based on what actually works for you — pacing, technique, and intensity evolve with every session.",
+                },
+                {
+                  icon: LineChart,
+                  title: "Growth Trajectory",
+                  desc: "Track your transformation journey over weeks and months. See plateaus before they happen, celebrate milestones, and watch your growth unfold.",
+                },
+                {
+                  icon: BellRing,
+                  title: "Proactive Accountability",
+                  desc: "Rumi doesn't wait for you to show up. Check-ins, reminders, and accountability nudges keep your momentum strong between sessions.",
+                },
+                {
+                  icon: Layers,
+                  title: "Multiple Growth Journeys",
+                  desc: "Specialized transformational programs for different areas of your life — each with its own milestones, assignments, and progression path.",
                 },
                 {
                   icon: Target,
                   title: "Accountability System",
-                  desc: "Daily check-ins, progress tracking, and reflective prompts that keep you on track between coaching sessions.",
+                  desc: "Daily check-ins, progress tracking, and reflective prompts that keep you on track and turn insights into lasting behavioral shifts.",
                 },
                 {
                   icon: Shield,
                   title: "Your Data Stays Yours",
-                  desc: "Your conversations are confidential and your data is never shared with third parties. Built on Google Cloud with enterprise-grade security and encryption.",
+                  desc: "Your conversations are completely confidential. Your data is never shared with third parties. Built on Google Cloud with enterprise-grade security.",
                 },
               ].map((feature, i) => (
                 <RevealSection key={feature.title} delay={i * 100}>
@@ -1003,170 +967,23 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8 text-center">
             <RevealSection>
               <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                Ready to Meet the Coach{" "}
+                Ready to Meet the Transformational Leader{" "}
                 <span className="gradient-text">Who Truly Knows You?</span>
               </h2>
               <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4">
-                Experience coaching that understands who you are, meets you where you are,
+                Experience transformational leadership that understands who you are, meets you where you are,
                 and helps you become who you want to be.
               </p>
               <div className="flex items-center justify-center gap-2 mb-10">
                 <Shield className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
-              <Link href="#waitlist">
+              <Link href="/login">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
-                  Get Early Access
+                  Sign In
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 9 — WAITLIST (Final Section)
-            ══════════════════════════════════════════════════════ */}
-        <section id="waitlist" className="w-full py-24 md:py-32 lg:py-40 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(251,191,36,0.06)_0%,transparent_50%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full px-4 md:px-8">
-            <RevealSection>
-              <div className="flex flex-col items-center justify-center max-w-lg mx-auto">
-                <div className="w-full rounded-3xl border-gradient bg-white/[0.02] backdrop-blur-sm overflow-hidden">
-                  <div className="p-8 md:p-10">
-                    {!formState?.success && !formState?.alreadyJoined && (
-                      <div className="text-center mb-8">
-                        <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-3">
-                          Early Access
-                        </span>
-                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                          Start Your Journey with Rumi
-                        </h2>
-                        <p className="text-gray-400 text-base">
-                          Be the first to receive the product link for the beta launch
-                        </p>
-                      </div>
-                    )}
-
-                    {showForm && !formState?.success && !formState?.alreadyJoined ? (
-                      <form action={formAction} className="grid gap-5">
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="name"
-                            className="text-sm font-medium text-gray-300"
-                          >
-                            Name
-                          </label>
-                          <input
-                            id="name"
-                            name="name"
-                            className="flex h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-base text-white placeholder:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 focus-visible:border-yellow-400/30 transition-all duration-200"
-                            placeholder="Your name"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="email"
-                            className="text-sm font-medium text-gray-300"
-                          >
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            className="flex h-12 w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-base text-white placeholder:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 focus-visible:border-yellow-400/30 transition-all duration-200"
-                            placeholder="you@example.com"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="message"
-                            className="text-sm font-medium text-gray-300"
-                          >
-                            Message{" "}
-                            <span className="text-gray-600">(optional)</span>
-                          </label>
-                          <textarea
-                            id="message"
-                            name="message"
-                            rows={3}
-                            className="flex w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-base text-white placeholder:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 focus-visible:border-yellow-400/30 transition-all duration-200 resize-none"
-                            placeholder="Tell us what you're hoping to achieve..."
-                          />
-                        </div>
-
-                        {formState?.error && (
-                          <div className="text-red-400 text-sm p-3 bg-red-500/10 rounded-xl border border-red-500/20">
-                            {formState.error}
-                          </div>
-                        )}
-
-                        <div className="pt-2">
-                          <SubmitButton />
-                        </div>
-                      </form>
-                    ) : (
-                      <div className="text-center py-8">
-                        {formState?.success ? (
-                          <div className="space-y-4">
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500/10 border border-green-500/20 mx-auto">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-10 h-10 text-green-400"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                            </div>
-                            <h3 className="text-2xl font-bold text-white">Thank You!</h3>
-                            <p className="text-gray-400 text-base">
-                              {formState.message ?? "Thanks for joining the waitlist!"}
-                            </p>
-                          </div>
-                        ) : formState?.alreadyJoined ? (
-                          <div className="space-y-4">
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500/10 border border-yellow-500/20 mx-auto">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-10 h-10 text-yellow-400"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                                />
-                              </svg>
-                            </div>
-                            <h3 className="text-2xl font-bold text-white">Already Joined</h3>
-                            <p className="text-gray-400 text-base">{formState.message}</p>
-                          </div>
-                        ) : (
-                          <div className="text-center py-8">
-                            <p className="text-red-400 text-base">Something went wrong. Please try again.</p>
-                            <Button
-                              onClick={() => setShowForm(true)}
-                              className="mt-4 bg-yellow-400 text-black hover:bg-yellow-300 text-base"
-                            >
-                              Try Again
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
             </RevealSection>
           </div>
         </section>
@@ -1175,23 +992,24 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           FOOTER
           ══════════════════════════════════════════════════════ */}
-      <footer className="w-full py-8 bg-black border-t border-white/[0.06]">
+      <footer className="w-full py-12 bg-black border-t border-white/[0.06]">
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <Image src="/rumi_logo.png" alt="Rumi Logo" width={607} height={202} className="h-[36px] w-auto opacity-70" />
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <Image src="/rumi_logo.png" alt="Rumi Logo" width={607} height={202} className="h-[64px] w-auto opacity-70" />
+              <span className="text-base text-gray-500">Designed in California</span>
             </div>
             <div className="text-center">
-              <p className="text-sm text-gray-500">
+              <p className="text-base text-gray-500">
                 Copyright &copy;2026, Rumi, Inc. Los Angeles, California. All rights reserved.
               </p>
             </div>
             <div>
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center text-sm text-gray-500 hover:text-yellow-400 transition-colors duration-200"
+                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200"
               >
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="h-7 w-7 mr-2" />
                 Contact Support
               </button>
             </div>

@@ -41,6 +41,11 @@ export interface CommitmentData {
   created_at: string | null
 }
 
+export interface UserStateResponse {
+  transformation: TransformationData | null
+  commitments: CommitmentData[] | null
+}
+
 export interface SessionEvaluation {
   id: string
   session_id: string

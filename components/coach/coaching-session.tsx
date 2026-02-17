@@ -9,8 +9,10 @@ import { ControlBar } from "./control-bar"
 import { TextInput } from "./text-input"
 import { ProgramSelection } from "./program-selection"
 import { StepProgress } from "./step-progress"
+import { SessionOrb } from "./session-orb"
 import { SessionSaveOverlay } from "./session-save-overlay"
 import { AudioVisualizer } from "./audio-visualizer"
+import { MicVisualizer } from "./mic-visualizer"
 
 interface CoachingSessionProps {
   room: Room
@@ -78,25 +80,41 @@ export function CoachingSession({
       {/* Hidden audio element for agent voice playback */}
       <audio ref={audioRef} autoPlay />
 
-      {/* Step progress bar */}
-      {sessionControl.currentStep !== null &&
-        sessionControl.totalSteps !== null && (
-          <StepProgress
-            currentStep={sessionControl.currentStep}
-            totalSteps={sessionControl.totalSteps}
-            stepName={sessionControl.stepName}
-          />
+      {/* Transcript at top (like iOS) */}
+      <div className="flex-1 overflow-hidden">
+        <AgentTranscript messages={messages} />
+      </div>
+
+      {/* Center area: step orb / audio visualizers */}
+      <div className="flex flex-col items-center gap-4 py-6">
+        {/* Step progress — orb when program active, bar as fallback */}
+        {sessionControl.currentStep !== null &&
+          sessionControl.totalSteps !== null &&
+          sessionControl.selectedProgram ? (
+            <SessionOrb
+              currentStep={sessionControl.currentStep}
+              totalSteps={sessionControl.totalSteps}
+              stepName={sessionControl.stepName}
+              audioTrack={remoteAudioTrack}
+              isActive={!isTextMode}
+            />
+          ) : sessionControl.currentStep !== null &&
+            sessionControl.totalSteps !== null ? (
+            <StepProgress
+              currentStep={sessionControl.currentStep}
+              totalSteps={sessionControl.totalSteps}
+              stepName={sessionControl.stepName}
+            />
+          ) : null}
+
+        {/* Agent audio visualizer — when no session orb */}
+        {!isTextMode && remoteAudioTrack && !sessionControl.selectedProgram && (
+          <AudioVisualizer audioTrack={remoteAudioTrack} />
         )}
 
-      {/* Main transcript area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <AgentTranscript messages={messages} />
-
-        {/* Audio visualizer (centered, below transcript) */}
-        {!isTextMode && remoteAudioTrack && (
-          <div className="flex justify-center py-2">
-            <AudioVisualizer audioTrack={remoteAudioTrack} />
-          </div>
+        {/* Mic input visualizer — shows user's voice as equalizer bars */}
+        {!isTextMode && (
+          <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
         )}
       </div>
 

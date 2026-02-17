@@ -70,7 +70,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 name="name"
                 required
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                placeholder="John Doe"
+                placeholder="Molana Rumi"
               />
             </div>
 
@@ -84,7 +84,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 name="email"
                 required
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                placeholder="your.email@example.com"
+                placeholder="rumi@khorasan.ir"
               />
             </div>
 
@@ -97,7 +97,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 id="subject"
                 name="subject"
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                placeholder="What is this regarding?"
+                placeholder="You are what you seek"
               />
             </div>
 
@@ -117,7 +117,7 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 rows={5}
                 required
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white text-base md:text-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none"
-                placeholder="How can we help you?"
+                placeholder="I wonder how you explain: You are what you seek to my AI twin"
               ></textarea>
             </div>
 

@@ -4,12 +4,14 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { KeyRound, Loader2 } from "lucide-react"
+import { useAuth } from "@/components/auth-provider"
 
 interface AccessCodeGateProps {
   onActivated: () => void
 }
 
 export function AccessCodeGate({ onActivated }: AccessCodeGateProps) {
+  const { signOut, user } = useAuth()
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,6 +57,11 @@ export function AccessCodeGate({ onActivated }: AccessCodeGateProps) {
             Rumi is currently invite-only. Enter your access code to get
             started.
           </p>
+          {user?.email && (
+            <p className="text-xs text-gray-600">
+              Signed in as {user.email}
+            </p>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -83,6 +90,23 @@ export function AccessCodeGate({ onActivated }: AccessCodeGateProps) {
               "Activate"
             )}
           </Button>
+
+          <div className="flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => signOut()}
+              className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              Sign Out
+            </button>
+            <span className="text-gray-700">|</span>
+            <a
+              href="mailto:support@rumi.team"
+              className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              Contact Support
+            </a>
+          </div>
         </form>
       </div>
     </div>

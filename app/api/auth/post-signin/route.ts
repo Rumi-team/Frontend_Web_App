@@ -2,38 +2,36 @@ import { NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-auth"
 import { createServerSupabaseClient } from "@/lib/supabase"
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get("code")
-  const next = searchParams.get("next") ?? "/login"
+// Characters that avoid ambiguity: no O/0, I/1, l
+const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
-  if (!code) {
-    return NextResponse.redirect(`${origin}/login?error=missing_code`)
+function generateCode(length = 8): string {
+  let code = ""
+  for (let i = 0; i < length; i++) {
+    code += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
   }
+  return code
+}
 
-  // Exchange the OAuth code for a Supabase session (sets cookies)
-  const supabase = await createSupabaseServerClient()
-  const { error } = await supabase.auth.exchangeCodeForSession(code)
+export async function POST(request: Request) {
+  try {
+    // Verify the user is actually authenticated
+    const supabase = await createSupabaseServerClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  if (error) {
-    console.error("OAuth callback error:", error.message)
-    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
-  }
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+    }
 
-  // Get the authenticated user to upsert user_identities
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (user) {
     const serviceClient = createServerSupabaseClient()
     const identity = user.identities?.[0]
     const email = user.email ?? identity?.identity_data?.email ?? ""
     const providerUserId =
       identity?.identity_data?.sub ?? identity?.id ?? user.id
 
-    // Upsert into user_identities with platform='web'
-    // If existing row, increment login_count
+    // Upsert user_identities — increment login_count or insert new
     const { data: existingIdentity } = await serviceClient
       .from("user_identities")
       .select("login_count")
@@ -41,7 +39,6 @@ export async function GET(request: Request) {
       .single()
 
     if (existingIdentity) {
-      // Existing user — increment login count
       await serviceClient
         .from("user_identities")
         .update({
@@ -51,10 +48,9 @@ export async function GET(request: Request) {
         })
         .eq("user_id", user.id)
     } else {
-      // New user — insert with login_count = 1
       await serviceClient.from("user_identities").insert({
         user_id: user.id,
-        provider: identity?.provider ?? "google",
+        provider: identity?.provider ?? "email",
         provider_user_id: providerUserId,
         email,
         platform: "web",
@@ -69,8 +65,7 @@ export async function GET(request: Request) {
       .eq("user_id", user.id)
       .single()
 
-    if (!existingRedemption) {
-      // No redemption yet — look for an access code assigned to this email
+    if (!existingRedemption && email) {
       const { data: assignedCode } = await serviceClient
         .from("access_codes")
         .select("id, used_count")
@@ -79,20 +74,42 @@ export async function GET(request: Request) {
         .single()
 
       if (assignedCode) {
-        // Auto-redeem the code for this user
         await serviceClient.from("access_code_redemptions").insert({
           code_id: assignedCode.id,
           user_id: user.id,
         })
 
-        // Increment used_count
         await serviceClient
           .from("access_codes")
           .update({ used_count: (assignedCode.used_count ?? 0) + 1 })
           .eq("id", assignedCode.id)
       }
     }
-  }
 
-  return NextResponse.redirect(`${origin}${next}`)
+    // Ensure every user has an access_codes row so admins can manage access
+    if (email) {
+      const { data: existingCode } = await serviceClient
+        .from("access_codes")
+        .select("id")
+        .eq("assigned_email", email.toLowerCase())
+        .single()
+
+      if (!existingCode) {
+        await serviceClient.from("access_codes").insert({
+          code: generateCode(),
+          description: `Auto - ${email}`,
+          is_active: false,
+          assigned_email: email.toLowerCase(),
+        })
+      }
+    }
+
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error("Post sign-in error:", err)
+    return NextResponse.json(
+      { error: "Internal error" },
+      { status: 500 }
+    )
+  }
 }

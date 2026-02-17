@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Settings, Home, KeyRound } from "lucide-react"
+import { Users, Settings, Home, KeyRound, Activity } from "lucide-react"
 
 export default function AdminPage() {
   return (
@@ -51,6 +51,21 @@ export default function AdminPage() {
               <CardContent>
                 <p className="text-sm text-gray-300">
                   Generate and manage access codes for beta testers and early users.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/user-activity">
+            <Card className="bg-gray-900 border-gray-800 hover:border-yellow-400 transition-all cursor-pointer h-full">
+              <CardHeader>
+                <Activity className="h-8 w-8 text-yellow-400 mb-2" />
+                <CardTitle>User Activity</CardTitle>
+                <CardDescription className="text-gray-400">Track logins, sessions, and engagement</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-300">
+                  Monitor per-user login count, coaching sessions, and activity status.
                 </p>
               </CardContent>
             </Card>

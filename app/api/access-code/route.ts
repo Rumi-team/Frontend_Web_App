@@ -50,14 +50,18 @@ export async function POST(request: Request) {
       )
     }
 
-    // Validate code state
-    if (!accessCode.is_active) {
-      return NextResponse.json(
-        { error: "This access code is no longer active" },
-        { status: 400 }
-      )
+    // Check email match if code is assigned to a specific email
+    if (accessCode.assigned_email) {
+      const userEmail = user.email?.toLowerCase() ?? ""
+      if (accessCode.assigned_email.toLowerCase() !== userEmail) {
+        return NextResponse.json(
+          { error: "This code is assigned to a different email address" },
+          { status: 400 }
+        )
+      }
     }
 
+    // Validate code state
     if (accessCode.expires_at && new Date(accessCode.expires_at) < new Date()) {
       return NextResponse.json(
         { error: "This access code has expired" },
@@ -91,10 +95,21 @@ export async function POST(request: Request) {
       )
     }
 
+    // Mark the redeemed code as active and increment used_count
     await serviceClient
       .from("access_codes")
-      .update({ used_count: accessCode.used_count + 1 })
+      .update({ used_count: accessCode.used_count + 1, is_active: true })
       .eq("id", accessCode.id)
+
+    // Also activate any other access_codes rows for this user's email
+    const userEmail = user.email?.toLowerCase()
+    if (userEmail) {
+      await serviceClient
+        .from("access_codes")
+        .update({ is_active: true })
+        .eq("assigned_email", userEmail)
+        .eq("is_active", false)
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

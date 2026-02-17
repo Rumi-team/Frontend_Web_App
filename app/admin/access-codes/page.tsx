@@ -53,6 +53,7 @@ interface AccessCode {
   id: string
   code: string
   description: string | null
+  assigned_email: string | null
   is_active: boolean
   max_uses: number | null
   used_count: number
@@ -65,9 +66,11 @@ export default function AccessCodesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [description, setDescription] = useState("")
+  const [assignedEmail, setAssignedEmail] = useState("")
   const [maxUses, setMaxUses] = useState("")
   const [expiresAt, setExpiresAt] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const loadCodes = useCallback(async () => {
     const result = await listAccessCodes()
@@ -80,17 +83,24 @@ export default function AccessCodesPage() {
   }, [loadCodes])
 
   async function handleGenerate() {
-    const result = await generateAccessCode(
-      description || undefined,
-      maxUses ? parseInt(maxUses) : undefined,
-      expiresAt || undefined
-    )
-    if (!result.error) {
-      setDialogOpen(false)
-      setDescription("")
-      setMaxUses("")
-      setExpiresAt("")
-      loadCodes()
+    setIsGenerating(true)
+    try {
+      const result = await generateAccessCode(
+        description || undefined,
+        maxUses ? parseInt(maxUses) : undefined,
+        expiresAt || undefined,
+        assignedEmail || undefined
+      )
+      if (!result.error) {
+        setDialogOpen(false)
+        setDescription("")
+        setAssignedEmail("")
+        setMaxUses("")
+        setExpiresAt("")
+        loadCodes()
+      }
+    } finally {
+      setIsGenerating(false)
     }
   }
 
@@ -166,11 +176,26 @@ export default function AccessCodesPage() {
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div>
+                  <label className="text-sm text-gray-400">
+                    Assigned Gmail <span className="text-yellow-400">*</span>
+                  </label>
+                  <Input
+                    type="email"
+                    value={assignedEmail}
+                    onChange={(e) => setAssignedEmail(e.target.value)}
+                    placeholder="user@gmail.com"
+                    className="mt-1 border-gray-700 bg-gray-800 text-white"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    The user with this Gmail will automatically get access on login
+                  </p>
+                </div>
+                <div>
                   <label className="text-sm text-gray-400">Description</label>
                   <Input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="e.g., Beta testers batch 1"
+                    placeholder="e.g., Beta tester - John"
                     className="mt-1 border-gray-700 bg-gray-800 text-white"
                   />
                 </div>
@@ -200,9 +225,10 @@ export default function AccessCodesPage() {
                 </div>
                 <Button
                   onClick={handleGenerate}
+                  disabled={isGenerating}
                   className="w-full bg-yellow-400 text-black hover:bg-yellow-300"
                 >
-                  Generate
+                  {isGenerating ? "Generating..." : "Generate"}
                 </Button>
               </div>
             </DialogContent>
@@ -223,117 +249,130 @@ export default function AccessCodesPage() {
                 No access codes yet. Generate one to get started.
               </p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-gray-800">
-                    <TableHead className="text-gray-400">Code</TableHead>
-                    <TableHead className="text-gray-400">Description</TableHead>
-                    <TableHead className="text-gray-400">Status</TableHead>
-                    <TableHead className="text-gray-400">Usage</TableHead>
-                    <TableHead className="text-gray-400">Expires</TableHead>
-                    <TableHead className="text-gray-400">Created</TableHead>
-                    <TableHead className="text-gray-400 text-right">
-                      Actions
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {codes.map((ac) => (
-                    <TableRow key={ac.id} className="border-gray-800">
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <code className="text-sm font-mono text-yellow-400">
-                            {ac.code}
-                          </code>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-gray-500 hover:text-white"
-                            onClick={() => handleCopy(ac.code, ac.id)}
-                          >
-                            {copiedId === ac.id ? (
-                              <Check className="h-3 w-3" />
-                            ) : (
-                              <Copy className="h-3 w-3" />
-                            )}
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-gray-300 text-sm">
-                        {ac.description || "—"}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            checked={ac.is_active}
-                            onCheckedChange={(checked) =>
-                              handleToggle(ac.id, checked)
-                            }
-                          />
-                          <Badge
-                            variant={ac.is_active ? "default" : "secondary"}
-                            className={
-                              ac.is_active
-                                ? "bg-green-900 text-green-300"
-                                : "bg-gray-800 text-gray-500"
-                            }
-                          >
-                            {ac.is_active ? "Active" : "Inactive"}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-gray-300 text-sm">
-                        {ac.used_count}
-                        {ac.max_uses !== null ? ` / ${ac.max_uses}` : ""}
-                      </TableCell>
-                      <TableCell className="text-gray-300 text-sm">
-                        {ac.expires_at
-                          ? new Date(ac.expires_at).toLocaleDateString()
-                          : "Never"}
-                      </TableCell>
-                      <TableCell className="text-gray-300 text-sm">
-                        {new Date(ac.created_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-gray-800">
+                      <TableHead className="text-gray-400">Code</TableHead>
+                      <TableHead className="text-gray-400">Assigned Email</TableHead>
+                      <TableHead className="text-gray-400">Description</TableHead>
+                      <TableHead className="text-gray-400">Status</TableHead>
+                      <TableHead className="text-gray-400">Usage</TableHead>
+                      <TableHead className="text-gray-400">Expires</TableHead>
+                      <TableHead className="text-gray-400">Created</TableHead>
+                      <TableHead className="text-gray-400 text-right">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {codes.map((ac) => (
+                      <TableRow key={ac.id} className="border-gray-800">
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <code className="text-sm font-mono text-yellow-400">
+                              {ac.code}
+                            </code>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                              className="h-6 w-6 p-0 text-gray-500 hover:text-white"
+                              onClick={() => handleCopy(ac.code, ac.id)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              {copiedId === ac.id ? (
+                                <Check className="h-3 w-3" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
                             </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="bg-gray-900 border-gray-700 text-white">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Code</AlertDialogTitle>
-                              <AlertDialogDescription className="text-gray-400">
-                                Delete access code{" "}
-                                <code className="text-yellow-400">
-                                  {ac.code}
-                                </code>
-                                ? This will also remove any redemptions.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel className="border-gray-700 text-gray-300 hover:bg-gray-800">
-                                Cancel
-                              </AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(ac.id)}
-                                className="bg-red-600 hover:bg-red-500"
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {ac.assigned_email ? (
+                            <span className="text-blue-400">{ac.assigned_email}</span>
+                          ) : (
+                            <span className="text-gray-600">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {ac.description || "—"}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={ac.is_active}
+                              onCheckedChange={(checked) =>
+                                handleToggle(ac.id, checked)
+                              }
+                            />
+                            <Badge
+                              variant={ac.is_active ? "default" : "secondary"}
+                              className={
+                                ac.is_active
+                                  ? "bg-green-900 text-green-300"
+                                  : "bg-gray-800 text-gray-500"
+                              }
+                            >
+                              {ac.is_active ? "Active" : "Inactive"}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {ac.used_count}
+                          {ac.max_uses !== null ? ` / ${ac.max_uses}` : ""}
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {ac.expires_at
+                            ? new Date(ac.expires_at).toLocaleDateString()
+                            : "Never"}
+                        </TableCell>
+                        <TableCell className="text-gray-300 text-sm">
+                          {new Date(ac.created_at).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
                               >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-gray-900 border-gray-700 text-white">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Code</AlertDialogTitle>
+                                <AlertDialogDescription className="text-gray-400">
+                                  Delete access code{" "}
+                                  <code className="text-yellow-400">
+                                    {ac.code}
+                                  </code>
+                                  {ac.assigned_email && (
+                                    <> assigned to <span className="text-blue-400">{ac.assigned_email}</span></>
+                                  )}
+                                  ? This will also remove any redemptions.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="border-gray-700 text-gray-300 hover:bg-gray-800">
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(ac.id)}
+                                  className="bg-red-600 hover:bg-red-500"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
