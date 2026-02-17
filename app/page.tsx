@@ -1019,7 +1019,7 @@ export default function Home() {
                 and helps you become who you want to be.
               </p>
               <div className="flex items-center justify-center gap-2 mb-10">
-                <Shield className="h-4 w-4 text-yellow-400" />
+                <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
               <Link href="/login">
