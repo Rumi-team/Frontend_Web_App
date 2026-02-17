@@ -658,9 +658,6 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center mb-16">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Standing on the Shoulders of Giants
-                </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
                   The World&apos;s Greatest{" "}
                   <span className="gradient-text">Transformational Leaders</span>
@@ -703,6 +700,9 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center">
+                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
+                  Standing on the Shoulders of Giants
+                </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
                   Transformational programs proved, transformation is teachable.
                   <br />
