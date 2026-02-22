@@ -7,9 +7,14 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Rumi - Your AI-Powered Personal Coach",
-  description: "The world's first agentic AI coaching platform that delivers real transformation. Structured programs, emotional intelligence, and personalized guidance — starting at $40/month.",
-  generator: 'Rumi.Team'
+  title: "Rumi — Your Personal Transformational Leader",
+  description: "Meet Rumi, your AI transformational leader. Proven programs deliver lasting change — 24/7, on your phone, at a fraction of traditional coaching costs.",
+  generator: 'Rumi.Team',
+  openGraph: {
+    title: "Rumi — Your Personal Transformational Leader",
+    description: "Meet Rumi, your AI transformational leader. Proven programs deliver lasting change — 24/7, on your phone, at a fraction of traditional coaching costs.",
+    siteName: "Rumi",
+  },
 }
 
 export default function RootLayout({
