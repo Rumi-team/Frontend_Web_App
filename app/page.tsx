@@ -452,26 +452,18 @@ export default function Home() {
               {/* ── Desktop layout: iPhone | Center | Web ── */}
               <div className="hidden md:flex items-center justify-center max-w-6xl mx-auto gap-6 lg:gap-8">
                 {/* iPhone — left */}
-                <div className="shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end">
-                  <div className="relative">
-                    <div className={`rounded-2xl transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                <div className={`shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end transition-transform duration-1000 ease-in-out ${isCubeComplete ? "translate-x-32 lg:translate-x-48" : ""}`}>
+                  <div className="relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`transition-all duration-500 bg-transparent relative z-10`}>
                       <Image
                         src="/app_landing_page.png"
                         alt="Rumi iOS app"
                         width={300}
                         height={600}
-                        className="rounded-2xl object-contain h-[340px] lg:h-[420px] w-auto"
+                        className={`rounded-2xl object-contain h-[340px] lg:h-[420px] w-auto`}
                         priority
                       />
-                    </div>
-                    {/* Shield badge */}
-                    <div
-                      className={`absolute -top-2 -right-2 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "0.8s" : "0s" }}
-                    >
-                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-black" />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -480,18 +472,16 @@ export default function Home() {
                 <div className="flex-1 min-w-0 flex items-center justify-center relative">
                   {/* Rotating text — fades out */}
                   <div
-                    className={`transition-opacity duration-[800ms] ease-in-out ${
-                      isCubeComplete ? "opacity-0 pointer-events-none" : "opacity-100"
-                    }`}
+                    className={`transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-0 pointer-events-none" : "opacity-100"
+                      }`}
                   >
-                    {!isCubeComplete && <RotatingWords onComplete={handleCubeComplete} />}
+                    <RotatingWords onComplete={handleCubeComplete} />
                   </div>
 
                   {/* Lock icon — crossfades in where the rotating word was */}
                   <div
-                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${
-                      isCubeComplete ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
+                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0 pointer-events-none"
+                      }`}
                     style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
                   >
                     <Lock className={`h-16 w-16 lg:h-20 lg:w-20 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] ${isCubeComplete ? "lock-anim" : ""}`} />
@@ -499,9 +489,10 @@ export default function Home() {
                 </div>
 
                 {/* Web screenshot — right */}
-                <div className="shrink-0">
-                  <div className="relative">
-                    <div className={`rounded-xl overflow-hidden bg-black w-[200px] lg:w-[240px] transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                <div className={`shrink-0 transition-transform duration-1000 ease-in-out ${isCubeComplete ? "-translate-x-32 lg:-translate-x-48" : ""}`}>
+                  <div className="relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`rounded-xl overflow-hidden bg-black w-[200px] lg:w-[240px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
                       {/* Browser chrome bar */}
                       <div className="flex items-center gap-1.5 px-3 py-2 bg-black border-b border-white/[0.04]">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
@@ -520,53 +511,53 @@ export default function Home() {
                         priority
                       />
                     </div>
-                    {/* Shield badge */}
-                    <div
-                      className={`absolute -top-2 -left-2 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "1s" : "0s" }}
-                    >
-                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-black" />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
 
               {/* ── Mobile layout ── */}
-              <div className="md:hidden relative w-full">
-                {/* Mobile images — shown after lock phase completes */}
+              <div className="md:hidden flex flex-col items-center justify-center w-full min-h-[400px]">
+
+                {/* Text section — shrinks hide and fades when complete */}
                 <div
-                  className={`flex items-center justify-center gap-4 transition-all duration-700 ${
-                    isCubeComplete
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8 pointer-events-none"
-                  }`}
+                  className={`w-full flex justify-center px-4 transition-all duration-1000 ease-in-out overflow-hidden ${isCubeComplete ? "opacity-0 h-0" : "opacity-100 h-[220px]"
+                    }`}
                 >
+                  <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
+                </div>
+
+                {/* Mobile images — now always visible, and smoothly slide closer */}
+                <div
+                  className={`flex items-center justify-center transition-all duration-1000 ease-in-out relative ${isCubeComplete ? "gap-2 scale-100 translate-y-0" : "gap-12 scale-[0.85] -translate-y-4"
+                    }`}
+                >
+                  {/* Center lock for mobile — crossfades in */}
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center z-20 pointer-events-none transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0"
+                      }`}
+                    style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
+                  >
+                    <Lock className={`h-12 w-12 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)] ${isCubeComplete ? "lock-anim" : ""}`} />
+                  </div>
+
                   {/* iPhone */}
-                  <div className="shrink-0 relative">
-                    <div className={`rounded-xl transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                  <div className="shrink-0 relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`transition-all duration-500 relative z-10`}>
                       <Image
                         src="/app_landing_page.png"
                         alt="Rumi iOS app"
                         width={200}
                         height={400}
-                        className="rounded-xl object-contain h-[260px] w-auto"
+                        className={`rounded-xl object-contain h-[260px] w-auto`}
                         priority
                       />
                     </div>
-                    <div
-                      className={`absolute -top-1.5 -right-1.5 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "0.8s" : "0s" }}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-3 w-3 text-black" />
-                      </div>
-                    </div>
                   </div>
                   {/* Web */}
-                  <div className="shrink-0 relative">
-                    <div className={`rounded-lg overflow-hidden bg-black w-[140px] transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                  <div className="shrink-0 relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`rounded-lg overflow-hidden bg-black w-[140px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
                       <div className="flex items-center gap-1 px-2 py-1.5 bg-black border-b border-white/[0.04]">
                         <div className="w-2 h-2 rounded-full bg-red-500/60" />
                         <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
@@ -584,51 +575,17 @@ export default function Home() {
                         priority
                       />
                     </div>
-                    <div
-                      className={`absolute -top-1.5 -left-1.5 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "1s" : "0s" }}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-3 w-3 text-black" />
-                      </div>
-                    </div>
                   </div>
                 </div>
 
                 {/* Mobile platform labels */}
                 <div
-                  className={`flex items-center justify-center gap-12 mt-4 transition-all duration-700 ${
-                    isCubeComplete
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
+                  className={`flex items-center justify-center gap-[110px] mt-4 transition-all duration-700 ${isCubeComplete ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 -translate-y-4"
+                    }`}
                 >
-                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">iOS</span>
-                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">Web</span>
+                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">iOS</span>
+                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">Web</span>
                 </div>
-
-                {/* Mobile rotating words overlay — text then lock */}
-                {!isCubeComplete && (
-                  <div className="absolute inset-0 z-10 bg-black">
-                    {/* Rotating words — fade out when image phase starts */}
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center px-4 transition-opacity duration-700 ${
-                        mobileHeroPhase === "image" ? "opacity-0 pointer-events-none" : "opacity-100"
-                      }`}
-                    >
-                      <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
-                    </div>
-                    {/* Lock icon — crossfades in after text fades */}
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${
-                        mobileHeroPhase === "image" ? "opacity-100" : "opacity-0 pointer-events-none"
-                      }`}
-                      style={{ transitionDelay: mobileHeroPhase === "image" ? "400ms" : "0ms" }}
-                    >
-                      <Lock className={`h-16 w-16 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] ${mobileHeroPhase === "image" ? "lock-anim" : ""}`} />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Spacer after animation completes */}
@@ -638,9 +595,8 @@ export default function Home() {
 
           {/* Scroll indicator */}
           <div
-            className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-1000 ${
-              isCubeComplete ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-1000 ${isCubeComplete ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div className="scroll-indicator text-gray-600">
               <ChevronDown className="h-6 w-6" />
