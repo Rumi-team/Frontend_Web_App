@@ -686,26 +686,22 @@ export default function Home() {
                   Why Rumi Exists
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Real Problems.{" "}
-                  <span className="gradient-text">Real Solutions.</span>
+                  Become a Transformational Leader —{" "}
+                  <span className="gradient-text">Without the Cost. Without the Fade.</span>
                 </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  The personal development industry leaves millions behind.
-                  Rumi was built to change that.
-                </p>
               </div>
             </RevealSection>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
               <SolutionCard
-                title="High Commitment Cost"
+                title="Lead Without the Financial Barrier"
                 icon={Lock}
                 problem="World-class transformational programs require a large upfront commitment of $1,000–$12,000, plus 3–5 days of participation with an average of 12 hours of seat time per day."
                 solution="Rumi delivers the same depth of transformational leadership — accessible anytime, anywhere, right from your phone. No travel, no time off work."
                 delay={0}
               />
               <SolutionCard
-                title="Fading Afterglow"
+                title="Become the Leader. Stay the Leader."
                 icon={RefreshCw}
                 problem="Although you are highly likely to experience a breakthrough that truly excites you, recent research shows that for about 95% of participants, the breakthrough is not permanent and will revert back."
                 solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
