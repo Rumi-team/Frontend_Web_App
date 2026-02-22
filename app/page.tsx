@@ -764,11 +764,11 @@ export default function Home() {
             <RevealSection delay={200}>
               <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-16">
                 {[
-                  { src: "/leaders/mandela.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/malcolm_x.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/gandhi.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/lincoln.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/bob_marley.jpg", alt: "Bob Marley", tone: "cool" },
+                  { src: "/leaders/john_lennon.jpg", alt: "John Lennon", tone: "cool" },
+                  { src: "/leaders/rumi.jpg", alt: "Rumi", tone: "warm" },
+                  { src: "/leaders/malcolm_x.jpg", alt: "Malcolm X", tone: "cool" },
+                  { src: "/leaders/maya_angelou.jpg", alt: "Maya Angelou", tone: "cool" },
                 ].map((leader, i) => (
                   <div key={leader.src} className="relative">
                     <div className={`rounded-full overflow-hidden border-2 transition-all duration-500 ${i === 2
@@ -780,7 +780,13 @@ export default function Home() {
                         alt={leader.alt}
                         width={200}
                         height={200}
-                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                        className={`w-full h-full object-cover transition-all duration-500 ${
+                          leader.tone === "center"
+                            ? "grayscale hover:grayscale-0"
+                            : leader.tone === "warm"
+                              ? "sepia-[0.3] brightness-[0.95] saturate-[0.7] hover:sepia-0 hover:brightness-100 hover:saturate-100"
+                              : "grayscale hover:grayscale-0"
+                        }`}
                       />
                     </div>
                   </div>
