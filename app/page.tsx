@@ -686,13 +686,9 @@ export default function Home() {
                   Why Rumi Exists
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Real Problems.{" "}
-                  <span className="gradient-text">Real Solutions.</span>
+                  Become a Transformational Leader.{" "}
+                  <span className="gradient-text">10X Cheaper. 10X More Permanent.</span>
                 </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  The personal development industry leaves millions behind.
-                  Rumi was built to change that.
-                </p>
               </div>
             </RevealSection>
 
