@@ -563,18 +563,7 @@ export default function Home() {
               />
             </Link>
           </div>
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-10">
-            <Link href="#solutions" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              Solutions
-            </Link>
-            <Link href="#partners" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              Partners
-            </Link>
-            <Link href="#how-it-works" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              How It Works
-            </Link>
-          </nav>
+
           <div className="flex items-center">
             <Link href="/login">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
