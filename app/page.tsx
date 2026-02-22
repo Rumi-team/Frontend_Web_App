@@ -776,15 +776,15 @@ export default function Home() {
               <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-16">
                 {[
                   { src: "/leaders/mandela.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/tony_robbins.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/malcolm_x.jpg", alt: "Transformational leader" },
                   { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
                   { src: "/leaders/gandhi.jpg", alt: "Transformational leader" },
                   { src: "/leaders/lincoln.jpg", alt: "Transformational leader" },
                 ].map((leader, i) => (
                   <div key={leader.src} className="relative">
                     <div className={`rounded-full overflow-hidden border-2 transition-all duration-500 ${i === 2
-                        ? "w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 border-yellow-400/30 hover:border-yellow-400/60"
-                        : "w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 border-white/10 hover:border-yellow-400/40"
+                      ? "w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 border-yellow-400/30 hover:border-yellow-400/60"
+                      : "w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 border-white/10 hover:border-yellow-400/40"
                       }`}>
                       <Image
                         src={leader.src}
@@ -815,13 +815,12 @@ export default function Home() {
                   Standing on the Shoulders of Giants
                 </span>
                 <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-6">
-                  The world&apos;s best programs proved transformation is for everyone.
+                  The world&apos;s best programs proved anyone can achieve transformation.
                   <br />
                   <span className="gradient-text">Rumi shows you how — at a fraction of the cost.</span>
                 </h2>
-                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
-                  Inspired by the world&apos;s most impactful programs — Landmark Forum &amp; Tony Robbins
-                  — and reimagined with AI that can actually deliver transformation in your pocket.
+                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed mt-8">
+                  Inspired by methodologies pioneered by programs like Landmark Forum and leaders like Tony Robbins
                 </p>
               </div>
             </RevealSection>
@@ -868,9 +867,9 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            TESTIMONIALS — User Stories
+            TESTIMONIALS — User Stories (hidden for now)
             ══════════════════════════════════════════════════════ */}
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
+        {false && <section className="w-full py-24 md:py-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
 
@@ -912,7 +911,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section>}
 
         {/* ══════════════════════════════════════════════════════
             SECTION 3 — PARTNERS
@@ -1173,7 +1172,7 @@ export default function Home() {
                 and helps you become who you want to be.
               </p>
               <div className="flex items-center justify-center gap-2 mb-10">
-                <Shield className="h-4 w-4 text-yellow-400" />
+                <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
               <Link href="/login">
