@@ -376,3 +376,40 @@ html {
   animation: badge-pop 0.5s ease-out forwards;
   opacity: 0;
 }
+
+/* ========= Testimonial Marquee ========= */
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.testimonial-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.marquee-track-left {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: marquee-left 80s linear infinite;
+}
+
+.marquee-track-right {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: marquee-right 80s linear infinite;
+}
+
+.testimonial-marquee:hover .marquee-track-left,
+.testimonial-marquee:hover .marquee-track-right {
+  animation-play-state: paused;
+}

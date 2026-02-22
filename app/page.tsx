@@ -25,6 +25,7 @@ import {
   LineChart,
   BellRing,
   Layers,
+  Star,
 } from "lucide-react"
 import { ContactModal } from "@/components/contact-modal"
 
@@ -364,6 +365,155 @@ function SolutionCard({
 }
 
 /* ═══════════════════════════════════════════════════════════
+   Testimonials Data & Card
+   ═══════════════════════════════════════════════════════════ */
+const testimonials = {
+  row1: [
+    {
+      name: "Rose J.",
+      program: "Landmark Forum (3x), SELP Graduate",
+      location: "San Francisco, CA",
+      quote:
+        "I did the Forum three times. Three times! And the SELP too. Every single time I'd have these massive realizations about my rackets and then six months later I'd catch myself doing the exact same stuff. A friend got me into the Rumi beta and honestly I was skeptical. But having someone to talk to at like 2am when I'm spiraling? That's when I actually need it. Not in a conference room on a Saturday. I've worked through more patterns in three months than my last two Forums combined.",
+      initials: "RJ",
+      gradient: "from-rose-400 to-pink-600",
+    },
+    {
+      name: "Paul M.",
+      program: "Tony Robbins UPW & Date with Destiny",
+      location: "Miami, FL",
+      quote:
+        "So I did UPW and it was incredible. Like genuinely life changing in the moment. Then I did Date with Destiny and mapped out my whole future. Problem is about six weeks later I noticed I was slipping back into the same loops. You know that feeling? Got early access to Rumi and it catches that stuff in real time. It's like having someone who actually remembers what you committed to and won't let you BS your way out of it.",
+      initials: "PM",
+      gradient: "from-blue-400 to-indigo-600",
+    },
+    {
+      name: "Andrea C.",
+      program: "Landmark & Robbins Graduate",
+      location: "Austin, TX",
+      quote:
+        "Between Landmark, Tony Robbins, and the Hoffman Process I've probably spent close to $40K on personal development over the years. All of it was worth it in the moment. But the insights never stuck long term and I'd end up signing up for another program. I got into the Rumi beta through a friend and the scoring system and daily check ins finally broke that cycle for me. I wish this existed ten years ago.",
+      initials: "AC",
+      gradient: "from-amber-400 to-orange-600",
+    },
+    {
+      name: "Riho N.",
+      program: "First Personal Development Experience",
+      location: "Seattle, WA",
+      quote:
+        "I never did Landmark or any of those programs. Honestly the idea of sitting in a room for three days with strangers terrified me. But I kept hearing about transformation and wanted to experience it myself. Someone invited me to test Rumi and I started using it kind of casually. About two weeks in something clicked about how I'd been showing up with my family. It hit me so hard I had to pause the session. In a good way.",
+      initials: "RN",
+      gradient: "from-emerald-400 to-teal-600",
+    },
+    {
+      name: "Tom Z.",
+      program: "Landmark ILP Graduate",
+      location: "New York, NY",
+      quote:
+        "I went all the way through the ILP and was seriously considering doing the SELP again when someone showed me the Rumi beta. Thought I was past the point where anything could surprise me about my own patterns. I was wrong. It picked up on a racket I'd been running for years that I somehow never saw. The transformation scoring is no joke either, it keeps you real with yourself.",
+      initials: "TZ",
+      gradient: "from-violet-400 to-purple-600",
+    },
+  ],
+  row2: [
+    {
+      name: "Tanya T.",
+      program: "Tony Robbins Mastery University",
+      location: "Chicago, IL",
+      quote:
+        "Business Mastery, Life Mastery, Date with Destiny. I did them all back to back and my life genuinely changed. But then you go home and there's no Tony, there's no crowd, there's just you and your old habits. I've been testing Rumi since the early beta and it fills that gap. I use it almost every day and it feels like having a coach who actually knows my story and where I get stuck.",
+      initials: "TT",
+      gradient: "from-cyan-400 to-blue-600",
+    },
+    {
+      name: "Danielle S.",
+      program: "Landmark Graduate, Therapist",
+      location: "Portland, OR",
+      quote:
+        "I'm a therapist and I also did the Forum years ago. What I've found is that therapy is amazing for understanding where things come from but sometimes my clients need something that pushes them forward into new possibilities. I got into the Rumi beta and started recommending it to a few of them. The results have honestly surprised me. Two clients had breakthroughs they'd been circling around in therapy for months.",
+      initials: "DS",
+      gradient: "from-lime-400 to-green-600",
+    },
+    {
+      name: "Brian G.",
+      program: "Tony Robbins Platinum Partner",
+      location: "Denver, CO",
+      quote:
+        "I'm a Platinum Partner so I literally have access to every Robbins event whenever I want. You'd think that would be enough right? But the gap between events is real. A buddy got me to try Rumi while it was still in beta and it fills that space. The accountability piece especially. It gives you actual assignments and follows up on them. That's the thing that's been missing from this entire industry.",
+      initials: "BG",
+      gradient: "from-red-400 to-rose-600",
+    },
+    {
+      name: "Sharon E.",
+      program: "Landmark Forum Graduate",
+      location: "Boston, MA",
+      quote:
+        "The Forum introduced me to 'already always listening' and it completely blew my mind. For about two months I was seeing it everywhere. Then gradually I just... stopped noticing. Went back to autopilot. I signed up when Rumi was still in beta and it keeps those distinctions alive for me on a daily basis. It brings me back to what I learned instead of letting it collect dust in my memory.",
+      initials: "SE",
+      gradient: "from-fuchsia-400 to-pink-600",
+    },
+    {
+      name: "Ed C.",
+      program: "Tony Robbins UPW Graduate",
+      location: "Los Angeles, CA",
+      quote:
+        "I went to UPW and walked on fire and the whole thing. Was on top of the world for maybe six weeks. Then work got crazy, life got busy, and before I knew it I was back to my old self. Got invited to try Rumi when it was in beta about four months ago and I'm still in it. Still growing. The daily assignments make all the difference because you can't just coast.",
+      initials: "EC",
+      gradient: "from-yellow-400 to-amber-600",
+    },
+  ],
+}
+
+function TestimonialCard({
+  name,
+  program,
+  location,
+  quote,
+  initials,
+  gradient,
+}: {
+  name: string
+  program: string
+  location: string
+  quote: string
+  initials: string
+  gradient: string
+}) {
+  return (
+    <div className="w-[340px] md:w-[400px] shrink-0 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-6 hover:border-yellow-400/20 transition-all duration-300 cursor-default select-none">
+      <div className="text-yellow-400/30 text-5xl font-serif leading-none mb-2">&ldquo;</div>
+      <p className="text-gray-300 text-[15px] leading-relaxed mb-5">{quote}</p>
+      <div className="flex gap-0.5 mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+        ))}
+      </div>
+      <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+        <div
+          className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-semibold text-xs shrink-0 shadow-lg`}
+        >
+          {initials}
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-white font-medium text-sm">{name}</span>
+            <svg className="h-4 w-4 text-blue-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="text-yellow-400/80 text-xs font-medium">{program}</div>
+          <div className="text-gray-500 text-xs">{location}</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
    Main Page Component
    ═══════════════════════════════════════════════════════════ */
 export default function Home() {
@@ -611,26 +761,31 @@ export default function Home() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
 
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                  The World&apos;s Greatest{" "}
-                  <span className="gradient-text">Transformational Leaders</span>
+                  Transformational Leaders changed history.
+                  <br />
+                  <span className="gradient-text">Imagine having one just for you.</span>
                 </h2>
               </div>
             </RevealSection>
 
             <RevealSection delay={200}>
-              <div className="flex items-center justify-center gap-8 md:gap-16 lg:gap-20">
+              <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-16">
                 {[
                   { src: "/leaders/mandela.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/tony_robbins.jpg", alt: "Transformational leader" },
+                  { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
                   { src: "/leaders/gandhi.jpg", alt: "Transformational leader" },
                   { src: "/leaders/lincoln.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
-                ].map((leader) => (
+                ].map((leader, i) => (
                   <div key={leader.src} className="relative">
-                    <div className="w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/10 hover:border-yellow-400/40 transition-all duration-500">
+                    <div className={`rounded-full overflow-hidden border-2 transition-all duration-500 ${i === 2
+                        ? "w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 border-yellow-400/30 hover:border-yellow-400/60"
+                        : "w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 border-white/10 hover:border-yellow-400/40"
+                      }`}>
                       <Image
                         src={leader.src}
                         alt={leader.alt}
@@ -653,16 +808,16 @@ export default function Home() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.04)_0%,transparent_60%)] pointer-events-none" />
 
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8">
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center">
                 <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
                   Standing on the Shoulders of Giants
                 </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Transformational programs proved, transformation is teachable.
+                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-6">
+                  The world&apos;s best programs proved transformation is for everyone.
                   <br />
-                  <span className="gradient-text">We made it affordable for all.</span>
+                  <span className="gradient-text">Rumi shows you how — at a fraction of the cost.</span>
                 </h2>
                 <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
                   Inspired by the world&apos;s most impactful programs — Landmark Forum &amp; Tony Robbins
@@ -686,8 +841,9 @@ export default function Home() {
                   Why Rumi Exists
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Become a Transformational Leader —{" "}
-                  <span className="gradient-text">Without the Cost. Without the Fade.</span>
+                  Become a Transformational Leader —
+                  <br />
+                  <span className="text-[#FBBF24]">Without the Cost. Without the Fade.</span>
                 </h2>
               </div>
             </RevealSection>
@@ -707,6 +863,53 @@ export default function Home() {
                 solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
                 delay={150}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            TESTIMONIALS — User Stories
+            ══════════════════════════════════════════════════════ */}
+        <section className="w-full py-24 md:py-32 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
+
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8 mb-14">
+            <RevealSection>
+              <div className="text-center">
+                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
+                  Real Stories, Real Transformation
+                </span>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+                  Trusted by Graduates of the
+                  <br />
+                  <span className="text-[#FBBF24]">World&apos;s Top Programs</span>
+                </h2>
+                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                  From Landmark Forum to Tony Robbins and beyond — people who&apos;ve experienced
+                  transformation are using Rumi to make it last.
+                </p>
+              </div>
+            </RevealSection>
+          </div>
+
+          <div className="relative z-10 space-y-6">
+            {/* Row 1 — scrolls left */}
+            <div className="testimonial-marquee">
+              <div className="marquee-track-left">
+                {[...testimonials.row1, ...testimonials.row1].map((t, i) => (
+                  <TestimonialCard key={`r1-${i}`} {...t} />
+                ))}
+              </div>
+            </div>
+
+            {/* Row 2 — scrolls right */}
+            <div className="testimonial-marquee">
+              <div className="marquee-track-right">
+                {[...testimonials.row2, ...testimonials.row2].map((t, i) => (
+                  <TestimonialCard key={`r2-${i}`} {...t} />
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -963,8 +1166,7 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8 text-center">
             <RevealSection>
               <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                Ready to Meet the Transformational Leader{" "}
-                <span className="gradient-text">Who Truly Knows You?</span>
+                Your Transformation Starts with One Conversation.
               </h2>
               <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4">
                 Experience transformational leadership that understands who you are, meets you where you are,
