@@ -35,8 +35,21 @@ export default async function CoachLayout({
 
   const hasAccess = accessCode?.is_active === true || !!redemption
 
+  // Check if user has completed channel onboarding (channel_preferences row exists)
+  let needsOnboarding = false
+  if (hasAccess) {
+    const providerUserId =
+      user.app_metadata?.provider_id ?? user.user_metadata?.sub ?? user.id
+    const { data: channelPrefs } = await serviceClient
+      .from("channel_preferences")
+      .select("id")
+      .eq("provider_user_id", providerUserId)
+      .maybeSingle()
+    needsOnboarding = !channelPrefs
+  }
+
   return (
-    <CoachShell authenticated={true} hasAccess={hasAccess}>
+    <CoachShell authenticated={true} hasAccess={hasAccess} needsOnboarding={needsOnboarding}>
       {children}
     </CoachShell>
   )
