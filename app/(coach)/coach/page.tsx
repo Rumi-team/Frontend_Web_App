@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useLiveKitConnection } from "@/hooks/use-livekit-connection"
 import { useMicrophonePermission } from "@/hooks/use-microphone-permission"
 import { useLyricsManager } from "@/hooks/use-lyrics-manager"
@@ -20,6 +20,23 @@ export default function CoachPage() {
 
   const [showLibrary, setShowLibrary] = useState(false)
   const [showAssignments, setShowAssignments] = useState(false)
+
+  // Auto-start music on first user interaction (browsers block autoplay)
+  useEffect(() => {
+    const startOnInteraction = () => {
+      lyrics.start()
+      document.removeEventListener("pointerdown", startOnInteraction)
+      document.removeEventListener("keydown", startOnInteraction)
+    }
+    document.addEventListener("pointerdown", startOnInteraction, { once: true })
+    document.addEventListener("keydown", startOnInteraction, { once: true })
+    // Also try immediately (works if user already interacted with the page)
+    lyrics.start()
+    return () => {
+      document.removeEventListener("pointerdown", startOnInteraction)
+      document.removeEventListener("keydown", startOnInteraction)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleStart = useCallback(async () => {
     lyrics.stop()
