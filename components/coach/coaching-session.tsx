@@ -125,12 +125,7 @@ export function CoachingSession({
     }
   }, [sessionControl.endConversationCount])
 
-  // Show locked overlay when session starts locked
-  useEffect(() => {
-    if (sessionControl.isDayLocked && !sessionControl.showDayComplete) {
-      setShowLockedOverlay(true)
-    }
-  }, [sessionControl.isDayLocked, sessionControl.showDayComplete])
+  // Session gating disabled — no locked overlay
 
   const handleEndSession = useCallback(async () => {
     setShowSaveOverlay(true)
@@ -171,8 +166,7 @@ export function CoachingSession({
   }, [onDisconnect])
 
   const handleDayCelebrationDismiss = useCallback(() => {
-    // After celebration dismisses, show the locked overlay
-    setShowLockedOverlay(true)
+    // Celebration dismissed — no lock, user can continue
   }, [])
 
   return (
@@ -286,15 +280,7 @@ export function CoachingSession({
         />
       )}
 
-      {/* Day locked overlay */}
-      {showLockedOverlay && sessionControl.isDayLocked && (
-        <DayLockedOverlay
-          completedDay={sessionControl.completedDay || sessionControl.currentDay - 1}
-          cooldownRemainingHours={sessionControl.cooldownRemainingHours}
-          unlockAt={sessionControl.unlockAt}
-          onContinueChat={() => setShowLockedOverlay(false)}
-        />
-      )}
+      {/* Day locked overlay — disabled, no cooldown constraint */}
     </div>
   )
 }
