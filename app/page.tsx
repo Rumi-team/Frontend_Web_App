@@ -563,18 +563,7 @@ export default function Home() {
               />
             </Link>
           </div>
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-10">
-            <Link href="#solutions" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              Solutions
-            </Link>
-            <Link href="#partners" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              Partners
-            </Link>
-            <Link href="#how-it-works" className="text-lg text-gray-400 hover:text-white transition-colors duration-200">
-              How It Works
-            </Link>
-          </nav>
+
           <div className="flex items-center">
             <Link href="/login">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
@@ -602,26 +591,18 @@ export default function Home() {
               {/* ── Desktop layout: iPhone | Center | Web ── */}
               <div className="hidden md:flex items-center justify-center max-w-6xl mx-auto gap-6 lg:gap-8">
                 {/* iPhone — left */}
-                <div className="shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end">
-                  <div className="relative">
-                    <div className={`rounded-2xl transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                <div className={`shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end transition-transform duration-1000 ease-in-out ${isCubeComplete ? "translate-x-32 lg:translate-x-48" : ""}`}>
+                  <div className="relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`transition-all duration-500 bg-transparent relative z-10`}>
                       <Image
                         src="/app_landing_page.png"
                         alt="Rumi iOS app"
                         width={300}
                         height={600}
-                        className="rounded-2xl object-contain h-[340px] lg:h-[420px] w-auto"
+                        className={`rounded-2xl object-contain h-[340px] lg:h-[420px] w-auto`}
                         priority
                       />
-                    </div>
-                    {/* Shield badge */}
-                    <div
-                      className={`absolute -top-2 -right-2 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "0.8s" : "0s" }}
-                    >
-                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-black" />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -630,18 +611,16 @@ export default function Home() {
                 <div className="flex-1 min-w-0 flex items-center justify-center relative">
                   {/* Rotating text — fades out */}
                   <div
-                    className={`transition-opacity duration-[800ms] ease-in-out ${
-                      isCubeComplete ? "opacity-0 pointer-events-none" : "opacity-100"
-                    }`}
+                    className={`transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-0 pointer-events-none" : "opacity-100"
+                      }`}
                   >
-                    {!isCubeComplete && <RotatingWords onComplete={handleCubeComplete} />}
+                    <RotatingWords onComplete={handleCubeComplete} />
                   </div>
 
                   {/* Lock icon — crossfades in where the rotating word was */}
                   <div
-                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${
-                      isCubeComplete ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
+                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0 pointer-events-none"
+                      }`}
                     style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
                   >
                     <Lock className={`h-16 w-16 lg:h-20 lg:w-20 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] ${isCubeComplete ? "lock-anim" : ""}`} />
@@ -649,9 +628,10 @@ export default function Home() {
                 </div>
 
                 {/* Web screenshot — right */}
-                <div className="shrink-0">
-                  <div className="relative">
-                    <div className={`rounded-xl overflow-hidden bg-black w-[200px] lg:w-[240px] transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                <div className={`shrink-0 transition-transform duration-1000 ease-in-out ${isCubeComplete ? "-translate-x-32 lg:-translate-x-48" : ""}`}>
+                  <div className="relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`rounded-xl overflow-hidden bg-black w-[200px] lg:w-[240px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
                       {/* Browser chrome bar */}
                       <div className="flex items-center gap-1.5 px-3 py-2 bg-black border-b border-white/[0.04]">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
@@ -670,53 +650,53 @@ export default function Home() {
                         priority
                       />
                     </div>
-                    {/* Shield badge */}
-                    <div
-                      className={`absolute -top-2 -left-2 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "1s" : "0s" }}
-                    >
-                      <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-4 w-4 lg:h-5 lg:w-5 text-black" />
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
 
               {/* ── Mobile layout ── */}
-              <div className="md:hidden relative w-full">
-                {/* Mobile images — shown after lock phase completes */}
+              <div className="md:hidden flex flex-col items-center justify-center w-full min-h-[400px]">
+
+                {/* Text section — shrinks hide and fades when complete */}
                 <div
-                  className={`flex items-center justify-center gap-4 transition-all duration-700 ${
-                    isCubeComplete
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8 pointer-events-none"
-                  }`}
+                  className={`w-full flex justify-center px-4 transition-all duration-1000 ease-in-out overflow-hidden ${isCubeComplete ? "opacity-0 h-0" : "opacity-100 h-[220px]"
+                    }`}
                 >
+                  <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
+                </div>
+
+                {/* Mobile images — now always visible, and smoothly slide closer */}
+                <div
+                  className={`flex items-center justify-center transition-all duration-1000 ease-in-out relative ${isCubeComplete ? "gap-2 scale-100 translate-y-0" : "gap-12 scale-[0.85] -translate-y-4"
+                    }`}
+                >
+                  {/* Center lock for mobile — crossfades in */}
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center z-20 pointer-events-none transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0"
+                      }`}
+                    style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
+                  >
+                    <Lock className={`h-12 w-12 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)] ${isCubeComplete ? "lock-anim" : ""}`} />
+                  </div>
+
                   {/* iPhone */}
-                  <div className="shrink-0 relative">
-                    <div className={`rounded-xl transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                  <div className="shrink-0 relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`transition-all duration-500 relative z-10`}>
                       <Image
                         src="/app_landing_page.png"
                         alt="Rumi iOS app"
                         width={200}
                         height={400}
-                        className="rounded-xl object-contain h-[260px] w-auto"
+                        className={`rounded-xl object-contain h-[260px] w-auto`}
                         priority
                       />
                     </div>
-                    <div
-                      className={`absolute -top-1.5 -right-1.5 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "0.8s" : "0s" }}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-3 w-3 text-black" />
-                      </div>
-                    </div>
                   </div>
                   {/* Web */}
-                  <div className="shrink-0 relative">
-                    <div className={`rounded-lg overflow-hidden bg-black w-[140px] transition-all duration-500 ${isCubeComplete ? "shield-glow" : ""}`}>
+                  <div className="shrink-0 relative isolate">
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
+                    <div className={`rounded-lg overflow-hidden bg-black w-[140px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
                       <div className="flex items-center gap-1 px-2 py-1.5 bg-black border-b border-white/[0.04]">
                         <div className="w-2 h-2 rounded-full bg-red-500/60" />
                         <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
@@ -734,51 +714,17 @@ export default function Home() {
                         priority
                       />
                     </div>
-                    <div
-                      className={`absolute -top-1.5 -left-1.5 z-10 ${isCubeComplete ? "shield-badge" : "opacity-0"}`}
-                      style={{ animationDelay: isCubeComplete ? "1s" : "0s" }}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg shadow-yellow-500/30">
-                        <Shield className="h-3 w-3 text-black" />
-                      </div>
-                    </div>
                   </div>
                 </div>
 
                 {/* Mobile platform labels */}
                 <div
-                  className={`flex items-center justify-center gap-12 mt-4 transition-all duration-700 ${
-                    isCubeComplete
-                      ? "opacity-100"
-                      : "opacity-0"
-                  }`}
+                  className={`flex items-center justify-center gap-[110px] mt-4 transition-all duration-700 ${isCubeComplete ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 -translate-y-4"
+                    }`}
                 >
-                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">iOS</span>
-                  <span className="text-gray-500 text-xs font-medium tracking-wider uppercase">Web</span>
+                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">iOS</span>
+                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">Web</span>
                 </div>
-
-                {/* Mobile rotating words overlay — text then lock */}
-                {!isCubeComplete && (
-                  <div className="absolute inset-0 z-10 bg-black">
-                    {/* Rotating words — fade out when image phase starts */}
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center px-4 transition-opacity duration-700 ${
-                        mobileHeroPhase === "image" ? "opacity-0 pointer-events-none" : "opacity-100"
-                      }`}
-                    >
-                      <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
-                    </div>
-                    {/* Lock icon — crossfades in after text fades */}
-                    <div
-                      className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${
-                        mobileHeroPhase === "image" ? "opacity-100" : "opacity-0 pointer-events-none"
-                      }`}
-                      style={{ transitionDelay: mobileHeroPhase === "image" ? "400ms" : "0ms" }}
-                    >
-                      <Lock className={`h-16 w-16 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] ${mobileHeroPhase === "image" ? "lock-anim" : ""}`} />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Spacer after animation completes */}
@@ -788,9 +734,8 @@ export default function Home() {
 
           {/* Scroll indicator */}
           <div
-            className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-1000 ${
-              isCubeComplete ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-1000 ${isCubeComplete ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div className="scroll-indicator text-gray-600">
               <ChevronDown className="h-6 w-6" />
@@ -805,35 +750,43 @@ export default function Home() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
 
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center mb-16">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Standing on the Shoulders of Giants
-                </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                  The World&apos;s Greatest{" "}
-                  <span className="gradient-text">Transformational Leaders</span>
+                  Transformational Leaders changed history.
+                  <br />
+                  <span className="gradient-text">Imagine having one just for you.</span>
                 </h2>
               </div>
             </RevealSection>
 
             <RevealSection delay={200}>
-              <div className="flex items-center justify-center gap-8 md:gap-16 lg:gap-20">
+              <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-16">
                 {[
-                  { src: "/leaders/mandela.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/gandhi.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/lincoln.jpg", alt: "Transformational leader" },
-                  { src: "/leaders/rumi.jpg", alt: "Transformational leader" },
-                ].map((leader) => (
+                  { src: "/leaders/bob_marley.jpg", alt: "Bob Marley", tone: "cool" },
+                  { src: "/leaders/john_lennon.jpg", alt: "John Lennon", tone: "cool" },
+                  { src: "/leaders/rumi.jpg", alt: "Rumi", tone: "warm" },
+                  { src: "/leaders/malcolm_x.jpg", alt: "Malcolm X", tone: "cool" },
+                  { src: "/leaders/maya_angelou.jpg", alt: "Maya Angelou", tone: "cool" },
+                ].map((leader, i) => (
                   <div key={leader.src} className="relative">
-                    <div className="w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/10 hover:border-yellow-400/40 transition-all duration-500">
+                    <div className={`rounded-full overflow-hidden border-2 transition-all duration-500 ${i === 2
+                      ? "w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 border-yellow-400/30 hover:border-yellow-400/60"
+                      : "w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 border-white/10 hover:border-yellow-400/40"
+                      }`}>
                       <Image
                         src={leader.src}
                         alt={leader.alt}
                         width={200}
                         height={200}
-                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                        className={`w-full h-full object-cover transition-all duration-500 ${
+                          leader.tone === "center"
+                            ? "grayscale hover:grayscale-0"
+                            : leader.tone === "warm"
+                              ? "sepia-[0.3] brightness-[0.95] saturate-[0.7] hover:sepia-0 hover:brightness-100 hover:saturate-100"
+                              : "grayscale hover:grayscale-0"
+                        }`}
                       />
                     </div>
                   </div>
@@ -850,17 +803,19 @@ export default function Home() {
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.04)_0%,transparent_60%)] pointer-events-none" />
 
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8">
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
             <RevealSection>
               <div className="text-center">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Transformational programs proved, transformation is teachable.
+                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
+                  Standing on the Shoulders of Giants
+                </span>
+                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-6">
+                  The world&apos;s best programs proved anyone can achieve transformation.
                   <br />
-                  <span className="gradient-text">We made it affordable for all.</span>
+                  <span className="gradient-text">Rumi shows you how — at a fraction of the cost.</span>
                 </h2>
-                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
-                  Inspired by the world&apos;s most impactful programs — Landmark Forum &amp; Tony Robbins
-                  — and reimagined with AI that can actually deliver transformation in your pocket.
+                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed mt-8">
+                  Inspired by methodologies pioneered by programs like Landmark Forum and leaders like Tony Robbins
                 </p>
               </div>
             </RevealSection>
@@ -880,26 +835,23 @@ export default function Home() {
                   Why Rumi Exists
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Real Problems.{" "}
-                  <span className="gradient-text">Real Solutions.</span>
+                  Become a Transformational Leader —
+                  <br />
+                  <span className="text-[#FBBF24]">Without the Cost. Without the Fade.</span>
                 </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  The personal development industry leaves millions behind.
-                  Rumi was built to change that.
-                </p>
               </div>
             </RevealSection>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
               <SolutionCard
-                title="High Commitment Cost"
+                title="Lead Without the Financial Barrier"
                 icon={Lock}
                 problem="World-class transformational programs require a large upfront commitment of $1,000–$12,000, plus 3–5 days of participation with an average of 12 hours of seat time per day."
                 solution="Rumi delivers the same depth of transformational leadership — accessible anytime, anywhere, right from your phone. No travel, no time off work."
                 delay={0}
               />
               <SolutionCard
-                title="Fading Afterglow"
+                title="Become the Leader. Stay the Leader."
                 icon={RefreshCw}
                 problem="Although you are highly likely to experience a breakthrough that truly excites you, recent research shows that for about 95% of participants, the breakthrough is not permanent and will revert back."
                 solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
@@ -1207,15 +1159,14 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8 text-center">
             <RevealSection>
               <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                Ready to Meet the Transformational Leader{" "}
-                <span className="gradient-text">Who Truly Knows You?</span>
+                Your Transformation Starts with One Conversation.
               </h2>
               <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4">
                 Experience transformational leadership that understands who you are, meets you where you are,
                 and helps you become who you want to be.
               </p>
               <div className="flex items-center justify-center gap-2 mb-10">
-                <Shield className="h-4 w-4 text-yellow-400" />
+                <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
               <Link href="/login">
