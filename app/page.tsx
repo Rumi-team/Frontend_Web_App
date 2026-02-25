@@ -565,7 +565,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center">
-            <Link href="/login">
+            <Link href="/coach">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
                 Sign In
               </Button>
@@ -861,51 +861,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            TESTIMONIALS — User Stories
-            ══════════════════════════════════════════════════════ */}
+        {/* TESTIMONIALS section — commented out for now
         <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8 mb-14">
-            <RevealSection>
-              <div className="text-center">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Real Stories, Real Transformation
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-                  Trusted by Graduates of the{" "}
-                  <span className="gradient-text">World&apos;s Top Programs</span>
-                </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-                  From Landmark Forum to Tony Robbins and beyond — people who&apos;ve experienced
-                  transformation are using Rumi to make it last.
-                </p>
-              </div>
-            </RevealSection>
-          </div>
-
-          <div className="relative z-10 space-y-6">
-            {/* Row 1 — scrolls left */}
-            <div className="testimonial-marquee">
-              <div className="marquee-track-left">
-                {[...testimonials.row1, ...testimonials.row1].map((t, i) => (
-                  <TestimonialCard key={`r1-${i}`} {...t} />
-                ))}
-              </div>
-            </div>
-
-            {/* Row 2 — scrolls right */}
-            <div className="testimonial-marquee">
-              <div className="marquee-track-right">
-                {[...testimonials.row2, ...testimonials.row2].map((t, i) => (
-                  <TestimonialCard key={`r2-${i}`} {...t} />
-                ))}
-              </div>
-            </div>
-          </div>
+          ...testimonials...
         </section>
+        */}
 
         {/* ══════════════════════════════════════════════════════
             SECTION 3 — PARTNERS
@@ -1169,7 +1129,7 @@ export default function Home() {
                 <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
-              <Link href="/login">
+              <Link href="/coach">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
                   Sign In
                   <ArrowRight className="ml-2 h-5 w-5" />
