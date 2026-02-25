@@ -39,6 +39,9 @@ export interface CommitmentData {
   when: string | null
   status: string | null
   created_at: string | null
+  type: string | null
+  why: string | null
+  session_topic: string | null
 }
 
 export interface UserStateResponse {

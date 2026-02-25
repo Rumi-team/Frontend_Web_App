@@ -99,13 +99,34 @@ export function useLibraryData(
       const txData: TransformationData | null = state?.transformation ?? null
       setTransformation(txData)
 
-      const rawCommitments: CommitmentData[] = (state?.commitments ?? []).map(
-        (c: any) => ({
-          what: c.what ?? "",
-          when: c.when ?? null,
-          status: c.status ?? "active",
-          created_at: c.created_at ?? null,
-        })
+      // Build commitments from user_state, enriched with type/why from evaluations
+      const stateCommitments = state?.commitments ?? []
+
+      // Also fetch recommended_assignments from latest evaluation for type/why
+      const { data: latestEval } = await supabase
+        .from("session_evaluations")
+        .select("recommended_assignments, evaluated_at")
+        .eq("provider_user_id", providerUserId)
+        .order("evaluated_at", { ascending: false })
+        .limit(1)
+        .single()
+
+      const evalAssignments: any[] = latestEval?.recommended_assignments ?? []
+
+      const rawCommitments: CommitmentData[] = stateCommitments.map(
+        (c: any, i: number) => {
+          // Match by index (assignments are added in same order)
+          const enrichment = evalAssignments[i]
+          return {
+            what: c.what ?? "",
+            when: c.when ?? enrichment?.due_timeframe ?? null,
+            status: c.status ?? "active",
+            created_at: c.created_at ?? null,
+            type: enrichment?.type ?? null,
+            why: enrichment?.why ?? null,
+            session_topic: null,
+          }
+        }
       )
       setCommitments(rawCommitments)
 
