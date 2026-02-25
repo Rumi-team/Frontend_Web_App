@@ -2,12 +2,62 @@
 
 import { useLibraryData } from "@/hooks/use-library-data"
 import type { CommitmentData, TransformationData } from "@/lib/types/library"
-import { X, ClipboardList, Circle, CheckCircle2, Clock, Loader2 } from "lucide-react"
+import {
+  X,
+  ClipboardList,
+  CheckCircle2,
+  Clock,
+  Loader2,
+  BookOpen,
+  Zap,
+  MessageCircle,
+  Eye,
+  Sparkles,
+} from "lucide-react"
 
 interface AssignmentsSheetProps {
   isOpen: boolean
   onClose: () => void
   providerUserId: string | null
+}
+
+/* ---------- Type-based styling ---------- */
+
+const TYPE_CONFIG: Record<
+  string,
+  { icon: typeof BookOpen; gradient: string; accent: string; label: string }
+> = {
+  reflection: {
+    icon: BookOpen,
+    gradient: "linear-gradient(135deg, rgba(168,85,247,0.35) 0%, rgba(88,28,135,0.2) 100%)",
+    accent: "rgb(192,132,252)",
+    label: "Reflection",
+  },
+  action: {
+    icon: Zap,
+    gradient: "linear-gradient(135deg, rgba(234,179,8,0.35) 0%, rgba(161,98,7,0.2) 100%)",
+    accent: "rgb(250,204,21)",
+    label: "Action",
+  },
+  conversation: {
+    icon: MessageCircle,
+    gradient: "linear-gradient(135deg, rgba(59,130,246,0.35) 0%, rgba(30,58,138,0.2) 100%)",
+    accent: "rgb(96,165,250)",
+    label: "Conversation",
+  },
+  observation: {
+    icon: Eye,
+    gradient: "linear-gradient(135deg, rgba(20,184,166,0.35) 0%, rgba(13,148,136,0.2) 100%)",
+    accent: "rgb(45,212,191)",
+    label: "Observation",
+  },
+}
+
+const DEFAULT_TYPE_CONFIG = {
+  icon: Sparkles,
+  gradient: "linear-gradient(135deg, rgba(234,179,8,0.25) 0%, rgba(120,53,15,0.15) 100%)",
+  accent: "rgb(253,224,71)",
+  label: "Assignment",
 }
 
 export function AssignmentsSheet({
@@ -128,55 +178,86 @@ function AssignmentStats({
 
 function CommitmentCard({ commitment }: { commitment: CommitmentData }) {
   const isCompleted = commitment.status === "completed"
+  const config = (commitment.type && TYPE_CONFIG[commitment.type]) || DEFAULT_TYPE_CONFIG
+  const Icon = config.icon
 
   return (
     <div
-      className="flex items-start gap-3 rounded-xl border border-gray-800 p-4"
+      className="rounded-xl border border-gray-800 overflow-hidden transition-colors hover:border-gray-700"
       style={{ background: "rgba(255,255,255,0.02)" }}
     >
-      {/* Status icon */}
-      <div className="mt-0.5 shrink-0">
-        {isCompleted ? (
-          <CheckCircle2 className="h-5 w-5" style={{ color: "rgb(51,178,76)" }} />
-        ) : (
-          <Circle className="h-5 w-5 text-gray-500" />
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0 space-y-1">
-        <p className="text-sm text-white leading-relaxed">{commitment.what}</p>
-        {commitment.when && (
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <Clock className="h-3 w-3" />
-            <span>{commitment.when}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Status badge */}
-      <div className="shrink-0">
+      {/* Gradient header with type icon */}
+      <div
+        className="flex items-center justify-between px-4 py-2.5"
+        style={{ background: config.gradient }}
+      >
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4" style={{ color: config.accent }} />
+          <span
+            className="text-xs font-semibold uppercase tracking-wide"
+            style={{ color: config.accent }}
+          >
+            {config.label}
+          </span>
+        </div>
         {isCompleted ? (
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+            className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium"
             style={{
-              background: "rgba(51,178,76,0.15)",
-              color: "rgb(51,178,76)",
+              background: "rgba(51,178,76,0.2)",
+              color: "rgb(74,222,100)",
             }}
           >
-            Completed
+            <CheckCircle2 className="h-3 w-3" />
+            Done
           </span>
         ) : (
           <span
             className="rounded-full px-2 py-0.5 text-[10px] font-medium"
             style={{
-              background: "rgba(74,80,90,0.3)",
-              color: "rgb(189,204,230)",
+              background: "rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.7)",
             }}
           >
             Active
           </span>
         )}
+      </div>
+
+      {/* Body */}
+      <div className="px-4 py-3 space-y-2">
+        <p
+          className={`text-sm leading-relaxed ${
+            isCompleted ? "text-gray-400 line-through" : "text-white"
+          }`}
+        >
+          {commitment.what}
+        </p>
+
+        {/* Why context */}
+        {commitment.why && (
+          <p className="text-xs text-gray-500 italic leading-relaxed">
+            {commitment.why}
+          </p>
+        )}
+
+        {/* Footer: when + created date */}
+        <div className="flex items-center gap-3 pt-1">
+          {commitment.when && (
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <Clock className="h-3 w-3" />
+              <span>{commitment.when}</span>
+            </div>
+          )}
+          {commitment.created_at && (
+            <span className="text-[10px] text-gray-600">
+              {new Date(commitment.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )

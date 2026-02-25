@@ -53,7 +53,7 @@ export function LibrarySheet({
             </button>
           ) : (
             <h2 className="text-2xl font-bold text-white">
-              Your{displayName ? ` ${displayName}` : ""} Journey
+              {displayName ? `${displayName}'s Journey` : "Your Journey"}
             </h2>
           )}
           <button
