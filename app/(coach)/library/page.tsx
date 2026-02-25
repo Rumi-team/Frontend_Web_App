@@ -14,7 +14,7 @@ export default async function LibraryPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect("/login")
+  if (!user) redirect("/coach")
 
   // Get provider_user_id from user_identities
   const serviceClient = createServerSupabaseClient()

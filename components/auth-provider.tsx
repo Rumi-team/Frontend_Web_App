@@ -61,11 +61,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const codeExchangeDone = useRef(false)
 
   // Safety: reset isSigningIn on mount — if user navigated back from OAuth
-  // page or a previous attempt left it stuck, clear it after a short delay
+  // page or a previous attempt left it stuck, clear it after a short delay.
+  // Also acts as a global timeout: if any sign-in takes > 15s, reset.
+  const signingInTimerRef = useRef<ReturnType<typeof setTimeout>>()
   useEffect(() => {
     const t = setTimeout(() => setIsSigningIn(false), 3000)
     return () => clearTimeout(t)
   }, [])
+  useEffect(() => {
+    if (isSigningIn) {
+      signingInTimerRef.current = setTimeout(() => {
+        console.warn("[Auth] Sign-in timed out after 15s, resetting state")
+        setIsSigningIn(false)
+        setOauthError("Sign-in timed out. Please try again.")
+      }, 15000)
+    } else if (signingInTimerRef.current) {
+      clearTimeout(signingInTimerRef.current)
+    }
+    return () => {
+      if (signingInTimerRef.current) clearTimeout(signingInTimerRef.current)
+    }
+  }, [isSigningIn])
 
   useEffect(() => {
     // Handle PKCE code exchange: when Google/Apple redirects back with ?code=,
@@ -130,7 +146,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setOauthError(null)
       setIsSigningIn(true)
-      const redirectTo = `${window.location.origin}/login`
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "")
+      const redirectTo = `${siteUrl}/coach`
+      console.log("[Auth] Google OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -162,7 +182,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setOauthError(null)
       setIsSigningIn(true)
-      const redirectTo = `${window.location.origin}/login`
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "")
+      const redirectTo = `${siteUrl}/coach`
+      console.log("[Auth] Apple OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "apple",
         options: {
@@ -206,10 +230,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = useCallback(async (email: string, password: string) => {
     try {
       setIsSigningIn(true)
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "")
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${window.location.origin}/login` },
+        options: { emailRedirectTo: `${siteUrl}/coach` },
       })
       setIsSigningIn(false)
       if (error) return { error: error.message }
@@ -222,8 +249,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const resetPassword = useCallback(async (email: string) => {
     try {
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "")
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${siteUrl}/coach`,
       })
       if (error) return { error: error.message }
       return { error: null }
@@ -238,7 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDisplayNameOverride(null)
     await supabase.auth.signOut()
     // Force navigate to sign-in by reloading — ensures server sees no session
-    window.location.href = "/login"
+    window.location.href = "/coach"
   }, [supabase])
 
   const updateDisplayName = useCallback((name: string) => {

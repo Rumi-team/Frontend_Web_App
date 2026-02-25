@@ -344,7 +344,7 @@ function CoachShellInner({
     return <AccessCodeGate onActivated={() => router.refresh()} />
   }
 
-  const isCoachPage = pathname === "/login"
+  const isCoachPage = pathname === "/coach"
 
   // Fully authenticated with access
   // On /coach route, skip nav for fullscreen orb experience
@@ -361,7 +361,7 @@ function CoachShellInner({
       {/* Top nav */}
       <nav className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
         <div className="flex items-center gap-1">
-          <Link href="/login">
+          <Link href="/coach">
             <Image
               src="/rumi_logo.png"
               alt="Rumi"
@@ -373,13 +373,13 @@ function CoachShellInner({
         </div>
 
         <div className="flex items-center gap-1">
-          <Link href="/login">
+          <Link href="/coach">
             <Button
               variant="ghost"
               size="sm"
               className={cn(
                 "text-gray-400 hover:text-white",
-                pathname === "/login" && "text-yellow-400 hover:text-yellow-300"
+                pathname === "/coach" && "text-yellow-400 hover:text-yellow-300"
               )}
             >
               <Mic className="mr-1.5 h-4 w-4" />
