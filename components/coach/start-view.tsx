@@ -148,10 +148,10 @@ export function StartView({
         className="mb-[6vh] text-center transition-opacity duration-300"
         style={{ opacity: showText ? 1 : 0 }}
       >
-        <p className="text-2xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+        <p className="text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
           Tap &amp; Hold to
         </p>
-        <p className="text-2xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+        <p className="text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
           Start Transformation
         </p>
       </div>
@@ -250,15 +250,33 @@ export function StartView({
       {/* Lyrics display — absolutely positioned so it never shifts the orb */}
       {isMusicPlaying && lyricsLine && (
         <p
-          className="absolute left-1/2 -translate-x-1/2 max-w-lg px-4 text-center text-2xl font-medium transition-opacity duration-500 pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 max-w-lg px-4 text-center text-3xl font-medium transition-opacity duration-500 pointer-events-none"
           style={{
             color: "rgb(255, 212, 26)",
             opacity: lyricsOpacity,
-            top: `calc(50% + ${orbSize / 2 + 100}px)`,
+            bottom: "6vh",
           }}
         >
           {lyricsLine}
         </p>
+      )}
+
+      {/* Music toggle at bottom — always visible when not holding */}
+      {!hideControls && (
+        <button
+          onClick={onToggleMusic}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full px-5 py-2.5 transition-all hover:bg-white/[0.08]"
+          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(8px)" }}
+        >
+          {isMusicPlaying ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          )}
+          <span className={`text-sm font-medium ${isMusicPlaying ? "text-yellow-400/80" : "text-gray-500"}`}>
+            {isMusicPlaying ? "Poem of the Atoms" : "Play Music"}
+          </span>
+        </button>
       )}
 
       {/* Settings panel */}
