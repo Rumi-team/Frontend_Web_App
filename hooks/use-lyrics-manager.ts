@@ -87,7 +87,7 @@ export function useLyricsManager(): UseLyricsManagerReturn {
     if (audioRef.current) return // already playing
 
     const audio = new Audio("/rumi_poem.mp3")
-    audio.volume = 1
+    audio.volume = 0.5
     audioRef.current = audio
 
     audio.play().then(() => {
@@ -132,14 +132,14 @@ export function useLyricsManager(): UseLyricsManagerReturn {
         }
       }, 50)
     } else {
-      // Fade in
+      // Fade in to half volume
       audio.volume = 0
       audio.play().catch(() => {})
       let vol = 0
       const fadeIn = setInterval(() => {
-        vol = Math.min(1, vol + 0.05)
+        vol = Math.min(0.5, vol + 0.05)
         audio.volume = vol
-        if (vol >= 1) clearInterval(fadeIn)
+        if (vol >= 0.5) clearInterval(fadeIn)
       }, 50)
       setIsMusicPlaying(true)
       intervalRef.current = window.setInterval(updateLyric, 50)
