@@ -11,42 +11,55 @@ interface AgentTranscriptProps {
 export function AgentTranscript({ messages }: AgentTranscriptProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
+  // Only show agent/coach messages (matching iOS behavior)
+  const agentMessages = messages.filter((msg) => msg.content.type === "agent")
+
+  // Show only the latest agent message (live caption style)
+  const latestMessage = agentMessages.length > 0
+    ? agentMessages[agentMessages.length - 1]
+    : null
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [messages])
+  }, [latestMessage])
 
-  if (messages.length === 0) {
+  if (!latestMessage) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-gray-500 text-xl">Waiting for your coach...</p>
+      <div className="flex h-full items-center justify-center">
+        <p className="text-gray-400 text-3xl font-medium">Waiting for your coach...</p>
       </div>
     )
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-8 space-y-5">
-      {messages.map((msg) => (
-        <div
-          key={msg.id}
-          className={cn(
-            "max-w-[85%] rounded-2xl px-6 py-4 text-xl leading-relaxed",
-            msg.content.type === "agent"
-              ? "self-start bg-gray-900 text-gray-100"
-              : "self-end ml-auto bg-yellow-400/10 text-yellow-100"
-          )}
-        >
-          {msg.styledSegments.map((seg, i) => (
+    <div ref={scrollRef} className="h-full overflow-y-auto flex items-start px-10 py-8">
+      <div
+        className="w-full rounded-3xl px-8 py-6"
+        style={{
+          backgroundColor: "rgba(255, 230, 133, 0.95)",
+          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12)",
+        }}
+      >
+        <p className="text-3xl leading-relaxed">
+          {latestMessage.styledSegments.map((seg, i) => (
             <span
               key={i}
-              className={cn(seg.isHighlight && "font-semibold text-yellow-400")}
+              className={cn(
+                seg.isHighlight ? "font-semibold" : "font-normal"
+              )}
+              style={{
+                color: seg.isHighlight
+                  ? "rgb(180, 130, 10)"
+                  : "rgb(50, 34, 8)",
+              }}
             >
               {seg.text}
             </span>
           ))}
-        </div>
-      ))}
+        </p>
+      </div>
     </div>
   )
 }

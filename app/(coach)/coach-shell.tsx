@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
 import { AccessCodeGate } from "@/components/access-code-gate"
 import { Button } from "@/components/ui/button"
-import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react"
+import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface CoachShellProps {
@@ -30,9 +30,11 @@ export function CoachShell({ children, authenticated, hasAccess }: CoachShellPro
 function SignInPage() {
   const {
     signInWithGoogle,
+    signInWithApple,
     signInWithEmail,
     signUpWithEmail,
     isSigningIn,
+    oauthError,
   } = useAuth()
 
   const [email, setEmail] = useState("")
@@ -212,6 +214,11 @@ function SignInPage() {
             </div>
           </div>
 
+          {/* OAuth error */}
+          {oauthError && (
+            <p className="text-red-400 text-sm px-1 text-center">{oauthError}</p>
+          )}
+
           {/* Social sign-in buttons */}
           <div className="space-y-3">
             {/* Google */}
@@ -239,6 +246,18 @@ function SignInPage() {
                 />
               </svg>
               Continue with Google
+            </button>
+
+            {/* Apple */}
+            <button
+              onClick={signInWithApple}
+              disabled={isSigningIn}
+              className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-black hover:bg-gray-900 border border-gray-700 text-white font-semibold text-lg disabled:opacity-50 transition-all"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 814 1000" fill="white">
+                <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.3-164-39.3c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 192.5-49 30.8 0 108.2 2.6 168.5 80.9zm-126.7-94.7c-18.7-22.5-48.4-39.4-73.7-39.4-2.8 0-5.8.3-8.3.6 2.5 29.4 18.7 59.5 39.9 80.9 19.4 19.4 46.4 38.2 76.2 42.9-2.9-30.4-19.5-62-34.1-85z"/>
+              </svg>
+              Continue with Apple
             </button>
 
           </div>
@@ -379,6 +398,20 @@ function CoachShellInner({
             >
               <BookOpen className="mr-1.5 h-4 w-4" />
               Library
+            </Button>
+          </Link>
+          <Link href="/settings">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "text-gray-400 hover:text-white",
+                pathname?.startsWith("/settings") &&
+                  "text-yellow-400 hover:text-yellow-300"
+              )}
+            >
+              <Settings className="mr-1.5 h-4 w-4" />
+              Settings
             </Button>
           </Link>
         </div>

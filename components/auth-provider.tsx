@@ -17,6 +17,7 @@ interface AuthContextValue {
   session: Session | null
   isLoading: boolean
   isSigningIn: boolean
+  oauthError: string | null
   providerUserId: string | null
   displayName: string | null
   signInWithGoogle: () => Promise<void>
@@ -54,9 +55,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSigningIn, setIsSigningIn] = useState(false)
+  const [oauthError, setOauthError] = useState<string | null>(null)
   const [displayNameOverride, setDisplayNameOverride] = useState<string | null>(null)
   const postSignInDone = useRef(false)
   const codeExchangeDone = useRef(false)
+
+  // Safety: reset isSigningIn on mount — if user navigated back from OAuth
+  // page or a previous attempt left it stuck, clear it after a short delay
+  useEffect(() => {
+    const t = setTimeout(() => setIsSigningIn(false), 3000)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     // Handle PKCE code exchange: when Google/Apple redirects back with ?code=,
@@ -72,10 +81,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (error) {
           console.error("PKCE code exchange error:", error)
+          setOauthError("Sign-in failed. Please try again.")
           setIsLoading(false)
+          setIsSigningIn(false)
         }
         // onAuthStateChange will fire SIGNED_IN and handle the rest
       })
+    }
+
+    // Check for OAuth error in URL (e.g. ?error=access_denied&error_description=...)
+    const urlError = params.get("error_description") || params.get("error")
+    if (urlError) {
+      setOauthError(urlError)
+      window.history.replaceState(null, "", window.location.pathname)
     }
 
     // Get initial session
@@ -110,6 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = useCallback(async () => {
     try {
+      setOauthError(null)
       setIsSigningIn(true)
       const redirectTo = `${window.location.origin}/login`
       const result = await supabase.auth.signInWithOAuth({
@@ -121,20 +140,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       if (result.error) {
         console.error("OAuth error:", result.error)
+        setOauthError(result.error.message)
         setIsSigningIn(false)
         return
       }
       if (result.data?.url) {
         window.location.href = result.data.url
+      } else {
+        console.error("Google OAuth: no redirect URL returned")
+        setOauthError("Failed to start Google sign-in. Please try again.")
+        setIsSigningIn(false)
       }
     } catch (error) {
       console.error("Failed to sign in with Google:", error)
+      setOauthError("Failed to connect to Google. Please try again.")
       setIsSigningIn(false)
     }
   }, [supabase])
 
   const signInWithApple = useCallback(async () => {
     try {
+      setOauthError(null)
       setIsSigningIn(true)
       const redirectTo = `${window.location.origin}/login`
       const result = await supabase.auth.signInWithOAuth({
@@ -146,14 +172,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       if (result.error) {
         console.error("Apple OAuth error:", result.error)
+        setOauthError(result.error.message)
         setIsSigningIn(false)
         return
       }
       if (result.data?.url) {
         window.location.href = result.data.url
+      } else {
+        console.error("Apple OAuth: no redirect URL returned")
+        setOauthError("Failed to start Apple sign-in. Please try again.")
+        setIsSigningIn(false)
       }
     } catch (error) {
       console.error("Failed to sign in with Apple:", error)
+      setOauthError("Failed to connect to Apple. Please try again.")
       setIsSigningIn(false)
     }
   }, [supabase])
@@ -213,10 +245,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDisplayNameOverride(name)
   }, [])
 
-  const providerUserId =
-    user?.identities?.[0]?.identity_data?.sub ??
-    user?.identities?.[0]?.id ??
-    null
+  // Resolve provider user ID: prefer Apple/Google identity sub over email identity
+  // iOS stores sessions with Apple sub, so we must match that on web
+  const providerUserId = (() => {
+    if (!user) return null
+    const identities = user.identities ?? []
+    // Prefer Apple identity (matches iOS session data)
+    const apple = identities.find((i) => i.provider === "apple")
+    if (apple?.identity_data?.sub) return apple.identity_data.sub as string
+    // Try Google identity
+    const google = identities.find((i) => i.provider === "google")
+    if (google?.identity_data?.sub) return google.identity_data.sub as string
+    // Fall back to user_metadata.sub (preserves original provider sub)
+    if (user.user_metadata?.sub) return user.user_metadata.sub as string
+    // Last resort: first identity
+    return (identities[0]?.identity_data?.sub as string) ?? identities[0]?.id ?? null
+  })()
 
   const displayName =
     displayNameOverride ??
@@ -232,6 +276,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         isLoading,
         isSigningIn,
+        oauthError,
         providerUserId,
         displayName,
         signInWithGoogle,

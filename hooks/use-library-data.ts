@@ -8,6 +8,8 @@ import type {
   SessionEvaluation,
   TransformationData,
   CommitmentData,
+  TrajectoryDataPoint,
+  GrowthSnapshot,
 } from "@/lib/types/library"
 
 interface UseLibraryDataReturn {
@@ -15,6 +17,8 @@ interface UseLibraryDataReturn {
   stats: UserJourneyStats
   commitments: CommitmentData[]
   transformation: TransformationData | null
+  trajectoryData: TrajectoryDataPoint[]
+  growthSnapshot: GrowthSnapshot | null
   isLoading: boolean
   refetch: () => void
   fetchEvaluation: (sessionId: string) => Promise<SessionEvaluation | null>
@@ -34,6 +38,8 @@ export function useLibraryData(
   const [commitments, setCommitments] = useState<CommitmentData[]>([])
   const [transformation, setTransformation] =
     useState<TransformationData | null>(null)
+  const [trajectoryData, setTrajectoryData] = useState<TrajectoryDataPoint[]>([])
+  const [growthSnapshot, setGrowthSnapshot] = useState<GrowthSnapshot | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const load = useCallback(async () => {
@@ -46,8 +52,8 @@ export function useLibraryData(
     try {
       const supabase = createSupabaseBrowserClient()
 
-      // Fetch sessions + user_state in parallel
-      const [sessionsRes, stateRes] = await Promise.all([
+      // Fetch sessions + user_state + evaluations + growth snapshot in parallel
+      const [sessionsRes, stateRes, evalRes, snapshotRes] = await Promise.all([
         supabase
           .from("session_summaries")
           .select(
@@ -60,6 +66,19 @@ export function useLibraryData(
           .select("state")
           .eq("provider_user_id", providerUserId)
           .single(),
+        supabase
+          .from("session_evaluations")
+          .select(
+            "evaluated_at, transformation_level, engagement_level, resistance_level, depth_of_insight, strategy_used, phase_completion_quality, emotional_openness"
+          )
+          .eq("provider_user_id", providerUserId)
+          .order("evaluated_at", { ascending: true }),
+        supabase
+          .from("growth_snapshots")
+          .select("*")
+          .eq("provider_user_id", providerUserId)
+          .order("snapshot_date", { ascending: false })
+          .limit(1),
       ])
 
       // Process sessions
@@ -122,6 +141,28 @@ export function useLibraryData(
         streakDays,
         lastVisitDate: rawSessions[0]?.session_started_at ?? null,
       })
+
+      // Process trajectory data from evaluations
+      const trajectoryPoints: TrajectoryDataPoint[] = (evalRes.data ?? []).map((e: any) => ({
+        date: e.evaluated_at,
+        transformation: e.transformation_level ?? 0,
+        engagement: e.engagement_level ?? 0,
+        resistance: e.resistance_level ?? 0,
+        depth: e.depth_of_insight ?? 0,
+        overall: Math.round(
+          (e.transformation_level ?? 0) * 3.5 +
+          (e.phase_completion_quality ?? 0) * 2.0 +
+          (e.depth_of_insight ?? 0) * 2.0 +
+          (e.engagement_level ?? 0) * 1.5 +
+          (10 - (e.resistance_level ?? 5)) * 1.0
+        ) / 10,
+        strategy: e.strategy_used ?? null,
+      }))
+      setTrajectoryData(trajectoryPoints)
+
+      // Process growth snapshot
+      const latestSnapshot = snapshotRes.data?.[0] ?? null
+      setGrowthSnapshot(latestSnapshot as GrowthSnapshot | null)
     } catch (err) {
       console.error("Failed to load library data:", err)
     }
@@ -155,6 +196,8 @@ export function useLibraryData(
     stats,
     commitments,
     transformation,
+    trajectoryData,
+    growthSnapshot,
     isLoading,
     refetch: load,
     fetchEvaluation,

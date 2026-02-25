@@ -62,4 +62,36 @@ export interface SessionEvaluation {
   recommended_assignments: unknown[] | null
   follow_up_focus: string | null
   coaching_approach_next: string | null
+  // Layer 2: Adaptive Coaching
+  strategy_used: string | null
+  pacing_recommendation: string | null
+  technique_effectiveness: Record<string, unknown> | null
+}
+
+// Layer 3: Growth Trajectory
+export interface TrajectoryDataPoint {
+  date: string
+  transformation: number
+  engagement: number
+  resistance: number
+  depth: number
+  overall: number
+  strategy: string | null
+}
+
+export interface GrowthSnapshot {
+  provider_user_id: string
+  snapshot_date: string
+  sessions_in_period: number
+  avg_transformation: number
+  avg_engagement: number
+  avg_resistance: number
+  avg_depth: number
+  peak_transformation: number
+  assignments_completed: number
+  assignments_given: number
+  trend: "rising" | "plateau" | "declining" | "breakthrough"
+  plateau_sessions: number
+  alert_type: string | null
+  alert_message: string | null
 }

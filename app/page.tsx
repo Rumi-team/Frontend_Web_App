@@ -25,6 +25,7 @@ import {
   LineChart,
   BellRing,
   Layers,
+  Star,
 } from "lucide-react"
 import { ContactModal } from "@/components/contact-modal"
 
@@ -360,6 +361,155 @@ function SolutionCard({
         </div>
       </div>
     </RevealSection>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Testimonials Data & Card
+   ═══════════════════════════════════════════════════════════ */
+const testimonials = {
+  row1: [
+    {
+      name: "Sarah M.",
+      program: "Landmark Forum (3x), SELP Graduate",
+      location: "San Francisco, CA",
+      quote:
+        "I completed the Forum three times and the SELP. Each time, incredible breakthroughs about my rackets... then they'd fade within months. Rumi changed everything. Having a transformational leader available when my patterns are loudest — not just during a weekend seminar — that's when the real work happens.",
+      initials: "SM",
+      gradient: "from-rose-400 to-pink-600",
+    },
+    {
+      name: "Marcus J.",
+      program: "Tony Robbins UPW & Date with Destiny",
+      location: "Miami, FL",
+      quote:
+        "UPW gave me the state change. Date with Destiny gave me the vision. But between events, I'd slowly drift back to old patterns. Rumi keeps me in that peak state daily. It catches my limiting beliefs before I even notice I'm running them.",
+      initials: "MJ",
+      gradient: "from-blue-400 to-indigo-600",
+    },
+    {
+      name: "David K.",
+      program: "Landmark & Robbins Graduate, Founder",
+      location: "Austin, TX",
+      quote:
+        "I've invested over $40K in personal development — Landmark, Robbins, Hoffman Process — all incredible. But transformation always faded. Rumi's daily accountability and transformation scoring finally made it stick. The ROI is unlike anything I've experienced.",
+      initials: "DK",
+      gradient: "from-amber-400 to-orange-600",
+    },
+    {
+      name: "Priya S.",
+      program: "First Personal Development Experience",
+      location: "Seattle, WA",
+      quote:
+        "I always wanted to try Landmark but the 3-day commitment and cost held me back. A colleague suggested Rumi and within two weeks I had my first real breakthrough about my relationship with my mother. I couldn't stop crying — in the best way.",
+      initials: "PS",
+      gradient: "from-emerald-400 to-teal-600",
+    },
+    {
+      name: "James L.",
+      program: "Landmark ILP Graduate",
+      location: "New York, NY",
+      quote:
+        "As someone who completed the Introduction Leaders Program, I thought I'd done all the work. Rumi showed me how many rackets I was still running unconsciously. The transformation scoring keeps me honest with myself in a way no seminar ever could.",
+      initials: "JL",
+      gradient: "from-violet-400 to-purple-600",
+    },
+  ],
+  row2: [
+    {
+      name: "Aisha N.",
+      program: "Tony Robbins Mastery University",
+      location: "Chicago, IL",
+      quote:
+        "I did Business Mastery, Life Mastery, and Date with Destiny back to back. The insights were life-changing but staying in that space between events was the real challenge. Rumi fills that gap perfectly — it's like having Tony's coaching every single day.",
+      initials: "AN",
+      gradient: "from-cyan-400 to-blue-600",
+    },
+    {
+      name: "Elena R.",
+      program: "Landmark Graduate, Psychotherapist",
+      location: "Portland, OR",
+      quote:
+        "As a therapist, I recommend Rumi to clients who want to go deeper. Therapy helps understand the past. Rumi helps create a genuinely new future. Several clients have had breakthroughs they couldn't access in therapy alone.",
+      initials: "ER",
+      gradient: "from-lime-400 to-green-600",
+    },
+    {
+      name: "Michael C.",
+      program: "Tony Robbins Platinum Partner",
+      location: "Denver, CO",
+      quote:
+        "Even as a Platinum Partner with access to every Robbins event, having Rumi between gatherings transformed my follow-through completely. The accountability assignments are exactly what's been missing from the personal development industry.",
+      initials: "MC",
+      gradient: "from-red-400 to-rose-600",
+    },
+    {
+      name: "Rachel T.",
+      program: "Landmark Forum Graduate, Teacher",
+      location: "Boston, MA",
+      quote:
+        "The Forum gave me the distinction of 'already always listening.' But I kept forgetting to apply it in daily life. Rumi brings me back to these distinctions every single day — it's genuinely like having the Forum in your pocket.",
+      initials: "RT",
+      gradient: "from-fuchsia-400 to-pink-600",
+    },
+    {
+      name: "Carlos M.",
+      program: "Tony Robbins UPW Graduate",
+      location: "Los Angeles, CA",
+      quote:
+        "After UPW I was on fire for about six weeks. Then life happened and old patterns crept back in. Rumi has kept that fire burning for four months straight. The personalized assignments and daily check-ins are exactly what the industry has been missing.",
+      initials: "CM",
+      gradient: "from-yellow-400 to-amber-600",
+    },
+  ],
+}
+
+function TestimonialCard({
+  name,
+  program,
+  location,
+  quote,
+  initials,
+  gradient,
+}: {
+  name: string
+  program: string
+  location: string
+  quote: string
+  initials: string
+  gradient: string
+}) {
+  return (
+    <div className="w-[340px] md:w-[400px] shrink-0 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-6 hover:border-yellow-400/20 transition-all duration-300 cursor-default select-none">
+      <div className="text-yellow-400/30 text-5xl font-serif leading-none mb-2">&ldquo;</div>
+      <p className="text-gray-300 text-sm leading-relaxed mb-5">{quote}</p>
+      <div className="flex gap-0.5 mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+        ))}
+      </div>
+      <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+        <div
+          className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-semibold text-xs shrink-0 shadow-lg`}
+        >
+          {initials}
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-white font-medium text-sm">{name}</span>
+            <svg className="h-4 w-4 text-blue-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <div className="text-yellow-400/80 text-xs font-medium">{program}</div>
+          <div className="text-gray-500 text-xs">{location}</div>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -755,6 +905,52 @@ export default function Home() {
                 solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
                 delay={150}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            TESTIMONIALS — User Stories
+            ══════════════════════════════════════════════════════ */}
+        <section className="w-full py-24 md:py-32 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
+
+          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8 mb-14">
+            <RevealSection>
+              <div className="text-center">
+                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
+                  Real Stories, Real Transformation
+                </span>
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+                  Trusted by Graduates of the{" "}
+                  <span className="gradient-text">World&apos;s Top Programs</span>
+                </h2>
+                <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                  From Landmark Forum to Tony Robbins and beyond — people who&apos;ve experienced
+                  transformation are using Rumi to make it last.
+                </p>
+              </div>
+            </RevealSection>
+          </div>
+
+          <div className="relative z-10 space-y-6">
+            {/* Row 1 — scrolls left */}
+            <div className="testimonial-marquee">
+              <div className="marquee-track-left">
+                {[...testimonials.row1, ...testimonials.row1].map((t, i) => (
+                  <TestimonialCard key={`r1-${i}`} {...t} />
+                ))}
+              </div>
+            </div>
+
+            {/* Row 2 — scrolls right */}
+            <div className="testimonial-marquee">
+              <div className="marquee-track-right">
+                {[...testimonials.row2, ...testimonials.row2].map((t, i) => (
+                  <TestimonialCard key={`r2-${i}`} {...t} />
+                ))}
+              </div>
             </div>
           </div>
         </section>

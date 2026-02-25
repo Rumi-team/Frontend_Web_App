@@ -97,6 +97,47 @@ export function SessionDetailSheet({
         </div>
       ) : null}
 
+      {/* Coaching strategy badge (Layer 2) */}
+      {evaluation?.strategy_used && (
+        <div className="flex items-center gap-2">
+          <span
+            className="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
+            style={{
+              background: "rgba(250,204,21,0.1)",
+              color: "#facc15",
+              border: "1px solid rgba(250,204,21,0.2)",
+            }}
+          >
+            {evaluation.strategy_used.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+          </span>
+          {evaluation.pacing_recommendation && (
+            <span
+              className="inline-flex items-center rounded-full px-2.5 py-1 text-xs"
+              style={{
+                background:
+                  evaluation.pacing_recommendation === "speed_up"
+                    ? "rgba(34,197,94,0.1)"
+                    : evaluation.pacing_recommendation === "slow_down"
+                    ? "rgba(239,68,68,0.1)"
+                    : "rgba(156,163,175,0.1)",
+                color:
+                  evaluation.pacing_recommendation === "speed_up"
+                    ? "rgb(34,197,94)"
+                    : evaluation.pacing_recommendation === "slow_down"
+                    ? "rgb(239,68,68)"
+                    : "rgb(156,163,175)",
+              }}
+            >
+              {evaluation.pacing_recommendation === "speed_up"
+                ? "Speed Up"
+                : evaluation.pacing_recommendation === "slow_down"
+                ? "Slow Down"
+                : "Maintain"}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Transformation moment */}
       {evaluation?.transformation_moment && (
         <div
