@@ -11,14 +11,18 @@ interface SessionSaveOverlayProps {
 
 const STAGE_LABELS: Record<string, string> = {
   starting: "Preparing session data...",
+  summarizing: "Summarizing your session...",
   memory_saving: "Saving to memory...",
+  saving_memory: "Saving to memory...",
   memory_added: "Rumi is memorizing this session...",
   summary_generating: "Generating summary...",
   summary_generated: "Generating summary...",
   summary_saved: "Summary saved...",
   evaluating_progress: "Evaluating your progress...",
   evaluation_saved: "Evaluation saved...",
+  saving_session: "Saving session data...",
   database_saving: "Saving to database...",
+  day_complete: "Section complete! See you tomorrow...",
   complete: "Session saved!",
 }
 
@@ -37,6 +41,16 @@ export function SessionSaveOverlay({
       return () => clearTimeout(timer)
     }
   }, [stage, onComplete])
+
+  // Safety timeout: auto-complete if server doesn't respond within 90s
+  useEffect(() => {
+    if (isComplete) return
+    const safety = setTimeout(() => {
+      setIsComplete(true)
+      setTimeout(onComplete, 1500)
+    }, 90_000)
+    return () => clearTimeout(safety)
+  }, [isComplete, onComplete])
 
   const pct = Math.round(progress)
 
@@ -77,18 +91,62 @@ export function SessionSaveOverlay({
 function AnimatedHourglass({ progress }: { progress: number }) {
   const topFill = 1.0 - progress
   const bottomFill = progress
-  const size = 64
 
   return (
     <div className="relative animate-hourglass-glow">
       <svg
-        width={size}
-        height={size}
+        width={80}
+        height={80}
         viewBox="0 0 64 64"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Hourglass frame */}
+        <defs>
+          {/* Clip path matching the hourglass interior — top half */}
+          <clipPath id="hg-top">
+            <path d="M16 8 H48 C48 18 40 26 32 32 C24 26 16 18 16 8 Z" />
+          </clipPath>
+          {/* Clip path matching the hourglass interior — bottom half */}
+          <clipPath id="hg-bottom">
+            <path d="M32 32 C40 38 48 46 48 56 H16 C16 46 24 38 32 32 Z" />
+          </clipPath>
+        </defs>
+
+        {/* Top sand — depletes as progress grows */}
+        <rect
+          x="0"
+          y={8 + 24 * (1 - topFill)}
+          width="64"
+          height={24 * topFill}
+          fill="rgba(250,204,21,0.3)"
+          clipPath="url(#hg-top)"
+          className="transition-all duration-500"
+        />
+
+        {/* Bottom sand — fills as progress grows */}
+        <rect
+          x="0"
+          y={56 - 24 * bottomFill}
+          width="64"
+          height={24 * bottomFill}
+          fill="rgba(250,204,21,0.45)"
+          clipPath="url(#hg-bottom)"
+          className="transition-all duration-500"
+        />
+
+        {/* Sand stream through the neck */}
+        {progress > 0 && progress < 1 && (
+          <line
+            x1="32" y1="29" x2="32" y2="36"
+            stroke="rgba(250,204,21,0.7)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
+            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.2s" repeatCount="indefinite" />
+          </line>
+        )}
+
+        {/* Hourglass frame outline */}
         <path
           d="M16 8h32v0c0 10-8 18-16 24c8 6 16 14 16 24v0H16v0c0-10 8-18 16-24c-8-6-16-14-16-24v0z"
           stroke="rgba(250,204,21,0.6)"
@@ -97,47 +155,10 @@ function AnimatedHourglass({ progress }: { progress: number }) {
           strokeLinejoin="round"
         />
 
-        {/* Top sand */}
-        <clipPath id="top-clip">
-          <rect x="16" y="8" width="32" height="24" />
-        </clipPath>
-        <rect
-          x="16"
-          y={8 + 24 * (1 - topFill)}
-          width="32"
-          height={24 * topFill}
-          fill="rgba(250,204,21,0.3)"
-          clipPath="url(#top-clip)"
-          className="transition-all duration-500"
-        />
-
-        {/* Bottom sand */}
-        <clipPath id="bottom-clip">
-          <rect x="16" y="32" width="32" height="24" />
-        </clipPath>
-        <rect
-          x="16"
-          y={56 - 24 * bottomFill}
-          width="32"
-          height={24 * bottomFill}
-          fill="rgba(250,204,21,0.4)"
-          clipPath="url(#bottom-clip)"
-          className="transition-all duration-500"
-        />
-
-        {/* Falling sand particles through neck */}
-        {progress > 0 && progress < 1 && (
-          <>
-            <circle cx="32" cy="32" r="1" fill="rgba(250,204,21,0.8)" className="animate-sand-fall-1" />
-            <circle cx="31" cy="34" r="0.8" fill="rgba(250,204,21,0.6)" className="animate-sand-fall-2" />
-            <circle cx="33" cy="33" r="0.8" fill="rgba(250,204,21,0.7)" className="animate-sand-fall-3" />
-          </>
-        )}
-
         {/* Top cap */}
-        <line x1="14" y1="8" x2="50" y2="8" stroke="rgba(250,204,21,0.5)" strokeWidth="2" strokeLinecap="round" />
+        <line x1="14" y1="8" x2="50" y2="8" stroke="rgba(250,204,21,0.5)" strokeWidth="2.5" strokeLinecap="round" />
         {/* Bottom cap */}
-        <line x1="14" y1="56" x2="50" y2="56" stroke="rgba(250,204,21,0.5)" strokeWidth="2" strokeLinecap="round" />
+        <line x1="14" y1="56" x2="50" y2="56" stroke="rgba(250,204,21,0.5)" strokeWidth="2.5" strokeLinecap="round" />
       </svg>
     </div>
   )

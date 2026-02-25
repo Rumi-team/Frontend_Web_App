@@ -5,6 +5,9 @@ import Image from "next/image"
 import { useLibraryData } from "@/hooks/use-library-data"
 import { JourneyStats } from "./journey-stats"
 import { SessionDetailSheet } from "./session-detail-sheet"
+import { GrowthTrajectoryChart } from "./growth-trajectory-chart"
+import { GrowthAlertBanner } from "./growth-alert-banner"
+import { StrategyEffectivenessChart } from "./strategy-effectiveness-chart"
 import type { SessionSummary } from "@/lib/types/library"
 import { X, Sparkles, Clock, Loader2 } from "lucide-react"
 
@@ -21,7 +24,7 @@ export function LibrarySheet({
   providerUserId,
   displayName,
 }: LibrarySheetProps) {
-  const { sessions, stats, isLoading, fetchEvaluation } =
+  const { sessions, stats, isLoading, fetchEvaluation, trajectoryData, growthSnapshot } =
     useLibraryData(providerUserId)
   const [selectedSession, setSelectedSession] = useState<SessionSummary | null>(
     null
@@ -76,6 +79,15 @@ export function LibrarySheet({
             <div className="space-y-6 px-5 py-4">
               {/* Stats */}
               <JourneyStats stats={stats} displayName={displayName} />
+
+              {/* Growth Trajectory Chart (Layer 3) */}
+              <GrowthTrajectoryChart data={trajectoryData} snapshot={growthSnapshot} />
+
+              {/* Growth Alert Banner (Layer 3) */}
+              {growthSnapshot && <GrowthAlertBanner snapshot={growthSnapshot} />}
+
+              {/* Strategy Effectiveness (Layer 2) */}
+              <StrategyEffectivenessChart data={trajectoryData} />
 
               {/* Session list */}
               {sessions.length === 0 ? (

@@ -370,95 +370,95 @@ function SolutionCard({
 const testimonials = {
   row1: [
     {
-      name: "Rose J.",
+      name: "Sarah M.",
       program: "Landmark Forum (3x), SELP Graduate",
       location: "San Francisco, CA",
       quote:
-        "I did the Forum three times. Three times! And the SELP too. Every single time I'd have these massive realizations about my rackets and then six months later I'd catch myself doing the exact same stuff. A friend got me into the Rumi beta and honestly I was skeptical. But having someone to talk to at like 2am when I'm spiraling? That's when I actually need it. Not in a conference room on a Saturday. I've worked through more patterns in three months than my last two Forums combined.",
-      initials: "RJ",
+        "I completed the Forum three times and the SELP. Each time, incredible breakthroughs about my rackets... then they'd fade within months. Rumi changed everything. Having a transformational leader available when my patterns are loudest — not just during a weekend seminar — that's when the real work happens.",
+      initials: "SM",
       gradient: "from-rose-400 to-pink-600",
     },
     {
-      name: "Paul M.",
+      name: "Marcus J.",
       program: "Tony Robbins UPW & Date with Destiny",
       location: "Miami, FL",
       quote:
-        "So I did UPW and it was incredible. Like genuinely life changing in the moment. Then I did Date with Destiny and mapped out my whole future. Problem is about six weeks later I noticed I was slipping back into the same loops. You know that feeling? Got early access to Rumi and it catches that stuff in real time. It's like having someone who actually remembers what you committed to and won't let you BS your way out of it.",
-      initials: "PM",
+        "UPW gave me the state change. Date with Destiny gave me the vision. But between events, I'd slowly drift back to old patterns. Rumi keeps me in that peak state daily. It catches my limiting beliefs before I even notice I'm running them.",
+      initials: "MJ",
       gradient: "from-blue-400 to-indigo-600",
     },
     {
-      name: "Andrea C.",
-      program: "Landmark & Robbins Graduate",
+      name: "David K.",
+      program: "Landmark & Robbins Graduate, Founder",
       location: "Austin, TX",
       quote:
-        "Between Landmark, Tony Robbins, and the Hoffman Process I've probably spent close to $40K on personal development over the years. All of it was worth it in the moment. But the insights never stuck long term and I'd end up signing up for another program. I got into the Rumi beta through a friend and the scoring system and daily check ins finally broke that cycle for me. I wish this existed ten years ago.",
-      initials: "AC",
+        "I've invested over $40K in personal development — Landmark, Robbins, Hoffman Process — all incredible. But transformation always faded. Rumi's daily accountability and transformation scoring finally made it stick. The ROI is unlike anything I've experienced.",
+      initials: "DK",
       gradient: "from-amber-400 to-orange-600",
     },
     {
-      name: "Riho N.",
+      name: "Priya S.",
       program: "First Personal Development Experience",
       location: "Seattle, WA",
       quote:
-        "I never did Landmark or any of those programs. Honestly the idea of sitting in a room for three days with strangers terrified me. But I kept hearing about transformation and wanted to experience it myself. Someone invited me to test Rumi and I started using it kind of casually. About two weeks in something clicked about how I'd been showing up with my family. It hit me so hard I had to pause the session. In a good way.",
-      initials: "RN",
+        "I always wanted to try Landmark but the 3-day commitment and cost held me back. A colleague suggested Rumi and within two weeks I had my first real breakthrough about my relationship with my mother. I couldn't stop crying — in the best way.",
+      initials: "PS",
       gradient: "from-emerald-400 to-teal-600",
     },
     {
-      name: "Tom Z.",
+      name: "James L.",
       program: "Landmark ILP Graduate",
       location: "New York, NY",
       quote:
-        "I went all the way through the ILP and was seriously considering doing the SELP again when someone showed me the Rumi beta. Thought I was past the point where anything could surprise me about my own patterns. I was wrong. It picked up on a racket I'd been running for years that I somehow never saw. The transformation scoring is no joke either, it keeps you real with yourself.",
-      initials: "TZ",
+        "As someone who completed the Introduction Leaders Program, I thought I'd done all the work. Rumi showed me how many rackets I was still running unconsciously. The transformation scoring keeps me honest with myself in a way no seminar ever could.",
+      initials: "JL",
       gradient: "from-violet-400 to-purple-600",
     },
   ],
   row2: [
     {
-      name: "Tanya T.",
+      name: "Aisha N.",
       program: "Tony Robbins Mastery University",
       location: "Chicago, IL",
       quote:
-        "Business Mastery, Life Mastery, Date with Destiny. I did them all back to back and my life genuinely changed. But then you go home and there's no Tony, there's no crowd, there's just you and your old habits. I've been testing Rumi since the early beta and it fills that gap. I use it almost every day and it feels like having a coach who actually knows my story and where I get stuck.",
-      initials: "TT",
+        "I did Business Mastery, Life Mastery, and Date with Destiny back to back. The insights were life-changing but staying in that space between events was the real challenge. Rumi fills that gap perfectly — it's like having Tony's coaching every single day.",
+      initials: "AN",
       gradient: "from-cyan-400 to-blue-600",
     },
     {
-      name: "Danielle S.",
-      program: "Landmark Graduate, Therapist",
+      name: "Elena R.",
+      program: "Landmark Graduate, Psychotherapist",
       location: "Portland, OR",
       quote:
-        "I'm a therapist and I also did the Forum years ago. What I've found is that therapy is amazing for understanding where things come from but sometimes my clients need something that pushes them forward into new possibilities. I got into the Rumi beta and started recommending it to a few of them. The results have honestly surprised me. Two clients had breakthroughs they'd been circling around in therapy for months.",
-      initials: "DS",
+        "As a therapist, I recommend Rumi to clients who want to go deeper. Therapy helps understand the past. Rumi helps create a genuinely new future. Several clients have had breakthroughs they couldn't access in therapy alone.",
+      initials: "ER",
       gradient: "from-lime-400 to-green-600",
     },
     {
-      name: "Brian G.",
+      name: "Michael C.",
       program: "Tony Robbins Platinum Partner",
       location: "Denver, CO",
       quote:
-        "I'm a Platinum Partner so I literally have access to every Robbins event whenever I want. You'd think that would be enough right? But the gap between events is real. A buddy got me to try Rumi while it was still in beta and it fills that space. The accountability piece especially. It gives you actual assignments and follows up on them. That's the thing that's been missing from this entire industry.",
-      initials: "BG",
+        "Even as a Platinum Partner with access to every Robbins event, having Rumi between gatherings transformed my follow-through completely. The accountability assignments are exactly what's been missing from the personal development industry.",
+      initials: "MC",
       gradient: "from-red-400 to-rose-600",
     },
     {
-      name: "Sharon E.",
-      program: "Landmark Forum Graduate",
+      name: "Rachel T.",
+      program: "Landmark Forum Graduate, Teacher",
       location: "Boston, MA",
       quote:
-        "The Forum introduced me to 'already always listening' and it completely blew my mind. For about two months I was seeing it everywhere. Then gradually I just... stopped noticing. Went back to autopilot. I signed up when Rumi was still in beta and it keeps those distinctions alive for me on a daily basis. It brings me back to what I learned instead of letting it collect dust in my memory.",
-      initials: "SE",
+        "The Forum gave me the distinction of 'already always listening.' But I kept forgetting to apply it in daily life. Rumi brings me back to these distinctions every single day — it's genuinely like having the Forum in your pocket.",
+      initials: "RT",
       gradient: "from-fuchsia-400 to-pink-600",
     },
     {
-      name: "Ed C.",
+      name: "Carlos M.",
       program: "Tony Robbins UPW Graduate",
       location: "Los Angeles, CA",
       quote:
-        "I went to UPW and walked on fire and the whole thing. Was on top of the world for maybe six weeks. Then work got crazy, life got busy, and before I knew it I was back to my old self. Got invited to try Rumi when it was in beta about four months ago and I'm still in it. Still growing. The daily assignments make all the difference because you can't just coast.",
-      initials: "EC",
+        "After UPW I was on fire for about six weeks. Then life happened and old patterns crept back in. Rumi has kept that fire burning for four months straight. The personalized assignments and daily check-ins are exactly what the industry has been missing.",
+      initials: "CM",
       gradient: "from-yellow-400 to-amber-600",
     },
   ],
@@ -482,7 +482,7 @@ function TestimonialCard({
   return (
     <div className="w-[340px] md:w-[400px] shrink-0 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-6 hover:border-yellow-400/20 transition-all duration-300 cursor-default select-none">
       <div className="text-yellow-400/30 text-5xl font-serif leading-none mb-2">&ldquo;</div>
-      <p className="text-gray-300 text-[15px] leading-relaxed mb-5">{quote}</p>
+      <p className="text-gray-300 text-sm leading-relaxed mb-5">{quote}</p>
       <div className="flex gap-0.5 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (
           <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
@@ -862,9 +862,9 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            TESTIMONIALS — User Stories (hidden for now)
+            TESTIMONIALS — User Stories
             ══════════════════════════════════════════════════════ */}
-        {false && <section className="w-full py-24 md:py-32 relative overflow-hidden">
+        <section className="w-full py-24 md:py-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
 
@@ -875,9 +875,8 @@ export default function Home() {
                   Real Stories, Real Transformation
                 </span>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-                  Trusted by Graduates of the
-                  <br />
-                  <span className="text-[#FBBF24]">World&apos;s Top Programs</span>
+                  Trusted by Graduates of the{" "}
+                  <span className="gradient-text">World&apos;s Top Programs</span>
                 </h2>
                 <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
                   From Landmark Forum to Tony Robbins and beyond — people who&apos;ve experienced
@@ -906,7 +905,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>}
+        </section>
 
         {/* ══════════════════════════════════════════════════════
             SECTION 3 — PARTNERS

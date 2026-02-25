@@ -20,6 +20,16 @@ interface UseSessionControlReturn {
   visualizationImages: VisualizationImageData[]
   endConversationCount: number
   isSessionComplete: boolean
+  // Session gating
+  currentDay: number
+  totalDays: number
+  isDayLocked: boolean
+  cooldownRemainingHours: number
+  unlockAt: string | null
+  allowedStepMin: number
+  allowedStepMax: number
+  showDayComplete: boolean
+  completedDay: number
 }
 
 export function useSessionControl(
@@ -38,6 +48,16 @@ export function useSessionControl(
   >([])
   const [endConversationCount, setEndConversationCount] = useState(0)
   const [isSessionComplete, setIsSessionComplete] = useState(false)
+  // Session gating state
+  const [currentDay, setCurrentDay] = useState(1)
+  const [totalDays, setTotalDays] = useState(3)
+  const [isDayLocked, setIsDayLocked] = useState(false)
+  const [cooldownRemainingHours, setCooldownRemainingHours] = useState(0)
+  const [unlockAt, setUnlockAt] = useState<string | null>(null)
+  const [allowedStepMin, setAllowedStepMin] = useState(1)
+  const [allowedStepMax, setAllowedStepMax] = useState(5)
+  const [showDayComplete, setShowDayComplete] = useState(false)
+  const [completedDay, setCompletedDay] = useState(0)
 
   const handleMessage = useCallback((msg: SessionControlMessage) => {
     switch (msg.action) {
@@ -74,6 +94,24 @@ export function useSessionControl(
         if (msg.stage === "complete") {
           setIsSessionComplete(true)
         }
+        break
+
+      case "session_gate_status":
+        if (msg.current_day != null) setCurrentDay(msg.current_day)
+        if (msg.total_days != null) setTotalDays(msg.total_days)
+        setIsDayLocked(msg.is_locked ?? false)
+        setCooldownRemainingHours(msg.cooldown_remaining_hours ?? 0)
+        setUnlockAt(msg.unlock_at ?? null)
+        if (msg.allowed_step_min != null) setAllowedStepMin(msg.allowed_step_min)
+        if (msg.allowed_step_max != null) setAllowedStepMax(msg.allowed_step_max)
+        break
+
+      case "day_complete":
+        setCompletedDay(msg.day ?? 0)
+        setIsDayLocked(true)
+        if (msg.cooldown_hours != null) setCooldownRemainingHours(msg.cooldown_hours)
+        if (msg.next_unlock_at) setUnlockAt(msg.next_unlock_at)
+        setShowDayComplete(true)
         break
 
       case "greeting_started":
@@ -118,5 +156,14 @@ export function useSessionControl(
     visualizationImages,
     endConversationCount,
     isSessionComplete,
+    currentDay,
+    totalDays,
+    isDayLocked,
+    cooldownRemainingHours,
+    unlockAt,
+    allowedStepMin,
+    allowedStepMax,
+    showDayComplete,
+    completedDay,
   }
 }

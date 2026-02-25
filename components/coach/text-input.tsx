@@ -37,7 +37,7 @@ export function TextInput({ onSend, disabled }: TextInputProps) {
   }
 
   return (
-    <div className="flex items-end gap-2 border-t border-gray-800 bg-black/80 backdrop-blur-sm px-4 py-3">
+    <div className="flex items-end gap-3 border-t border-gray-800 bg-black/80 backdrop-blur-sm px-6 py-4">
       <Textarea
         ref={textareaRef}
         value={text}
@@ -45,16 +45,16 @@ export function TextInput({ onSend, disabled }: TextInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
         disabled={disabled || isSending}
-        className="min-h-[44px] max-h-32 resize-none border-gray-700 bg-gray-900 text-white placeholder:text-gray-500"
+        className="min-h-[52px] max-h-40 resize-none border-gray-700 bg-gray-900 text-lg text-white placeholder:text-gray-500 rounded-xl px-4 py-3"
         rows={1}
       />
       <Button
         onClick={handleSend}
         disabled={!text.trim() || disabled || isSending}
         size="icon"
-        className="h-11 w-11 shrink-0 bg-yellow-400 text-black hover:bg-yellow-300"
+        className="h-13 w-13 shrink-0 bg-yellow-400 text-black hover:bg-yellow-300 rounded-xl"
       >
-        <Send className="h-4 w-4" />
+        <Send className="h-6 w-6" />
       </Button>
     </div>
   )

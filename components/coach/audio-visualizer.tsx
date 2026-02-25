@@ -27,13 +27,13 @@ export function AudioVisualizer({ audioTrack }: AudioVisualizerProps) {
 
     const bufferLength = analyser.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
-    const barCount = 12
-    const barWidth = 3
-    const gap = 2
+    const barCount = 7
+    const barWidth = 5
+    const gap = 4
     const totalWidth = barCount * (barWidth + gap) - gap
 
     canvas.width = totalWidth
-    canvas.height = 32
+    canvas.height = 56
 
     function draw() {
       animFrameRef.current = requestAnimationFrame(draw)
@@ -47,9 +47,10 @@ export function AudioVisualizer({ audioTrack }: AudioVisualizerProps) {
         const x = i * (barWidth + gap)
         const y = (canvas.height - barHeight) / 2
 
-        ctx!.fillStyle = "#facc15" // yellow-400
+        const intensity = value / 255
+        ctx!.fillStyle = `rgba(255, 212, 26, ${0.5 + intensity * 0.5})`
         ctx!.beginPath()
-        ctx!.roundRect(x, y, barWidth, barHeight, 1)
+        ctx!.roundRect(x, y, barWidth, barHeight, 2)
         ctx!.fill()
       }
     }

@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Mic, MicOff, MessageSquare, PhoneOff } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -20,47 +19,98 @@ export function ControlBar({
   onEndSession,
 }: ControlBarProps) {
   return (
-    <div className="flex items-center justify-center gap-6 border-t border-gray-800 bg-black/80 backdrop-blur-sm px-6 py-5">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={onToggleMic}
-        className={cn(
-          "h-20 w-20 rounded-full border-gray-700",
-          isMicrophoneEnabled
-            ? "bg-gray-800 text-white hover:bg-gray-700"
-            : "bg-red-900/50 text-red-400 border-red-700 hover:bg-red-900/70"
-        )}
-      >
-        {isMicrophoneEnabled ? (
-          <Mic className="h-14 w-14" />
-        ) : (
-          <MicOff className="h-14 w-14" />
-        )}
-      </Button>
+    <div className="flex items-center justify-center gap-8 px-6 py-5">
+      {/* ── Text Mode Button ── */}
+      <div className="flex flex-col items-center gap-2">
+        <button
+          onClick={onToggleTextMode}
+          className={cn(
+            "relative h-16 w-16 rounded-full transition-all duration-300",
+            "flex items-center justify-center",
+            "border-2",
+            isTextMode
+              ? "border-yellow-400/60 text-yellow-300"
+              : "border-white/15 text-white/70 hover:border-white/30 hover:text-white"
+          )}
+          style={{
+            background: isTextMode
+              ? "linear-gradient(145deg, rgba(250,204,21,0.25), rgba(255,152,0,0.15))"
+              : "linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
+            boxShadow: isTextMode
+              ? "0 0 20px rgba(250,204,21,0.2), inset 0 1px 0 rgba(255,255,255,0.1)"
+              : "inset 0 1px 0 rgba(255,255,255,0.06)",
+          }}
+        >
+          <MessageSquare className="h-7 w-7" />
+        </button>
+        <span className={cn(
+          "text-xs font-medium tracking-wide",
+          isTextMode ? "text-yellow-400/80" : "text-white/40"
+        )}>
+          Text
+        </span>
+      </div>
 
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={onToggleTextMode}
-        className={cn(
-          "h-20 w-20 rounded-full border-gray-700",
-          isTextMode
-            ? "bg-yellow-400/20 text-yellow-400 border-yellow-600"
-            : "bg-gray-800 text-white hover:bg-gray-700"
-        )}
-      >
-        <MessageSquare className="h-14 w-14" />
-      </Button>
+      {/* ── Microphone Button (Primary — largest) ── */}
+      <div className="flex flex-col items-center gap-2">
+        <button
+          onClick={onToggleMic}
+          className={cn(
+            "relative h-[88px] w-[88px] rounded-full transition-all duration-300",
+            "flex items-center justify-center",
+            "border-2",
+            isMicrophoneEnabled
+              ? "border-yellow-400/50 text-white animate-mic-glow"
+              : "border-red-500/50 text-red-300"
+          )}
+          style={{
+            background: isMicrophoneEnabled
+              ? "linear-gradient(145deg, rgba(250,204,21,0.2), rgba(255,109,0,0.15))"
+              : "linear-gradient(145deg, rgba(239,68,68,0.2), rgba(185,28,28,0.15))",
+            boxShadow: isMicrophoneEnabled
+              ? "0 0 32px rgba(250,204,21,0.25), 0 0 64px rgba(250,204,21,0.1), inset 0 1px 0 rgba(255,255,255,0.1)"
+              : "0 0 20px rgba(239,68,68,0.2), inset 0 1px 0 rgba(255,255,255,0.06)",
+          }}
+        >
+          {/* Pulsing ring when mic is active */}
+          {isMicrophoneEnabled && (
+            <span className="absolute inset-0 rounded-full animate-mic-pulse border-2 border-yellow-400/30" />
+          )}
+          {isMicrophoneEnabled ? (
+            <Mic className="h-10 w-10" />
+          ) : (
+            <MicOff className="h-10 w-10" />
+          )}
+        </button>
+        <span className={cn(
+          "text-xs font-medium tracking-wide",
+          isMicrophoneEnabled ? "text-yellow-400/80" : "text-red-400/70"
+        )}>
+          {isMicrophoneEnabled ? "Listening" : "Muted"}
+        </span>
+      </div>
 
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={onEndSession}
-        className="h-20 w-20 rounded-full border-red-700 bg-red-900/50 text-red-400 hover:bg-red-900/70"
-      >
-        <PhoneOff className="h-14 w-14" />
-      </Button>
+      {/* ── End Session Button ── */}
+      <div className="flex flex-col items-center gap-2">
+        <button
+          onClick={onEndSession}
+          className={cn(
+            "relative h-16 w-16 rounded-full transition-all duration-300",
+            "flex items-center justify-center",
+            "border-2 border-red-500/40 text-red-300",
+            "hover:border-red-400/60 hover:text-red-200"
+          )}
+          style={{
+            background: "linear-gradient(145deg, rgba(239,68,68,0.2), rgba(153,27,27,0.25))",
+            boxShadow: "0 0 16px rgba(239,68,68,0.15), inset 0 1px 0 rgba(255,255,255,0.06)",
+          }}
+        >
+          <PhoneOff className="h-7 w-7" />
+        </button>
+        <span className="text-xs font-medium tracking-wide text-red-400/60">
+          End
+        </span>
+      </div>
     </div>
   )
 }

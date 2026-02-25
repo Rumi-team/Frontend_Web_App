@@ -4,6 +4,8 @@ import type {
   UserJourneyStats,
   SessionEvaluation,
   TransformationData,
+  TrajectoryDataPoint,
+  GrowthSnapshot,
 } from "@/lib/types/library"
 
 export async function fetchSessionHistory(
@@ -130,4 +132,58 @@ export async function fetchSessionEvaluation(
 
   if (error || !data) return null
   return data as SessionEvaluation
+}
+
+export async function fetchTrajectoryData(
+  providerUserId: string
+): Promise<TrajectoryDataPoint[]> {
+  const supabase = createServerSupabaseClient()
+
+  const { data, error } = await supabase
+    .from("session_evaluations")
+    .select(
+      "evaluated_at, transformation_level, engagement_level, resistance_level, depth_of_insight, phase_completion_quality, emotional_openness, strategy_used"
+    )
+    .eq("provider_user_id", providerUserId)
+    .order("evaluated_at", { ascending: true })
+
+  if (error || !data) return []
+
+  return data.map((row: any) => {
+    const t = row.transformation_level ?? 3
+    const q = row.phase_completion_quality ?? 5
+    const d = row.depth_of_insight ?? 5
+    const e = row.engagement_level ?? 5
+    const r = row.resistance_level ?? 5
+    const overall = Math.round(
+      t * 3.5 + q * 2.0 + d * 2.0 + e * 1.5 + (10 - r) * 1.0
+    ) / 10
+
+    return {
+      date: row.evaluated_at?.split("T")[0] ?? "",
+      transformation: t,
+      engagement: e,
+      resistance: r,
+      depth: d,
+      overall: Math.round(overall * 10) / 10,
+      strategy: row.strategy_used ?? null,
+    }
+  })
+}
+
+export async function fetchGrowthSnapshot(
+  providerUserId: string
+): Promise<GrowthSnapshot | null> {
+  const supabase = createServerSupabaseClient()
+
+  const { data, error } = await supabase
+    .from("growth_snapshots")
+    .select("*")
+    .eq("provider_user_id", providerUserId)
+    .order("snapshot_date", { ascending: false })
+    .limit(1)
+    .single()
+
+  if (error || !data) return null
+  return data as GrowthSnapshot
 }

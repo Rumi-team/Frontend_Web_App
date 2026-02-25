@@ -26,10 +26,19 @@ export async function POST(request: Request) {
     }
 
     const serviceClient = createServerSupabaseClient()
-    const identity = user.identities?.[0]
+    // Resolve correct provider ID: prefer Apple/Google identity over email
+    const identities = user.identities ?? []
+    const oauthIdentity =
+      identities.find((i) => i.provider === "apple") ??
+      identities.find((i) => i.provider === "google") ??
+      identities[0]
+    const identity = oauthIdentity ?? identities[0]
     const email = user.email ?? identity?.identity_data?.email ?? ""
     const providerUserId =
-      identity?.identity_data?.sub ?? identity?.id ?? user.id
+      (oauthIdentity?.identity_data?.sub as string) ??
+      (user.user_metadata?.sub as string) ??
+      identity?.id ??
+      user.id
 
     // Upsert user_identities — increment login_count or insert new
     const { data: existingIdentity } = await serviceClient
