@@ -91,8 +91,11 @@ export function useLibraryData(
       }))
       setSessions(rawSessions)
 
-      // Process user_state
-      const state = stateRes.data?.state
+      // Process user_state — handle double-encoded JSON string from backend
+      let state = stateRes.data?.state
+      if (typeof state === "string") {
+        try { state = JSON.parse(state) } catch { state = null }
+      }
       const txData: TransformationData | null = state?.transformation ?? null
       setTransformation(txData)
 
