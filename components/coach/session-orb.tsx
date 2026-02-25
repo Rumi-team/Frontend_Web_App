@@ -212,27 +212,13 @@ export function SessionOrb({
         </svg>
 
         {/* Mascot */}
-        {!isDayLocked && (
-          <div className="absolute inset-0 flex items-center justify-center z-20" style={{ paddingTop: 4 }}>
-            <RumiMascot mood={mascotMood} audioTrack={audioTrack} size={MASCOT_SIZE} />
-          </div>
-        )}
-
-        {/* Lock icon */}
-        {isDayLocked && (
-          <div className="absolute inset-0 flex items-center justify-center z-30">
-            <div className="bg-black/40 rounded-full p-2">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(250,204,21,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            </div>
-          </div>
-        )}
+        <div className="absolute inset-0 flex items-center justify-center z-20" style={{ paddingTop: 4 }}>
+          <RumiMascot mood={mascotMood} audioTrack={audioTrack} size={MASCOT_SIZE} />
+        </div>
       </div>
 
       {/* Step name */}
-      {stepName && !isDayLocked && (
+      {stepName && (
         <p
           className="text-2xl font-bold text-center max-w-[340px] leading-tight"
           style={{ color: "rgb(255, 212, 26)" }}
@@ -243,11 +229,7 @@ export function SessionOrb({
 
       {/* Section + step counter */}
       <p className="text-lg text-gray-400 font-semibold tracking-wide">
-        {isDayLocked ? (
-          "Come back tomorrow"
-        ) : (
-          <>Section {currentDay} &mdash; Step {dayProgress} of {stepsInDay}</>
-        )}
+        Section {currentDay} &mdash; Step {dayProgress} of {stepsInDay}
       </p>
     </div>
   )
