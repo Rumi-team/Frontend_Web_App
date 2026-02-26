@@ -149,7 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
-      const redirectTo = `${siteUrl}/coach`
+      const redirectTo = `${siteUrl}/rumi`
       console.log("[Auth] Google OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -185,7 +185,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
-      const redirectTo = `${siteUrl}/coach`
+      const redirectTo = `${siteUrl}/rumi`
       console.log("[Auth] Apple OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "apple",
@@ -236,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${siteUrl}/coach` },
+        options: { emailRedirectTo: `${siteUrl}/rumi` },
       })
       setIsSigningIn(false)
       if (error) return { error: error.message }
@@ -253,7 +253,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${siteUrl}/coach`,
+        redirectTo: `${siteUrl}/rumi`,
       })
       if (error) return { error: error.message }
       return { error: null }
@@ -268,7 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDisplayNameOverride(null)
     await supabase.auth.signOut()
     // Force navigate to sign-in by reloading — ensures server sees no session
-    window.location.href = "/coach"
+    window.location.href = "/rumi"
   }, [supabase])
 
   const updateDisplayName = useCallback((name: string) => {
