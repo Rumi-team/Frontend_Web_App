@@ -360,10 +360,10 @@ function CoachShellInner({
     )
   }
 
-  const isCoachPage = pathname === "/coach"
+  const isCoachPage = pathname === "/rumi"
 
   // Fully authenticated with access
-  // On /coach route, skip nav for fullscreen orb experience
+  // On /rumi route, skip nav for fullscreen orb experience
   if (isCoachPage) {
     return (
       <div className="flex min-h-screen flex-col bg-black">
@@ -377,7 +377,7 @@ function CoachShellInner({
       {/* Top nav */}
       <nav className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
         <div className="flex items-center gap-1">
-          <Link href="/coach">
+          <Link href="/rumi">
             <Image
               src="/rumi_logo.png"
               alt="Rumi"
@@ -389,13 +389,13 @@ function CoachShellInner({
         </div>
 
         <div className="flex items-center gap-1">
-          <Link href="/coach">
+          <Link href="/rumi">
             <Button
               variant="ghost"
               size="sm"
               className={cn(
                 "text-gray-400 hover:text-white",
-                pathname === "/coach" && "text-yellow-400 hover:text-yellow-300"
+                pathname === "/rumi" && "text-yellow-400 hover:text-yellow-300"
               )}
             >
               <Mic className="mr-1.5 h-4 w-4" />

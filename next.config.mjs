@@ -13,7 +13,7 @@ const nextConfig = {
     return [
       {
         source: "/login",
-        destination: "/coach",
+        destination: "/rumi",
         permanent: true,
       },
     ]
