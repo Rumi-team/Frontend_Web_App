@@ -57,7 +57,9 @@ function VerifyForm() {
           <h1 className="text-white text-xl font-semibold">Early Access</h1>
           {email && (
             <div className="flex items-center justify-between mt-1">
-              <span className="text-yellow-400 text-sm truncate max-w-[200px]">{email}</span>
+              <span className="text-yellow-400 text-sm truncate max-w-[200px]">
+                {email.includes("privaterelay.appleid.com") ? "Signed in with Apple ID" : email}
+              </span>
               <button
                 onClick={handleSignOut}
                 className="text-zinc-500 text-xs hover:text-zinc-300 transition-colors ml-2 shrink-0"
