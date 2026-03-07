@@ -10,16 +10,24 @@ function VerifyForm() {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) router.push("/");
       else setEmail(user.email || "");
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,9 +56,15 @@ function VerifyForm() {
         <div className="mb-6">
           <h1 className="text-white text-xl font-semibold">Early Access</h1>
           {email && (
-            <p className="text-zinc-400 text-sm mt-1">
-              Signed in as <span className="text-yellow-400">{email}</span>
-            </p>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-yellow-400 text-sm truncate max-w-[200px]">{email}</span>
+              <button
+                onClick={handleSignOut}
+                className="text-zinc-500 text-xs hover:text-zinc-300 transition-colors ml-2 shrink-0"
+              >
+                Sign out
+              </button>
+            </div>
           )}
           <p className="text-zinc-400 text-sm mt-3">
             Rumi is invite-only. Enter your access code to continue.
