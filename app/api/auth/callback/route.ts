@@ -103,5 +103,10 @@ export async function GET(request: Request) {
     }
   }
 
+  // Redirect to /verify if user hasn't redeemed an access code yet
+  if (user && !user.app_metadata?.access_verified) {
+    return NextResponse.redirect(`${origin}/verify`)
+  }
+
   return NextResponse.redirect(`${origin}${next}`)
 }

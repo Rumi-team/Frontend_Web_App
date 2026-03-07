@@ -33,6 +33,10 @@ export async function POST(request: Request) {
       .single()
 
     if (existingRedemption) {
+      // Ensure app_metadata is marked verified (idempotent)
+      await serviceClient.auth.admin.updateUserById(user.id, {
+        app_metadata: { access_verified: true },
+      })
       return NextResponse.json({ success: true, message: "Already activated" })
     }
 
@@ -110,6 +114,11 @@ export async function POST(request: Request) {
         .eq("assigned_email", userEmail)
         .eq("is_active", false)
     }
+
+    // Grant access via app_metadata (available in middleware JWT check)
+    await serviceClient.auth.admin.updateUserById(user.id, {
+      app_metadata: { access_verified: true },
+    })
 
     return NextResponse.json({ success: true })
   } catch (error) {
