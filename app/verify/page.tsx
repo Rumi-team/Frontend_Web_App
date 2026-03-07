@@ -57,12 +57,15 @@ function VerifyForm() {
           <h1 className="text-white text-xl font-semibold">Early Access</h1>
           {email && (
             <div className="flex items-center justify-between mt-1">
-              <span className="text-yellow-400 text-sm truncate max-w-[200px]">
-                {email.includes("privaterelay.appleid.com") ? "Signed in with Apple ID" : email}
-              </span>
+              <p className="text-zinc-400 text-sm">
+                Signed in with{" "}
+                <span className="text-yellow-400">
+                  {email.includes("privaterelay.appleid.com") ? "your Apple ID" : email}
+                </span>
+              </p>
               <button
                 onClick={handleSignOut}
-                className="text-zinc-500 text-xs hover:text-zinc-300 transition-colors ml-2 shrink-0"
+                className="text-zinc-500 text-xs hover:text-zinc-300 transition-colors ml-3 shrink-0"
               >
                 Sign out
               </button>
@@ -98,7 +101,7 @@ function VerifyForm() {
         <p className="text-zinc-600 text-xs mt-5 text-center">
           No code?{" "}
           <a
-            href="mailto:ali@rumi.team"
+            href="mailto:support@rumi.team"
             className="text-zinc-500 hover:text-yellow-400 transition-colors"
           >
             Request early access
