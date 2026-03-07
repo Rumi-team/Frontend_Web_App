@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "@/components/auth-provider"
 import { AccessCodeGate } from "@/components/access-code-gate"
 import { ChannelOnboarding } from "@/components/channel-onboarding"
 import { Button } from "@/components/ui/button"
-import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings } from "lucide-react"
+import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface CoachShellProps {
@@ -414,6 +414,19 @@ function CoachShellInner({
             >
               <BookOpen className="mr-1.5 h-4 w-4" />
               Library
+            </Button>
+          </Link>
+          <Link href="/chat">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "text-gray-400 hover:text-white",
+                pathname?.startsWith("/chat") && "text-yellow-400 hover:text-yellow-300"
+              )}
+            >
+              <MessageSquare className="mr-1.5 h-4 w-4" />
+              Chat
             </Button>
           </Link>
           <Link href="/settings">

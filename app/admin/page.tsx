@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, Settings, Home, KeyRound, Activity } from "lucide-react"
+import { Users, Settings, Home, KeyRound, Activity, Brain } from "lucide-react"
 
 export default function AdminPage() {
   return (
@@ -66,6 +66,21 @@ export default function AdminPage() {
               <CardContent>
                 <p className="text-sm text-gray-300">
                   Monitor per-user login count, coaching sessions, and activity status.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/retention">
+            <Card className="bg-gray-900 border-gray-800 hover:border-yellow-400 transition-all cursor-pointer h-full">
+              <CardHeader>
+                <Brain className="h-8 w-8 text-yellow-400 mb-2" />
+                <CardTitle>Retention RL</CardTitle>
+                <CardDescription className="text-gray-400">Thompson sampling bandit dashboard</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-300">
+                  View retention decisions, posteriors, segments, and policy config.
                 </p>
               </CardContent>
             </Card>

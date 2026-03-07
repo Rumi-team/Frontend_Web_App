@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-auth"
 import { createServerSupabaseClient } from "@/lib/supabase"
 import { AccessToken } from "livekit-server-sdk"
+import { trackEvent } from "@/lib/retention/client"
 
 export async function POST(request: Request) {
   try {
@@ -52,10 +53,13 @@ export async function POST(request: Request) {
     const roomName = `voice-agent-${providerUserId}-${randomSuffix}`
     const participantName = providerUserId
 
-    // Metadata uses iOS-compatible key names so the backend agent works unchanged
+    // Metadata uses iOS-compatible key names so the backend agent works unchanged.
+    // client_platform is used by the agent to select the correct Vertex AI app_name
+    // (rumi_web_app vs rumi_ios_app) for memory scoping.
     const metadata = JSON.stringify({
       appleIdentifier: providerUserId,
       given_name: displayName,
+      client_platform: "web",
     })
 
     // 5. Generate LiveKit access token
@@ -90,10 +94,12 @@ export async function POST(request: Request) {
         metadata: {
           appleIdentifier: providerUserId,
           given_name: displayName,
+          client_platform: "web",
         },
         room_attributes: {
           appleIdentifier: providerUserId,
           given_name: displayName,
+          client_platform: "web",
         },
         room_config: {
           agents: [{ agent_name: "rumi-voice-agent" }],
@@ -114,6 +120,8 @@ export async function POST(request: Request) {
 
       if (sandboxResponse.ok) {
         const sandboxDetails = await sandboxResponse.json()
+        // Fire session_start event for retention tracking (fire-and-forget)
+        trackEvent(providerUserId, "session_start", { source: "web", room: sandboxDetails.roomName })
         return NextResponse.json({
           serverUrl: sandboxDetails.serverUrl,
           roomName: sandboxDetails.roomName,
@@ -129,6 +137,8 @@ export async function POST(request: Request) {
     }
 
     // Fallback: return direct token (room created on connect)
+    // Fire session_start event for retention tracking (fire-and-forget)
+    trackEvent(providerUserId, "session_start", { source: "web", room: roomName })
     return NextResponse.json({
       serverUrl: livekitUrl,
       roomName,

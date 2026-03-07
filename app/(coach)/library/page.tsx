@@ -7,6 +7,7 @@ import {
 } from "@/lib/queries/sessions"
 import { JourneyStats } from "@/components/library/journey-stats"
 import { SessionCard } from "@/components/library/session-card"
+import { AssignmentsPanel } from "@/components/library/assignments-panel"
 
 export default async function LibraryPage() {
   const supabase = await createSupabaseServerClient()
@@ -37,6 +38,8 @@ export default async function LibraryPage() {
       <h1 className="text-2xl font-bold text-white">Your Journey</h1>
 
       <JourneyStats stats={stats} />
+
+      <AssignmentsPanel />
 
       {sessions.length === 0 ? (
         <div className="py-16 text-center">
