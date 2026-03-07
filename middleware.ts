@@ -5,30 +5,36 @@ const ADMIN_EMAIL = "ali@rumi.team"
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createSupabaseMiddlewareClient(request)
+  const pathname = request.nextUrl.pathname
 
   // Allow /verify and /api/access-code without access check
-  if (
-    request.nextUrl.pathname === "/verify" ||
-    request.nextUrl.pathname === "/api/access-code"
-  ) {
+  if (pathname === "/verify" || pathname === "/api/access-code") {
     return response
   }
 
   // Refresh the auth session cookie so it doesn't expire mid-visit.
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Require authentication for protected routes
+  // Routes in the (coach) group that have their own client-side auth gate
+  // (CoachShell renders SignInPage for unauthenticated users).
+  // Let them through so the sign-in page can render.
+  const coachRoutes = ["/rumi", "/library", "/chat", "/settings"]
+  const isCoachRoute = coachRoutes.some(
+    (route) => pathname === route || pathname.startsWith(route + "/")
+  )
+
+  if (!user && isCoachRoute) {
+    // Let the request through — the layout will render the sign-in page
+    return response
+  }
+
+  // Require authentication for other protected routes (e.g. /admin)
   if (!user) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
-  // Require access code verification
-  if (!user.app_metadata?.access_verified) {
-    return NextResponse.redirect(new URL("/verify", request.url))
-  }
-
   // Protect admin routes — only allow ADMIN_EMAIL
-  if (request.nextUrl.pathname.startsWith("/admin")) {
+  if (pathname.startsWith("/admin")) {
     if (user.email?.toLowerCase() !== ADMIN_EMAIL) {
       return NextResponse.redirect(new URL("/", request.url))
     }
@@ -38,5 +44,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/rumi/:path*", "/library/:path*", "/settings/:path*", "/admin/:path*", "/verify"],
+  matcher: ["/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/verify"],
 }
