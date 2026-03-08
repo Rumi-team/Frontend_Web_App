@@ -29,3 +29,5 @@ next-env.d.ts
 
 .DS_Store
 */.DS_Store
+# Supabase CLI temp files
+supabase/.temp/
