@@ -565,7 +565,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center">
-            <Link href="/rumi">
+            <Link href="/login">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
                 Sign In
               </Button>
@@ -1129,7 +1129,7 @@ export default function Home() {
                 <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
-              <Link href="/rumi">
+              <Link href="/login">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
                   Sign In
                   <ArrowRight className="ml-2 h-5 w-5" />

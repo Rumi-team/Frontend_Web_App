@@ -7,8 +7,8 @@ export async function middleware(request: NextRequest) {
   const { supabase, response } = createSupabaseMiddlewareClient(request)
   const pathname = request.nextUrl.pathname
 
-  // Allow /verify and /api/access-code without access check
-  if (pathname === "/verify" || pathname === "/api/access-code") {
+  // Allow public routes without access check
+  if (pathname === "/verify" || pathname === "/api/access-code" || pathname === "/login") {
     return response
   }
 
@@ -44,5 +44,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/verify"],
+  matcher: ["/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/verify", "/login"],
 }
