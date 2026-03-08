@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -28,6 +29,7 @@ import {
   Star,
 } from "lucide-react"
 import { ContactModal } from "@/components/contact-modal"
+import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 
 /* ═══════════════════════════════════════════════════════════
    Scroll Reveal Hook
@@ -517,10 +519,40 @@ function TestimonialCard({
    Main Page Component
    ═══════════════════════════════════════════════════════════ */
 export default function Home() {
+  const router = useRouter()
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isCubeComplete, setIsCubeComplete] = useState(false)
   const [mobileHeroPhase, setMobileHeroPhase] = useState<"text" | "image">("text")
   const cubeCompleteTimeout = useRef<NodeJS.Timeout | null>(null)
+  const authCheckDone = useRef(false)
+
+  // If user lands on "/" with a session (e.g. after OAuth redirect), send them to /rumi
+  useEffect(() => {
+    if (authCheckDone.current) return
+    authCheckDone.current = true
+
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get("code")
+
+    const supabase = createSupabaseBrowserClient()
+
+    if (code) {
+      // OAuth redirected here with ?code= — exchange and redirect
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          router.replace("/rumi")
+        }
+      })
+      return
+    }
+
+    // Already signed in? Redirect to start view
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        router.replace("/rumi")
+      }
+    })
+  }, [router])
 
   const handleCubeComplete = useCallback(() => {
     if (cubeCompleteTimeout.current) {

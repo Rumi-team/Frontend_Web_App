@@ -12,6 +12,15 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Landing page — if user is authenticated, redirect to /rumi (start view)
+  if (pathname === "/") {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      return NextResponse.redirect(new URL("/rumi", request.url))
+    }
+    return response
+  }
+
   // Refresh the auth session cookie so it doesn't expire mid-visit.
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -44,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/verify", "/login"],
+  matcher: ["/", "/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/verify", "/login"],
 }
