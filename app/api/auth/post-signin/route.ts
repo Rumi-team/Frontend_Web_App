@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       .from("access_code_redemptions")
       .select("id")
       .eq("user_id", user.id)
-      .single()
+      .maybeSingle()
 
     if (!existingRedemption && email) {
       const { data: assignedCode } = await serviceClient
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
         .select("id, used_count")
         .eq("assigned_email", email.toLowerCase())
         .eq("is_active", true)
-        .single()
+        .maybeSingle()
 
       if (assignedCode) {
         await serviceClient.from("access_code_redemptions").insert({
@@ -95,22 +95,27 @@ export async function POST(request: Request) {
       }
     }
 
-    // Ensure every user has an access_codes row so admins can manage access
+    // Rotate auto code on every login: deactivate old auto codes, insert fresh one.
+    // This ensures the admin always sees a single current code per user.
+    // Manual codes assigned by admins (code_type='manual') are never touched.
     if (email) {
-      const { data: existingCode } = await serviceClient
-        .from("access_codes")
-        .select("id")
-        .eq("assigned_email", email.toLowerCase())
-        .single()
+      const emailLower = email.toLowerCase()
 
-      if (!existingCode) {
-        await serviceClient.from("access_codes").insert({
-          code: generateCode(),
-          description: `Auto - ${email}`,
-          is_active: false,
-          assigned_email: email.toLowerCase(),
-        })
-      }
+      // Deactivate all existing auto codes for this email
+      await serviceClient
+        .from("access_codes")
+        .update({ is_active: false })
+        .eq("assigned_email", emailLower)
+        .eq("code_type", "auto")
+
+      // Insert a fresh auto code (inactive by default — admin activates to grant access)
+      await serviceClient.from("access_codes").insert({
+        code: generateCode(),
+        description: `Auto - ${email}`,
+        is_active: false,
+        assigned_email: emailLower,
+        code_type: "auto",
+      })
     }
 
     return NextResponse.json({ ok: true })
