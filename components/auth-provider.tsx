@@ -267,8 +267,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     codeExchangeDone.current = false
     setDisplayNameOverride(null)
     await supabase.auth.signOut()
-    // Force navigate to sign-in by reloading — ensures server sees no session
-    window.location.href = "/rumi"
+    // Force navigate to sign-in — ensures server sees no session
+    window.location.href = "/login"
   }, [supabase])
 
   const updateDisplayName = useCallback((name: string) => {
