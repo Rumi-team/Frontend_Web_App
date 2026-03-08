@@ -315,32 +315,22 @@ function CoachShellInner({
   const [showOnboarding, setShowOnboarding] = useState(initialNeedsOnboarding ?? false)
 
   // If the server rendered as unauthenticated but the client has a session
-  // (happens with implicit OAuth flow), reload to let the server see the session
+  // (happens with implicit OAuth flow), reload to let the server see the session.
+  // If no client session either, redirect to /login as safety net.
   useEffect(() => {
     if (!authenticated && user) {
       router.refresh()
+    } else if (!authenticated && !user && !isLoading) {
+      window.location.href = "/login"
     }
-  }, [authenticated, user, router])
+  }, [authenticated, user, isLoading, router])
 
-  if (isLoading) {
+  if (isLoading || !authenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
         <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
       </div>
     )
-  }
-
-  // Not authenticated — show sign-in (but if client has a user, show loading while server catches up)
-  if (!authenticated) {
-    if (user) {
-      return (
-        <div className="flex min-h-screen items-center justify-center bg-black">
-          <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
-        </div>
-      )
-    }
-
-    return <SignInPage />
   }
 
   // Authenticated but no access — show access code gate

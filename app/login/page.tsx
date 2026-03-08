@@ -1,12 +1,11 @@
 "use client"
 
 import { useState, useEffect, useRef, Suspense } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 
 function LoginForm() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const searchParams = useSearchParams()
@@ -31,11 +30,11 @@ function LoginForm() {
         setError("Sign-in failed. Please try again.")
         setLoading(false)
       } else {
-        // Session established — redirect to start view
-        router.replace("/rumi")
+        // Session established — hard redirect so server sees the cookie
+        window.location.href = "/rumi"
       }
     })
-  }, [searchParams, router])
+  }, [searchParams])
 
   async function signInWithGoogle() {
     setLoading(true)

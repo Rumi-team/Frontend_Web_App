@@ -8,7 +8,17 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Allow public routes without access check
-  if (pathname === "/verify" || pathname === "/api/access-code" || pathname === "/login") {
+  if (pathname === "/verify" || pathname === "/api/access-code") {
+    return response
+  }
+
+  // Login page — if already authenticated, skip to /rumi
+  // Otherwise allow through (including ?code= for PKCE exchange)
+  if (pathname === "/login") {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user && !request.nextUrl.searchParams.has("code")) {
+      return NextResponse.redirect(new URL("/rumi", request.url))
+    }
     return response
   }
 
@@ -24,17 +34,14 @@ export async function middleware(request: NextRequest) {
   // Refresh the auth session cookie so it doesn't expire mid-visit.
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Routes in the (coach) group that have their own client-side auth gate
-  // (CoachShell renders SignInPage for unauthenticated users).
-  // Let them through so the sign-in page can render.
+  // Protected coach routes — redirect to /login if not authenticated
   const coachRoutes = ["/rumi", "/library", "/chat", "/settings"]
   const isCoachRoute = coachRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   )
 
   if (!user && isCoachRoute) {
-    // Let the request through — the layout will render the sign-in page
-    return response
+    return NextResponse.redirect(new URL("/login", request.url))
   }
 
   // Require authentication for other protected routes (e.g. /admin)
