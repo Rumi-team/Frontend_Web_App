@@ -22,22 +22,24 @@ export default async function CoachLayout({
   try {
     const serviceClient = createServerSupabaseClient()
 
-    // Check if user has an active access code (is_active = true)
+    // Check if user has an active access code — filter by is_active=true so
+    // multiple codes per email (e.g. old auto + new auto) don't cause .single() errors
     const userEmail = user.email?.toLowerCase() ?? ""
     const { data: accessCode } = await serviceClient
       .from("access_codes")
-      .select("is_active")
+      .select("id")
       .eq("assigned_email", userEmail)
-      .single()
+      .eq("is_active", true)
+      .maybeSingle()
 
-    // Also check for legacy redemption-based access
+    // Also check for redemption-based access
     const { data: redemption } = await serviceClient
       .from("access_code_redemptions")
       .select("id")
       .eq("user_id", user.id)
-      .single()
+      .maybeSingle()
 
-    hasAccess = accessCode?.is_active === true || !!redemption
+    hasAccess = !!accessCode || !!redemption
 
     // Check if user has completed channel onboarding (channel_preferences row exists)
     if (hasAccess) {

@@ -76,16 +76,16 @@ export async function GET(request: Request) {
       .from("access_code_redemptions")
       .select("id")
       .eq("user_id", user.id)
-      .single()
+      .maybeSingle()
 
     if (!existingRedemption) {
-      // No redemption yet — look for an access code assigned to this email
+      // No redemption yet — look for an active access code assigned to this email
       const { data: assignedCode } = await serviceClient
         .from("access_codes")
         .select("id, used_count")
         .eq("assigned_email", email.toLowerCase())
         .eq("is_active", true)
-        .single()
+        .maybeSingle()
 
       if (assignedCode) {
         // Auto-redeem the code for this user
