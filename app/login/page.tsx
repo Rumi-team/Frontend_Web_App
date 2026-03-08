@@ -1,19 +1,41 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useState, useEffect, useRef, Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 
 function LoginForm() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const searchParams = useSearchParams()
+  const codeExchangeDone = useRef(false)
 
   useEffect(() => {
     const err = searchParams.get("error")
     if (err) setError(decodeURIComponent(err))
   }, [searchParams])
+
+  // Handle OAuth code exchange: when Google/Apple redirects back with ?code=
+  useEffect(() => {
+    const code = searchParams.get("code")
+    if (!code || codeExchangeDone.current) return
+    codeExchangeDone.current = true
+
+    setLoading(true)
+    const supabase = createSupabaseBrowserClient()
+    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      if (error) {
+        console.error("PKCE code exchange error:", error)
+        setError("Sign-in failed. Please try again.")
+        setLoading(false)
+      } else {
+        // Session established — redirect to start view
+        router.replace("/rumi")
+      }
+    })
+  }, [searchParams, router])
 
   async function signInWithGoogle() {
     setLoading(true)
@@ -26,7 +48,7 @@ function LoginForm() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${siteUrl}/rumi`,
+        redirectTo: `${siteUrl}/login`,
         skipBrowserRedirect: true,
       },
     })
@@ -49,7 +71,7 @@ function LoginForm() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "apple",
       options: {
-        redirectTo: `${siteUrl}/rumi`,
+        redirectTo: `${siteUrl}/login`,
         skipBrowserRedirect: true,
       },
     })
