@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/rumi"
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/rumi?error=missing_code`)
+    return NextResponse.redirect(`${origin}/login?error=missing_code`)
   }
 
   // Exchange the OAuth code for a Supabase session (sets cookies)
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
   if (error) {
     console.error("OAuth callback error:", error.message)
-    return NextResponse.redirect(`${origin}/rumi?error=auth_failed`)
+    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
   }
 
   // Get the authenticated user to upsert user_identities

@@ -149,7 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
-      const redirectTo = `${siteUrl}/rumi`
+      const redirectTo = `${siteUrl}/login`
       console.log("[Auth] Google OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -185,7 +185,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
-      const redirectTo = `${siteUrl}/rumi`
+      const redirectTo = `${siteUrl}/login`
       console.log("[Auth] Apple OAuth redirectTo:", redirectTo)
       const result = await supabase.auth.signInWithOAuth({
         provider: "apple",
@@ -236,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${siteUrl}/rumi` },
+        options: { emailRedirectTo: `${siteUrl}/login` },
       })
       setIsSigningIn(false)
       if (error) return { error: error.message }
@@ -253,7 +253,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         process.env.NEXT_PUBLIC_SITE_URL ||
         (typeof window !== "undefined" ? window.location.origin : "")
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${siteUrl}/rumi`,
+        redirectTo: `${siteUrl}/login`,
       })
       if (error) return { error: error.message }
       return { error: null }
