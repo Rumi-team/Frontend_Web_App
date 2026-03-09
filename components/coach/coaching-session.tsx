@@ -130,21 +130,29 @@ export function CoachingSession({
   const handleEndSession = useCallback(async () => {
     setShowSaveOverlay(true)
 
-    // Send farewell_request to the server so it can finalize memory,
-    // evaluate, and generate assignments while the room stays connected.
-    // MUST use sendText (text stream) — backend uses register_text_stream_handler,
-    // NOT data_received (which is for publishData/binary).
+    // Send farewell_request via BOTH data channel and text stream.
+    // Backend listens on both: data_received (publishData) and
+    // register_text_stream_handler (sendText). Belt-and-suspenders
+    // to ensure delivery regardless of SDK version compatibility.
+    const payload = JSON.stringify({
+      type: "farewell_request",
+      request_id: crypto.randomUUID(),
+    })
+
     try {
-      await room.localParticipant.sendText(
-        JSON.stringify({
-          type: "farewell_request",
-          request_id: crypto.randomUUID(),
-        }),
-        { topic: "rumi.control" },
-      )
+      // Primary: data channel (most reliable, works across all SDK versions)
+      const encoder = new TextEncoder()
+      await room.localParticipant.publishData(encoder.encode(payload), {
+        topic: "rumi.control",
+        reliable: true,
+      })
     } catch {
-      // If sending fails (room already closing), fall back to direct disconnect
-      onDisconnect()
+      // Fallback: text stream
+      try {
+        await room.localParticipant.sendText(payload, { topic: "rumi.control" })
+      } catch {
+        onDisconnect()
+      }
     }
   }, [room, onDisconnect])
 
