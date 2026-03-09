@@ -31,38 +31,43 @@ export function SessionSaveOverlay({
   onComplete,
 }: SessionSaveOverlayProps) {
   const [isComplete, setIsComplete] = useState(false)
-  const [displayProgress, setDisplayProgress] = useState(0)
+  const [displayProgress, setDisplayProgress] = useState(2) // Start at 2% immediately
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const serverProgressRef = useRef(0)
   const label = stage ? STAGE_LABELS[stage] ?? stage : "Rumi is memorizing..."
 
-  // Client-side progress interpolation: smoothly advances between server updates
-  // so the bar never looks stuck. Server values override when they arrive.
+  // Track server progress in a ref to avoid stale closures
   useEffect(() => {
-    if (isComplete) return
-
-    // When server sends a real progress update, jump to it
     if (progress > 0) {
+      serverProgressRef.current = progress
       setDisplayProgress((prev) => Math.max(prev, progress))
     }
+  }, [progress])
 
-    // Start interpolation: slowly creep toward the next expected milestone
-    if (intervalRef.current) clearInterval(intervalRef.current)
+  // Client-side interpolation: starts on mount, creeps forward so bar is always moving
+  useEffect(() => {
+    if (isComplete) {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      return
+    }
+
     intervalRef.current = setInterval(() => {
       setDisplayProgress((prev) => {
-        if (prev >= 95) return prev // Don't exceed 95% on client side
-        // Creep by 0.5-1.5% every 500ms, slowing as we approach milestones
-        const increment = prev < 30 ? 1.5 : prev < 60 ? 1.0 : 0.5
+        if (prev >= 95) return prev
+        // Slow down as progress increases
+        const increment = prev < 20 ? 1.5 : prev < 50 ? 1.0 : prev < 80 ? 0.5 : 0.2
         const next = prev + increment
-        // Don't overshoot the next server milestone by too much
-        const ceiling = progress > 0 ? Math.max(progress + 15, next) : 95
+        // Don't overshoot server progress by too much
+        const server = serverProgressRef.current
+        const ceiling = server > 0 ? Math.max(server + 20, 95) : 95
         return Math.min(next, ceiling)
       })
-    }, 500)
+    }, 600)
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [progress, isComplete])
+  }, [isComplete])
 
   useEffect(() => {
     if (stage === "complete") {
