@@ -129,9 +129,6 @@ export function StartView({
   const showText = !isHolding && !holdComplete && !isConnecting
   const hideControls = isHolding || holdComplete || isConnecting
 
-  // Base scale is 1. When connecting, scale down to EXACTLY 160px (mascot video size)
-  const connectScale = 160 / orbSize
-
   return (
     <div
       ref={containerRef}
@@ -163,8 +160,12 @@ export function StartView({
 
       {/* Orb container */}
       <div
-        className="relative cursor-pointer"
-        style={{ width: orbSize, height: orbSize }}
+        className="relative cursor-pointer transition-opacity duration-1000"
+        style={{
+          width: orbSize,
+          height: orbSize,
+          opacity: isConnecting ? 0 : 1,
+        }}
         onMouseDown={startHold}
         onMouseUp={cancelHold}
         onMouseLeave={cancelHold}
@@ -181,7 +182,7 @@ export function StartView({
             borderRadius: "50%",
             background: `rgba(247, 209, 66, ${glowOpacity})`,
             filter: `blur(${glowBlur}px)`,
-            transform: holdComplete ? "scale(1.35)" : isHolding ? "scale(1.1)" : isConnecting ? `scale(${connectScale * 1.5})` : undefined,
+            transform: holdComplete ? "scale(1.35)" : isHolding ? "scale(1.1)" : undefined,
             transition: "filter 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         />
@@ -194,8 +195,7 @@ export function StartView({
             borderRadius: "50%",
             background: `rgba(247, 209, 66, ${glowOpacity})`,
             filter: `blur(${glowBlur * 0.6}px)`,
-            transform: isConnecting ? `scale(${connectScale})` : undefined,
-            transition: "filter 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            transition: "filter 0.35s ease",
           }}
         />
 
@@ -205,10 +205,7 @@ export function StartView({
           height={orbSize}
           viewBox={`0 0 ${orbSize} ${orbSize}`}
           className="relative z-10"
-          style={{
-            transform: isConnecting ? `scale(${connectScale})` : undefined,
-            transition: "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
+          style={{}}
         >
           {/* Filled circle */}
           <circle
@@ -257,26 +254,30 @@ export function StartView({
         </svg>
       </div>
 
-      {/* Connecting Text */}
-      <div
-        className="absolute transition-all duration-500 ease-in-out flex flex-col items-center justify-center gap-3"
-        style={{
-          opacity: isConnecting ? 1 : 0,
-          transform: isConnecting ? "translateY(120px)" : "translateY(0)",
-          pointerEvents: "none"
-        }}
-      >
-        <p className="text-gray-400 font-medium">Connecting to your coach...</p>
-        <div className="flex gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-1.5 h-1.5 bg-yellow-400/80 rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
+      {/* Mascot fades in over the orb when connecting */}
+      {isConnecting && (
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none"
+          style={{ animation: "fadeIn 1.2s ease-in-out forwards" }}
+        >
+          <img
+            src="/rumi_mascot.png"
+            alt="Rumi"
+            className="w-28 h-28 rounded-full object-cover"
+            style={{ boxShadow: "0 0 40px rgba(247,209,66,0.3)" }}
+          />
+          <p className="mt-4 text-gray-400 font-medium">Rumi is getting ready...</p>
+          <div className="flex gap-1.5 mt-2">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Lyrics display — absolutely positioned so it never shifts the orb */}
       {isMusicPlaying && lyricsLine && (
