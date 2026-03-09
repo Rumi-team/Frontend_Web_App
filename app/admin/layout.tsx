@@ -13,6 +13,7 @@ import {
   Brain,
   Layers,
   Sliders,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -71,6 +72,18 @@ export default function AdminLayout({
               </Link>
             );
           })}
+          {/* External link to full retention dashboard */}
+          {process.env.NEXT_PUBLIC_RETENTION_DASHBOARD_URL && (
+            <a
+              href={process.env.NEXT_PUBLIC_RETENTION_DASHBOARD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-900 transition-colors"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Full Dashboard
+            </a>
+          )}
         </nav>
         <div className="p-4 border-t border-gray-800">
           <Link href="/">

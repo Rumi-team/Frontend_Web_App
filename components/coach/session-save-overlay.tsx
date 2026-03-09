@@ -10,20 +10,20 @@ interface SessionSaveOverlayProps {
 }
 
 const STAGE_LABELS: Record<string, string> = {
-  starting: "Preparing session data...",
-  summarizing: "Summarizing your session...",
-  memory_saving: "Saving to memory...",
-  saving_memory: "Saving to memory...",
+  starting: "Rumi is reflecting on your session...",
+  summarizing: "Rumi is processing your insights...",
+  memory_saving: "Rumi is memorizing this...",
+  saving_memory: "Rumi is memorizing this...",
   memory_added: "Rumi is memorizing this session...",
-  summary_generating: "Generating summary...",
-  summary_generated: "Generating summary...",
-  summary_saved: "Summary saved...",
-  evaluating_progress: "Evaluating your progress...",
-  evaluation_saved: "Evaluation saved...",
-  saving_session: "Saving session data...",
-  database_saving: "Saving to database...",
+  summary_generating: "Rumi is capturing the highlights...",
+  summary_generated: "Rumi is capturing the highlights...",
+  summary_saved: "Highlights captured...",
+  evaluating_progress: "Rumi is evaluating your growth...",
+  evaluation_saved: "Growth evaluation complete...",
+  saving_session: "Rumi is memorizing everything...",
+  database_saving: "Rumi is memorizing everything...",
   day_complete: "Section complete! See you tomorrow...",
-  complete: "Session saved!",
+  complete: "All memorized! ✨",
 }
 
 export function SessionSaveOverlay({
@@ -32,7 +32,7 @@ export function SessionSaveOverlay({
   onComplete,
 }: SessionSaveOverlayProps) {
   const [isComplete, setIsComplete] = useState(false)
-  const label = stage ? STAGE_LABELS[stage] ?? stage : "Saving..."
+  const label = stage ? STAGE_LABELS[stage] ?? stage : "Rumi is memorizing..."
 
   useEffect(() => {
     if (stage === "complete") {
