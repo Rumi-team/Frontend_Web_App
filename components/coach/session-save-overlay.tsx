@@ -42,13 +42,13 @@ export function SessionSaveOverlay({
     }
   }, [stage, onComplete])
 
-  // Safety timeout: auto-complete if server doesn't respond within 90s
+  // Safety timeout: auto-complete if server doesn't respond within 45s
   useEffect(() => {
     if (isComplete) return
     const safety = setTimeout(() => {
       setIsComplete(true)
       setTimeout(onComplete, 1500)
-    }, 90_000)
+    }, 45_000)
     return () => clearTimeout(safety)
   }, [isComplete, onComplete])
 
