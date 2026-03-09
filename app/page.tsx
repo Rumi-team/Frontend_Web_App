@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -519,7 +518,6 @@ function TestimonialCard({
    Main Page Component
    ═══════════════════════════════════════════════════════════ */
 export default function Home() {
-  const router = useRouter()
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [isCubeComplete, setIsCubeComplete] = useState(false)
   const [mobileHeroPhase, setMobileHeroPhase] = useState<"text" | "image">("text")
@@ -537,22 +535,22 @@ export default function Home() {
     const supabase = createSupabaseBrowserClient()
 
     if (code) {
-      // OAuth redirected here with ?code= — exchange and redirect
+      // OAuth redirected here with ?code= — exchange and hard redirect
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (!error) {
-          router.replace("/rumi")
+          window.location.href = "/rumi"
         }
       })
       return
     }
 
-    // Already signed in? Redirect to start view
+    // Already signed in? Hard redirect to start view
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        router.replace("/rumi")
+        window.location.href = "/rumi"
       }
     })
-  }, [router])
+  }, [])
 
   const handleCubeComplete = useCallback(() => {
     if (cubeCompleteTimeout.current) {
