@@ -210,7 +210,22 @@ export function SessionOrb({
           {stepDots}
         </svg>
 
-        {/* Mascot removed — keep orb animation only */}
+        {/* Mascot at center of orb */}
+        <div
+          className="absolute z-20 rounded-full overflow-hidden"
+          style={{
+            width: RING_RADIUS * 1.4,
+            height: RING_RADIUS * 1.4,
+            left: CENTER - RING_RADIUS * 0.7,
+            top: CENTER - RING_RADIUS * 0.7,
+          }}
+        >
+          <img
+            src="/rumi_mascot.png"
+            alt="Rumi"
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       {/* Step name */}
