@@ -32,7 +32,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 /**
- * After sign-in, upsert user_identities and auto-match access codes.
+ * After sign-in, upsert user_identities.
  */
 async function handlePostSignIn(user: User) {
   try {
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null)
       setIsLoading(false)
 
-      // On sign-in, upsert user_identities + auto-match access code
+      // On sign-in, upsert user_identities
       if (event === "SIGNED_IN" && session?.user && !postSignInDone.current) {
         postSignInDone.current = true
         handlePostSignIn(session.user)

@@ -42,7 +42,6 @@ export async function GET(request: Request) {
       user.id
 
     // Upsert into user_identities with platform='web'
-    // If existing row, increment login_count
     const { data: existingIdentity } = await serviceClient
       .from("user_identities")
       .select("login_count")
@@ -50,7 +49,6 @@ export async function GET(request: Request) {
       .single()
 
     if (existingIdentity) {
-      // Existing user — increment login count
       await serviceClient
         .from("user_identities")
         .update({
@@ -60,7 +58,6 @@ export async function GET(request: Request) {
         })
         .eq("user_id", user.id)
     } else {
-      // New user — insert with login_count = 1
       await serviceClient.from("user_identities").insert({
         user_id: user.id,
         provider: identity?.provider ?? "google",
@@ -70,42 +67,6 @@ export async function GET(request: Request) {
         login_count: 1,
       })
     }
-
-    // Auto-match: check if this email has an assigned access code
-    const { data: existingRedemption } = await serviceClient
-      .from("access_code_redemptions")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle()
-
-    if (!existingRedemption) {
-      // No redemption yet — look for an active access code assigned to this email
-      const { data: assignedCode } = await serviceClient
-        .from("access_codes")
-        .select("id, used_count")
-        .eq("assigned_email", email.toLowerCase())
-        .eq("is_active", true)
-        .maybeSingle()
-
-      if (assignedCode) {
-        // Auto-redeem the code for this user
-        await serviceClient.from("access_code_redemptions").insert({
-          code_id: assignedCode.id,
-          user_id: user.id,
-        })
-
-        // Increment used_count
-        await serviceClient
-          .from("access_codes")
-          .update({ used_count: (assignedCode.used_count ?? 0) + 1 })
-          .eq("id", assignedCode.id)
-      }
-    }
-  }
-
-  // Redirect to /verify if user hasn't redeemed an access code yet
-  if (user && !user.app_metadata?.access_verified) {
-    return NextResponse.redirect(`${origin}/verify`)
   }
 
   return NextResponse.redirect(`${origin}${next}`)
