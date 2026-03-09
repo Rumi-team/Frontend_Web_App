@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { RumiMascot, type MascotMood } from "./rumi-mascot"
+import { type MascotMood } from "./rumi-mascot"
 
 interface SessionOrbProps {
   currentStep: number
@@ -22,7 +22,6 @@ const SVG_SIZE = 290
 const CENTER = SVG_SIZE / 2
 const RING_RADIUS = 108
 const STROKE_WIDTH = 4
-const MASCOT_SIZE = 165
 
 export function SessionOrb({
   currentStep,
@@ -211,10 +210,7 @@ export function SessionOrb({
           {stepDots}
         </svg>
 
-        {/* Mascot */}
-        <div className="absolute inset-0 flex items-center justify-center z-20" style={{ paddingTop: 4 }}>
-          <RumiMascot mood={mascotMood} audioTrack={audioTrack} size={MASCOT_SIZE} />
-        </div>
+        {/* Mascot removed — keep orb animation only */}
       </div>
 
       {/* Step name */}
