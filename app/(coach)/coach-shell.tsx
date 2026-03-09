@@ -5,7 +5,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
-import { AccessCodeGate } from "@/components/access-code-gate"
 import { ChannelOnboarding } from "@/components/channel-onboarding"
 import { Button } from "@/components/ui/button"
 import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings, MessageSquare } from "lucide-react"
@@ -14,14 +13,13 @@ import { cn } from "@/lib/utils"
 interface CoachShellProps {
   children: React.ReactNode
   authenticated: boolean
-  hasAccess: boolean
   needsOnboarding?: boolean
 }
 
-export function CoachShell({ children, authenticated, hasAccess, needsOnboarding }: CoachShellProps) {
+export function CoachShell({ children, authenticated, needsOnboarding }: CoachShellProps) {
   return (
     <AuthProvider>
-      <CoachShellInner authenticated={authenticated} hasAccess={hasAccess} needsOnboarding={needsOnboarding}>
+      <CoachShellInner authenticated={authenticated} needsOnboarding={needsOnboarding}>
         {children}
       </CoachShellInner>
     </AuthProvider>
@@ -306,7 +304,6 @@ function SignInPage() {
 function CoachShellInner({
   children,
   authenticated,
-  hasAccess,
   needsOnboarding: initialNeedsOnboarding,
 }: CoachShellProps) {
   const { user, signOut, isLoading, displayName } = useAuth()
@@ -333,12 +330,7 @@ function CoachShellInner({
     )
   }
 
-  // Authenticated but no access — show access code gate
-  if (!hasAccess) {
-    return <AccessCodeGate onActivated={() => router.refresh()} />
-  }
-
-  // Authenticated with access but needs channel onboarding
+  // Authenticated but needs channel onboarding
   if (showOnboarding) {
     return (
       <ChannelOnboarding
