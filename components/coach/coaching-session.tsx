@@ -178,42 +178,42 @@ export function CoachingSession({
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
       {/* Transcript at top (like iOS — agent messages only, latest only) */}
-      <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+      <div className="hidden md:flex flex-1 min-h-0 overflow-hidden flex-col">
         <AgentTranscript messages={messages} />
       </div>
 
       {/* Center area: step orb / audio visualizers */}
-      <div className="shrink-0 flex flex-col items-center gap-3 py-4">
+      <div className="flex-1 md:flex-none flex flex-col items-center justify-center md:justify-start gap-3 py-4 shrink-0">
         {/* Step progress — orb when program active, bar as fallback */}
         {sessionControl.currentStep !== null &&
           sessionControl.totalSteps !== null &&
           sessionControl.selectedProgram ? (
-            <SessionOrb
-              currentStep={sessionControl.currentStep}
-              totalSteps={sessionControl.totalSteps}
-              stepName={sessionControl.stepName}
-              audioTrack={remoteAudioTrack}
-              isActive={!isTextMode}
-              currentDay={sessionControl.currentDay}
-              totalDays={sessionControl.totalDays}
-              isDayLocked={sessionControl.isDayLocked}
-              allowedStepMin={sessionControl.allowedStepMin}
-              allowedStepMax={sessionControl.allowedStepMax}
-              mascotMood={mascotMood}
-            />
-          ) : sessionControl.currentStep !== null &&
-            sessionControl.totalSteps !== null ? (
-            <StepProgress
-              currentStep={sessionControl.currentStep}
-              totalSteps={sessionControl.totalSteps}
-              stepName={sessionControl.stepName}
-              currentDay={sessionControl.currentDay}
-              totalDays={sessionControl.totalDays}
-              isDayLocked={sessionControl.isDayLocked}
-              allowedStepMin={sessionControl.allowedStepMin}
-              allowedStepMax={sessionControl.allowedStepMax}
-            />
-          ) : null}
+          <SessionOrb
+            currentStep={sessionControl.currentStep}
+            totalSteps={sessionControl.totalSteps}
+            stepName={sessionControl.stepName}
+            audioTrack={remoteAudioTrack}
+            isActive={!isTextMode}
+            currentDay={sessionControl.currentDay}
+            totalDays={sessionControl.totalDays}
+            isDayLocked={sessionControl.isDayLocked}
+            allowedStepMin={sessionControl.allowedStepMin}
+            allowedStepMax={sessionControl.allowedStepMax}
+            mascotMood={mascotMood}
+          />
+        ) : sessionControl.currentStep !== null &&
+          sessionControl.totalSteps !== null ? (
+          <StepProgress
+            currentStep={sessionControl.currentStep}
+            totalSteps={sessionControl.totalSteps}
+            stepName={sessionControl.stepName}
+            currentDay={sessionControl.currentDay}
+            totalDays={sessionControl.totalDays}
+            isDayLocked={sessionControl.isDayLocked}
+            allowedStepMin={sessionControl.allowedStepMin}
+            allowedStepMax={sessionControl.allowedStepMax}
+          />
+        ) : null}
 
         {/* Agent audio visualizer — when no session orb */}
         {!isTextMode && remoteAudioTrack && !sessionControl.selectedProgram && (
