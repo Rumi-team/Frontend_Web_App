@@ -14,6 +14,7 @@ interface StartViewProps {
   onToggleMusic?: () => void
   lyricsLine?: string | null
   lyricsOpacity?: number
+  isConnecting?: boolean
 }
 
 const HOLD_DURATION = 3000 // 3 seconds in ms
@@ -58,6 +59,7 @@ export function StartView({
   onToggleMusic,
   lyricsLine,
   lyricsOpacity = 0,
+  isConnecting = false,
 }: StartViewProps) {
   const [holdProgress, setHoldProgress] = useState(0)
   const [isHolding, setIsHolding] = useState(false)
@@ -124,8 +126,11 @@ export function StartView({
   const dashOffset = circumference * (1 - holdProgress)
   const glowBlur = holdComplete ? 26 : isHolding ? 12 : 8
   const glowOpacity = holdComplete ? 0.85 : isHolding ? 0.65 : 0.45
-  const showText = !isHolding && !holdComplete
-  const hideControls = isHolding || holdComplete
+  const showText = !isHolding && !holdComplete && !isConnecting
+  const hideControls = isHolding || holdComplete || isConnecting
+
+  // Base scale is 1. When connecting, scale down to EXACTLY 160px (mascot video size)
+  const connectScale = 160 / orbSize
 
   return (
     <div
@@ -145,13 +150,13 @@ export function StartView({
 
       {/* Text above orb */}
       <div
-        className="mb-[6vh] text-center transition-opacity duration-300"
+        className="mb-[4vh] sm:mb-[6vh] text-center transition-opacity duration-300 px-4"
         style={{ opacity: showText ? 1 : 0 }}
       >
-        <p className="text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+        <p className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
           Tap &amp; Hold to
         </p>
-        <p className="text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+        <p className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
           Start Transformation
         </p>
       </div>
@@ -176,8 +181,8 @@ export function StartView({
             borderRadius: "50%",
             background: `rgba(247, 209, 66, ${glowOpacity})`,
             filter: `blur(${glowBlur}px)`,
-            transform: holdComplete ? "scale(1.35)" : isHolding ? "scale(1.1)" : undefined,
-            transition: "filter 0.35s ease, transform 0.35s ease",
+            transform: holdComplete ? "scale(1.35)" : isHolding ? "scale(1.1)" : isConnecting ? `scale(${connectScale * 1.5})` : undefined,
+            transition: "filter 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         />
 
@@ -189,7 +194,8 @@ export function StartView({
             borderRadius: "50%",
             background: `rgba(247, 209, 66, ${glowOpacity})`,
             filter: `blur(${glowBlur * 0.6}px)`,
-            transition: "filter 0.35s ease",
+            transform: isConnecting ? `scale(${connectScale})` : undefined,
+            transition: "filter 0.35s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         />
 
@@ -199,6 +205,10 @@ export function StartView({
           height={orbSize}
           viewBox={`0 0 ${orbSize} ${orbSize}`}
           className="relative z-10"
+          style={{
+            transform: isConnecting ? `scale(${connectScale})` : undefined,
+            transition: "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
         >
           {/* Filled circle */}
           <circle
@@ -247,6 +257,27 @@ export function StartView({
         </svg>
       </div>
 
+      {/* Connecting Text */}
+      <div
+        className="absolute transition-all duration-500 ease-in-out flex flex-col items-center justify-center gap-3"
+        style={{
+          opacity: isConnecting ? 1 : 0,
+          transform: isConnecting ? "translateY(120px)" : "translateY(100px)",
+          pointerEvents: "none"
+        }}
+      >
+        <p className="text-gray-400 font-medium">Connecting to your coach...</p>
+        <div className="flex gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-1.5 h-1.5 bg-yellow-400/80 rounded-full animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Lyrics display — absolutely positioned so it never shifts the orb */}
       {isMusicPlaying && lyricsLine && (
         <p
@@ -265,15 +296,15 @@ export function StartView({
       {!hideControls && (
         <button
           onClick={onToggleMusic}
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 rounded-full px-7 py-3.5 transition-all hover:bg-white/[0.08]"
+          className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3 rounded-full px-5 py-2.5 sm:px-7 sm:py-3.5 transition-all hover:bg-white/[0.08]"
           style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(8px)" }}
         >
           {isMusicPlaying ? (
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg className="w-6 h-6 sm:w-9 sm:h-9 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /></svg>
           ) : (
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <svg className="w-6 h-6 sm:w-9 sm:h-9 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
           )}
-          <span className={`text-xl font-medium ${isMusicPlaying ? "text-yellow-400/80" : "text-gray-500"}`}>
+          <span className={`text-sm sm:text-xl font-medium ${isMusicPlaying ? "text-yellow-400/80" : "text-gray-500"}`}>
             {isMusicPlaying ? "Rumi: Poem of Atoms" : "Play Music"}
           </span>
         </button>
@@ -324,22 +355,22 @@ function StartControls({
       {/* Top-left: Feedback */}
       <button
         onClick={onOpenFeedback}
-        className="absolute left-6 top-6 z-20 rounded-full border-2 px-8 py-3 text-2xl text-white/80 transition-colors hover:text-white animate-control-pulse"
+        className="absolute left-4 top-4 sm:left-6 sm:top-6 z-20 rounded-full border-2 px-5 py-2 sm:px-8 sm:py-3 text-base sm:text-2xl text-white/80 transition-colors hover:text-white animate-control-pulse"
         style={{ borderColor: "rgba(255,255,255,0.4)" }}
       >
         Feedback
       </button>
 
       {/* Top-right: Icon buttons */}
-      <div className="absolute right-6 top-6 z-20 flex flex-col gap-4">
+      <div className="absolute right-3 top-4 sm:right-6 sm:top-6 z-20 flex flex-col gap-2 sm:gap-4">
         <ControlIconButton onClick={onOpenSettings} label="Settings">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg className="w-7 h-7 sm:w-14 sm:h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></svg>
         </ControlIconButton>
         <ControlIconButton onClick={onOpenLibrary} label="Library">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <svg className="w-7 h-7 sm:w-14 sm:h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
         </ControlIconButton>
         <ControlIconButton onClick={onOpenAssignments} label="Assignments">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 7h8M8 12h8M8 17h4"/></svg>
+          <svg className="w-7 h-7 sm:w-14 sm:h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 7h8M8 12h8M8 17h4" /></svg>
         </ControlIconButton>
       </div>
     </>
@@ -359,7 +390,7 @@ function ControlIconButton({
     <button
       onClick={onClick}
       aria-label={label}
-      className="flex h-24 w-24 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white animate-control-pulse"
+      className="flex h-12 w-12 sm:h-24 sm:w-24 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white animate-control-pulse"
       style={{ background: "rgba(255,255,255,0.08)", backdropFilter: "blur(8px)" }}
     >
       {children}
@@ -403,7 +434,7 @@ function SettingsPanel({
         className="flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors"
       >
         <div className="flex h-20 w-20 items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
         </div>
         <span className="text-base">Profile</span>
       </button>
@@ -415,9 +446,9 @@ function SettingsPanel({
       >
         <div className="flex h-20 w-20 items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
           {isMusicPlaying ? (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>
           ) : (
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>
           )}
         </div>
         <span className="text-base">Voice</span>
@@ -429,7 +460,7 @@ function SettingsPanel({
         className="flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors"
       >
         <div className="flex h-20 w-20 items-center justify-center rounded-full" style={{ background: "rgba(255,255,255,0.1)" }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
         </div>
         <span className="text-base">Sign Out</span>
       </button>
@@ -453,7 +484,7 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
           className="flex items-center gap-5 rounded-2xl px-8 py-5 text-white transition-colors hover:bg-white/5"
           style={{ background: "rgba(255,255,255,0.06)" }}
         >
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
           <span className="text-2xl">Text Founder</span>
         </a>
         <a
@@ -461,7 +492,7 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
           className="flex items-center gap-5 rounded-2xl px-8 py-5 text-white transition-colors hover:bg-white/5"
           style={{ background: "rgba(255,255,255,0.06)" }}
         >
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
           <span className="text-2xl">Email Rumi Team</span>
         </a>
         <button

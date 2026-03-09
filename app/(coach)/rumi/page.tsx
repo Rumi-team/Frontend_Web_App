@@ -52,7 +52,7 @@ export default function CoachPage() {
   // Connected — show coaching session
   if (lk.connectionState === "connected" && lk.room) {
     return (
-      <div className="h-screen">
+      <div className="h-dvh">
         <CoachingSession
           room={lk.room}
           isMicrophoneEnabled={lk.isMicrophoneEnabled}
@@ -66,26 +66,17 @@ export default function CoachPage() {
 
   // Error state
   if (error) {
+    const isMicError = mic.hasPermission === false
     return (
-      <div className="flex h-screen items-center justify-center px-4">
-        <ConnectionError message={error} onRetry={handleStart} />
-      </div>
-    )
-  }
-
-  // Connecting
-  if (lk.connectionState === "connecting") {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4" style={{ background: "rgb(15, 18, 23)" }}>
-        <Loader2 className="h-10 w-10 animate-spin text-yellow-400" />
-        <p className="text-gray-400">Connecting to your coach...</p>
+      <div className="flex h-dvh items-center justify-center px-4" style={{ background: "rgb(15, 18, 23)" }}>
+        <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} />
       </div>
     )
   }
 
   // Disconnected — show StartView with sun orb
   return (
-    <div className="h-screen">
+    <div className="h-dvh">
       <StartView
         onStartSession={handleStart}
         displayName={displayName}
@@ -96,6 +87,7 @@ export default function CoachPage() {
         onToggleMusic={lyrics.toggleMusic}
         lyricsLine={lyrics.currentLine}
         lyricsOpacity={lyrics.lyricOpacity}
+        isConnecting={lk.connectionState === "connecting"}
       />
 
       {/* Library sheet overlay */}
