@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-auth"
 import { createServerSupabaseClient } from "@/lib/supabase"
-import { AccessToken } from "livekit-server-sdk"
+import { AccessToken, RoomServiceClient, AgentDispatchClient } from "livekit-server-sdk"
 import { trackEvent } from "@/lib/retention/client"
+
+const AGENT_NAME = "rumi-voice-agent"
 
 export async function POST(request: Request) {
   try {
@@ -71,62 +73,29 @@ export async function POST(request: Request) {
 
     const participantToken = await at.toJwt()
 
-    // 5. Create the room via LiveKit Cloud sandbox API with agent dispatch
-    // This mirrors the iOS SandboxPayload format
-    const sandboxId = process.env.LIVEKIT_SANDBOX_ID
-    if (sandboxId) {
-      // Use LiveKit Cloud sandbox for room creation + agent dispatch
-      const sandboxPayload = {
-        room_name: roomName,
-        participant_name: participantName,
-        metadata: {
-          appleIdentifier: providerUserId,
-          given_name: displayName,
-          client_platform: "web",
-        },
-        room_attributes: {
-          appleIdentifier: providerUserId,
-          given_name: displayName,
-          client_platform: "web",
-        },
-        room_config: {
-          agents: [{ agent_name: "rumi-voice-agent" }],
-        },
-      }
+    // 5. Create room + dispatch agent via LiveKit Server SDK
+    // Convert ws/wss URL to https for API calls
+    const httpUrl = livekitUrl.replace(/^ws(s)?:\/\//, "https://")
 
-      const sandboxResponse = await fetch(
-        "https://cloud-api.livekit.io/api/sandbox/connection-details",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Sandbox-ID": sandboxId,
-          },
-          body: JSON.stringify(sandboxPayload),
-        }
-      )
+    const roomSvc = new RoomServiceClient(httpUrl, apiKey, apiSecret)
+    const dispatchSvc = new AgentDispatchClient(httpUrl, apiKey, apiSecret)
 
-      if (sandboxResponse.ok) {
-        const sandboxDetails = await sandboxResponse.json()
-        // Fire session_start event for retention tracking (fire-and-forget)
-        trackEvent(providerUserId, "session_start", { source: "web", room: sandboxDetails.roomName })
-        return NextResponse.json({
-          serverUrl: sandboxDetails.serverUrl,
-          roomName: sandboxDetails.roomName,
-          participantName: sandboxDetails.participantName,
-          participantToken: sandboxDetails.participantToken,
-        })
-      }
+    // Create room with attributes so the agent can read metadata
+    await roomSvc.createRoom({
+      name: roomName,
+      metadata: metadata,
+    })
 
-      console.error(
-        "Sandbox API failed, falling back to direct token:",
-        sandboxResponse.status
-      )
-    }
+    // Explicitly dispatch agent to the room
+    await dispatchSvc.createDispatch(roomName, AGENT_NAME, {
+      metadata: metadata,
+    })
 
-    // Fallback: return direct token (room created on connect)
+    console.log(`Room created + agent dispatched: ${roomName}`)
+
     // Fire session_start event for retention tracking (fire-and-forget)
     trackEvent(providerUserId, "session_start", { source: "web", room: roomName })
+
     return NextResponse.json({
       serverUrl: livekitUrl,
       roomName,
