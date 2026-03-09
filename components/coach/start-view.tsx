@@ -262,7 +262,7 @@ export function StartView({
         className="absolute transition-all duration-500 ease-in-out flex flex-col items-center justify-center gap-3"
         style={{
           opacity: isConnecting ? 1 : 0,
-          transform: isConnecting ? "translateY(120px)" : "translateY(100px)",
+          transform: isConnecting ? "translateY(120px)" : "translateY(0)",
           pointerEvents: "none"
         }}
       >
