@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface SessionSaveOverlayProps {
   progress: number
@@ -31,10 +31,42 @@ export function SessionSaveOverlay({
   onComplete,
 }: SessionSaveOverlayProps) {
   const [isComplete, setIsComplete] = useState(false)
+  const [displayProgress, setDisplayProgress] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const label = stage ? STAGE_LABELS[stage] ?? stage : "Rumi is memorizing..."
+
+  // Client-side progress interpolation: smoothly advances between server updates
+  // so the bar never looks stuck. Server values override when they arrive.
+  useEffect(() => {
+    if (isComplete) return
+
+    // When server sends a real progress update, jump to it
+    if (progress > 0) {
+      setDisplayProgress((prev) => Math.max(prev, progress))
+    }
+
+    // Start interpolation: slowly creep toward the next expected milestone
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    intervalRef.current = setInterval(() => {
+      setDisplayProgress((prev) => {
+        if (prev >= 95) return prev // Don't exceed 95% on client side
+        // Creep by 0.5-1.5% every 500ms, slowing as we approach milestones
+        const increment = prev < 30 ? 1.5 : prev < 60 ? 1.0 : 0.5
+        const next = prev + increment
+        // Don't overshoot the next server milestone by too much
+        const ceiling = progress > 0 ? Math.max(progress + 15, next) : 95
+        return Math.min(next, ceiling)
+      })
+    }, 500)
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [progress, isComplete])
 
   useEffect(() => {
     if (stage === "complete") {
+      setDisplayProgress(100)
       setIsComplete(true)
       const timer = setTimeout(onComplete, 2000)
       return () => clearTimeout(timer)
@@ -46,12 +78,13 @@ export function SessionSaveOverlay({
     if (isComplete) return
     const safety = setTimeout(() => {
       setIsComplete(true)
+      setDisplayProgress(100)
       setTimeout(onComplete, 1500)
     }, 45_000)
     return () => clearTimeout(safety)
   }, [isComplete, onComplete])
 
-  const pct = Math.round(progress)
+  const pct = Math.round(displayProgress)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
@@ -118,9 +151,9 @@ export function SessionSaveOverlay({
         {/* Progress bar with gold gradient */}
         <div className="w-64 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.1)" }}>
           <div
-            className="h-full rounded-full transition-all duration-300"
+            className="h-full rounded-full transition-all duration-500 ease-out"
             style={{
-              width: `${progress}%`,
+              width: `${displayProgress}%`,
               background: isComplete
                 ? "linear-gradient(90deg, rgb(250,204,21), rgb(255,210,50))"
                 : "linear-gradient(90deg, rgb(250,204,21), rgb(255,160,0))",

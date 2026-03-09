@@ -132,16 +132,16 @@ export function CoachingSession({
 
     // Send farewell_request to the server so it can finalize memory,
     // evaluate, and generate assignments while the room stays connected.
+    // MUST use sendText (text stream) — backend uses register_text_stream_handler,
+    // NOT data_received (which is for publishData/binary).
     try {
-      const payload = JSON.stringify({
-        type: "farewell_request",
-        request_id: crypto.randomUUID(),
-      })
-      const encoder = new TextEncoder()
-      await room.localParticipant.publishData(encoder.encode(payload), {
-        topic: "rumi.control",
-        reliable: true,
-      })
+      await room.localParticipant.sendText(
+        JSON.stringify({
+          type: "farewell_request",
+          request_id: crypto.randomUUID(),
+        }),
+        { topic: "rumi.control" },
+      )
     } catch {
       // If sending fails (room already closing), fall back to direct disconnect
       onDisconnect()
