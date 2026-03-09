@@ -97,7 +97,7 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
               ? "text-yellow-400 scale-110"
               : "text-gray-400"
           )}>
-            {mascotReady ? "Let's go!" : "Getting ready..."}
+            {mascotReady ? "Let's go!" : "Rumi is getting ready..."}
           </p>
 
           {/* Loading dots */}

@@ -45,7 +45,7 @@ export function TextInput({ onSend, disabled }: TextInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
         disabled={disabled || isSending}
-        className="min-h-[52px] max-h-40 resize-none border-gray-700 bg-gray-900 text-lg text-white placeholder:text-gray-500 rounded-xl px-4 py-3"
+        className="min-h-[52px] max-h-40 resize-none border-gray-700 bg-gray-900 text-3xl leading-relaxed text-white placeholder:text-gray-500 rounded-xl px-4 py-3"
         rows={1}
       />
       <Button

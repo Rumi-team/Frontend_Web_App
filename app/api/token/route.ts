@@ -17,33 +17,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // 2. Verify access code redemption
+    // 2. Get user identity + parse request body in parallel
     const serviceClient = createServerSupabaseClient()
-    const { data: redemption } = await serviceClient
-      .from("access_code_redemptions")
-      .select("id")
-      .eq("user_id", user.id)
-      .single()
-
-    if (!redemption) {
-      return NextResponse.json(
-        { error: "Access code required" },
-        { status: 403 }
-      )
-    }
-
-    // 3. Get user identity for provider_user_id
-    const { data: identity } = await serviceClient
-      .from("user_identities")
-      .select("provider_user_id, email")
-      .eq("user_id", user.id)
-      .single()
+    const [{ data: identity }, body] = await Promise.all([
+      serviceClient
+        .from("user_identities")
+        .select("provider_user_id, email")
+        .eq("user_id", user.id)
+        .single(),
+      request.json().catch(() => ({})),
+    ])
 
     const providerUserId =
       identity?.provider_user_id ?? user.identities?.[0]?.id ?? user.id
 
-    // 4. Build room and participant details
-    const body = await request.json().catch(() => ({}))
+    // 3. Build room and participant details
     const displayName =
       body.displayName ??
       user.user_metadata?.full_name ??
@@ -62,7 +50,7 @@ export async function POST(request: Request) {
       client_platform: "web",
     })
 
-    // 5. Generate LiveKit access token
+    // 4. Generate LiveKit access token
     const livekitUrl = process.env.LIVEKIT_URL!
     const apiKey = process.env.LIVEKIT_API_KEY!
     const apiSecret = process.env.LIVEKIT_API_SECRET!
@@ -83,7 +71,7 @@ export async function POST(request: Request) {
 
     const participantToken = await at.toJwt()
 
-    // 6. Create the room via LiveKit Cloud sandbox API with agent dispatch
+    // 5. Create the room via LiveKit Cloud sandbox API with agent dispatch
     // This mirrors the iOS SandboxPayload format
     const sandboxId = process.env.LIVEKIT_SANDBOX_ID
     if (sandboxId) {
