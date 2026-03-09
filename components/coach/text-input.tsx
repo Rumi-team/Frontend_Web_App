@@ -52,9 +52,9 @@ export function TextInput({ onSend, disabled }: TextInputProps) {
         onClick={handleSend}
         disabled={!text.trim() || disabled || isSending}
         size="icon"
-        className="h-13 w-13 shrink-0 bg-yellow-400 text-black hover:bg-yellow-300 rounded-xl"
+        className="h-14 w-14 shrink-0 bg-yellow-400 text-black hover:bg-yellow-300 rounded-xl"
       >
-        <Send className="h-6 w-6" />
+        <Send className="h-7 w-7" />
       </Button>
     </div>
   )

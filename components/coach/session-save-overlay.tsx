@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { CheckCircle2 } from "lucide-react"
 
 interface SessionSaveOverlayProps {
   progress: number
@@ -23,7 +22,7 @@ const STAGE_LABELS: Record<string, string> = {
   saving_session: "Rumi is memorizing everything...",
   database_saving: "Rumi is memorizing everything...",
   day_complete: "Section complete! See you tomorrow...",
-  complete: "All memorized! ✨",
+  complete: "All memorized!",
 }
 
 export function SessionSaveOverlay({
@@ -57,109 +56,78 @@ export function SessionSaveOverlay({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
       <div className="flex flex-col items-center gap-6 px-8 text-center">
-        {isComplete ? (
-          <CheckCircle2 className="h-16 w-16 text-green-400" />
-        ) : (
-          <AnimatedHourglass progress={progress / 100} />
+        {/* Mascot video / completed state */}
+        <div className="relative">
+          {isComplete ? (
+            <>
+              {/* Completed: static mascot image with golden ring + sparkles */}
+              <img
+                src="/rumi_mascot.png"
+                alt="Rumi mascot"
+                className="w-32 h-32 rounded-full object-cover"
+              />
+              <div className="absolute inset-[-8px] rounded-full border-2 border-yellow-400 shadow-[0_0_30px_rgba(255,210,50,0.6)]" />
+              {/* Sparkle particles */}
+              <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-300 rounded-full animate-ping" />
+              <div className="absolute -bottom-1 -left-3 w-2 h-2 bg-yellow-200 rounded-full animate-ping [animation-delay:150ms]" />
+              <div className="absolute top-1/2 -right-4 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping [animation-delay:300ms]" />
+            </>
+          ) : (
+            <>
+              {/* Saving: looping mascot video with pulsing golden glow ring */}
+              <video
+                className="w-32 h-32 rounded-full object-cover"
+                src="/videos/mascot-intro.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+              <div className="absolute inset-[-8px] rounded-full border-2 border-yellow-400/30 animate-pulse shadow-[0_0_20px_rgba(255,210,50,0.3)]" />
+            </>
+          )}
+        </div>
+
+        {/* Stage label */}
+        <p className={
+          isComplete
+            ? "text-xl font-semibold text-yellow-400"
+            : "text-lg text-white"
+        }>
+          {label}
+        </p>
+
+        {/* Bouncing dots while saving */}
+        {!isComplete && (
+          <div className="flex gap-2">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
         )}
 
-        <p className="text-lg text-white">{label}</p>
-
+        {/* Progress percentage */}
         {!isComplete && (
           <p className="text-sm text-gray-500">{pct}%</p>
         )}
 
-        {/* Progress bar */}
+        {/* Progress bar with gold gradient */}
         <div className="w-64 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.1)" }}>
           <div
             className="h-full rounded-full transition-all duration-300"
             style={{
               width: `${progress}%`,
               background: isComplete
-                ? "rgb(74,222,128)"
-                : "rgb(250,204,21)",
+                ? "linear-gradient(90deg, rgb(250,204,21), rgb(255,210,50))"
+                : "linear-gradient(90deg, rgb(250,204,21), rgb(255,160,0))",
             }}
           />
         </div>
       </div>
-    </div>
-  )
-}
-
-/* ---------- Animated SVG Hourglass ---------- */
-
-function AnimatedHourglass({ progress }: { progress: number }) {
-  const topFill = 1.0 - progress
-  const bottomFill = progress
-
-  return (
-    <div className="relative animate-hourglass-glow">
-      <svg
-        width={80}
-        height={80}
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          {/* Clip path matching the hourglass interior — top half */}
-          <clipPath id="hg-top">
-            <path d="M16 8 H48 C48 18 40 26 32 32 C24 26 16 18 16 8 Z" />
-          </clipPath>
-          {/* Clip path matching the hourglass interior — bottom half */}
-          <clipPath id="hg-bottom">
-            <path d="M32 32 C40 38 48 46 48 56 H16 C16 46 24 38 32 32 Z" />
-          </clipPath>
-        </defs>
-
-        {/* Top sand — depletes as progress grows */}
-        <rect
-          x="0"
-          y={8 + 24 * (1 - topFill)}
-          width="64"
-          height={24 * topFill}
-          fill="rgba(250,204,21,0.3)"
-          clipPath="url(#hg-top)"
-          className="transition-all duration-500"
-        />
-
-        {/* Bottom sand — fills as progress grows */}
-        <rect
-          x="0"
-          y={56 - 24 * bottomFill}
-          width="64"
-          height={24 * bottomFill}
-          fill="rgba(250,204,21,0.45)"
-          clipPath="url(#hg-bottom)"
-          className="transition-all duration-500"
-        />
-
-        {/* Sand stream through the neck */}
-        {progress > 0 && progress < 1 && (
-          <line
-            x1="32" y1="29" x2="32" y2="36"
-            stroke="rgba(250,204,21,0.7)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          >
-            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.2s" repeatCount="indefinite" />
-          </line>
-        )}
-
-        {/* Hourglass frame outline */}
-        <path
-          d="M16 8h32v0c0 10-8 18-16 24c8 6 16 14 16 24v0H16v0c0-10 8-18 16-24c-8-6-16-14-16-24v0z"
-          stroke="rgba(250,204,21,0.6)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Top cap */}
-        <line x1="14" y1="8" x2="50" y2="8" stroke="rgba(250,204,21,0.5)" strokeWidth="2.5" strokeLinecap="round" />
-        {/* Bottom cap */}
-        <line x1="14" y1="56" x2="50" y2="56" stroke="rgba(250,204,21,0.5)" strokeWidth="2.5" strokeLinecap="round" />
-      </svg>
     </div>
   )
 }
