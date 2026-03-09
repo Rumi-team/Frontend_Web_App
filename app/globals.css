@@ -137,6 +137,12 @@ body {
   animation: control-pulse 5s ease-in-out infinite;
 }
 
+/* Fade in for connecting → mascot transition */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
 /* Step celebration burst */
 @keyframes step-celebrate {
   0% { transform: scale(1); }

@@ -61,8 +61,8 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
         )}>
           {/* Mascot video animation */}
           <div className={cn(
-            "relative transition-all duration-700 ease-out",
-            mascotReady ? "scale-110" : "animate-mascot-entrance"
+            "relative transition-all duration-700 ease-out animate-in fade-in zoom-in-95",
+            mascotReady ? "scale-110" : ""
           )}>
             <video
               ref={videoRef}
