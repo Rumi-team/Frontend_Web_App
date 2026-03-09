@@ -180,6 +180,37 @@ export function StreakBadge({ count }: { count: number }) {
   )
 }
 
+// ── Celebration Pools (randomized each time) ────────────────────────────────
+
+const INSIGHT_POOL = [
+  { text: "Insight!", points: 5 },
+  { text: "Awareness!", points: 8 },
+  { text: "Clarity!", points: 10 },
+  { text: "Wisdom!", points: 7 },
+  { text: "Seeing!", points: 6 },
+  { text: "Distinction!", points: 9 },
+]
+
+const BREAKTHROUGH_POOL = [
+  { text: "Breakthrough!", points: 15 },
+  { text: "Transformation!", points: 20 },
+  { text: "Growth!", points: 18 },
+  { text: "Discovery!", points: 22 },
+  { text: "Awakening!", points: 25 },
+  { text: "Shift!", points: 17 },
+]
+
+const MILESTONE_POOL = [
+  { text: "Milestone!", points: 40 },
+  { text: "Evolution!", points: 50 },
+  { text: "Transcendence!", points: 55 },
+  { text: "Mastery!", points: 45 },
+]
+
+function pickRandom<T>(pool: T[]): T {
+  return pool[Math.floor(Math.random() * pool.length)]
+}
+
 // ── Main Celebration Controller ─────────────────────────────────────────────
 
 export type CelebrationLevel = "spark" | "insight" | "breakthrough" | "milestone"
@@ -216,35 +247,41 @@ export function useCelebration() {
           // Small sparkle — highlighted text detected
           setState((s) => ({ ...s, goldenFlash: true }))
           break
-        case "insight":
+        case "insight": {
           // Medium — good point or aha moment
+          const pick = pickRandom(INSIGHT_POOL)
           setState((s) => ({
             ...s,
             starBurst: true,
-            insightPopup: { text: "Insight!", points: 10 },
+            insightPopup: pick,
             goldenFlash: true,
           }))
           break
-        case "breakthrough":
+        }
+        case "breakthrough": {
           // Big — step completed
+          const pick = pickRandom(BREAKTHROUGH_POOL)
           setState((s) => ({
             ...s,
             confetti: true,
             starBurst: true,
-            insightPopup: { text: "Breakthrough!", points: 25 },
+            insightPopup: pick,
             goldenFlash: true,
           }))
           break
-        case "milestone":
+        }
+        case "milestone": {
           // Huge — day or program complete
+          const pick = pickRandom(MILESTONE_POOL)
           setState((s) => ({
             ...s,
             confetti: true,
             starBurst: true,
-            insightPopup: { text: "Milestone!", points: 50 },
+            insightPopup: pick,
             goldenFlash: true,
           }))
           break
+        }
       }
     },
     [bumpStreak]
