@@ -35,7 +35,10 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
       const res = await fetch("/api/token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName }),
+        body: JSON.stringify({
+          displayName,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
       })
 
       if (!res.ok) {

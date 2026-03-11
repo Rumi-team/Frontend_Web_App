@@ -17,19 +17,22 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
   const [mascotExiting, setMascotExiting] = useState(false)
   const didPlaySound = useRef(false)
 
-  // Only show agent/coach messages (matching iOS behavior)
-  const agentMessages = messages.filter((msg) => msg.content.type === "agent")
+  // Show all messages for full transcript scrollback
+  const allMessages = messages.filter(
+    (msg) => msg.content.type === "agent" || msg.content.type === "user"
+  )
 
-  // Show only the latest agent message (live caption style)
-  const latestMessage = agentMessages.length > 0
-    ? agentMessages[agentMessages.length - 1]
-    : null
-
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [latestMessage])
+  }, [allMessages.length])
+
+  // Keep reference to latest agent message for loading state detection
+  const latestMessage = allMessages.length > 0
+    ? allMessages[allMessages.length - 1]
+    : null
 
   // When first agent message arrives, play ready sound + exit animation
   useEffect(() => {
@@ -118,35 +121,76 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
   }
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto flex items-start px-10 py-8">
+    <div ref={scrollRef} className="h-full overflow-y-auto flex flex-col gap-3 px-10 py-8">
       {/* Ready sound (plays once on first agent message) */}
       <audio ref={soundRef} src="/sounds/agent-ready.mp3" preload="auto" />
 
-      <div
-        className="w-full rounded-3xl px-8 py-6 animate-in fade-in slide-in-from-bottom-4 duration-500"
-        style={{
-          backgroundColor: "rgba(255, 230, 133, 0.95)",
-          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12)",
-        }}
-      >
-        <p className="text-3xl leading-relaxed">
-          {latestMessage.styledSegments.map((seg, i) => (
-            <span
-              key={i}
+      {allMessages.map((msg, idx) => {
+        const isAgent = msg.content.type === "agent"
+        const isLatest = idx === allMessages.length - 1
+
+        if (isAgent) {
+          return (
+            <div
+              key={msg.id ?? idx}
               className={cn(
-                seg.isHighlight ? "font-semibold" : "font-normal"
+                "w-full rounded-3xl px-8 py-6 transition-opacity duration-300",
+                isLatest
+                  ? "animate-in fade-in slide-in-from-bottom-4 duration-500"
+                  : "opacity-70"
               )}
               style={{
-                color: seg.isHighlight
-                  ? "rgb(180, 130, 10)"
-                  : "rgb(50, 34, 8)",
+                backgroundColor: "rgba(255, 230, 133, 0.95)",
+                boxShadow: isLatest
+                  ? "0 6px 20px rgba(0, 0, 0, 0.12)"
+                  : "0 2px 8px rgba(0, 0, 0, 0.06)",
               }}
             >
-              {seg.text}
-            </span>
-          ))}
-        </p>
-      </div>
+              <p className={cn(
+                "leading-relaxed",
+                isLatest ? "text-3xl" : "text-xl"
+              )}>
+                {msg.styledSegments.map((seg, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      seg.isHighlight ? "font-semibold" : "font-normal"
+                    )}
+                    style={{
+                      color: seg.isHighlight
+                        ? "rgb(180, 130, 10)"
+                        : "rgb(50, 34, 8)",
+                    }}
+                  >
+                    {seg.text}
+                  </span>
+                ))}
+              </p>
+            </div>
+          )
+        }
+
+        // User messages
+        return (
+          <div
+            key={msg.id ?? idx}
+            className="w-full flex justify-end"
+          >
+            <div
+              className="max-w-[80%] rounded-3xl px-6 py-4"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+              }}
+            >
+              <p className="text-lg leading-relaxed text-gray-300 italic">
+                {msg.styledSegments.map((seg, i) => (
+                  <span key={i}>{seg.text}</span>
+                ))}
+              </p>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

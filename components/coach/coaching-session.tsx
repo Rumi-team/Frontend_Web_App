@@ -125,6 +125,21 @@ export function CoachingSession({
     }
   }, [sessionControl.endConversationCount])
 
+  // Ensure feedback shows on unexpected disconnections (e.g., room timeout, network drop)
+  useEffect(() => {
+    if (!room) return
+    const handleDisconnected = () => {
+      // Only show feedback if not already showing save/feedback overlays
+      if (!showFeedbackOverlay && !showSaveOverlay) {
+        setShowFeedbackOverlay(true)
+      }
+    }
+    room.on("disconnected", handleDisconnected)
+    return () => {
+      room.off("disconnected", handleDisconnected)
+    }
+  }, [room, showFeedbackOverlay, showSaveOverlay])
+
   // Session gating disabled — no locked overlay
 
   const handleEndSession = useCallback(async () => {
@@ -185,8 +200,8 @@ export function CoachingSession({
       {/* Celebration effects layer */}
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
-      {/* Transcript at top (like iOS — agent messages only, latest only) */}
-      <div className="hidden md:flex flex-1 min-h-0 overflow-hidden flex-col">
+      {/* Transcript — scrollable full conversation history */}
+      <div className="flex flex-1 min-h-0 overflow-hidden flex-col">
         <AgentTranscript messages={messages} />
       </div>
 

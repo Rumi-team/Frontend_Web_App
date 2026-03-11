@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       appleIdentifier: providerUserId,
       given_name: displayName,
       client_platform: "web",
+      client_timezone: body.timezone ?? "UTC",
     })
 
     // 4. Generate LiveKit access token
