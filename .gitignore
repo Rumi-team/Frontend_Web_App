@@ -31,3 +31,8 @@ next-env.d.ts
 */.DS_Store
 # Supabase CLI temp files
 supabase/.temp/
+
+# Claude agent working directory
+.claude/agent-memory/
+.claude/agents/
+settings.local.json
