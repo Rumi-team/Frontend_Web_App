@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
     .select("provider_user_id")
     .eq("user_id", user.id)
     .single();
-  const providerUserId = identity?.provider_user_id ?? user.id;
+  const providerUserId =
+    identity?.provider_user_id ?? user.identities?.[0]?.id ?? user.id;
 
   await trackEvent(providerUserId, event_type, properties);
   return NextResponse.json({ status: "ok" });
