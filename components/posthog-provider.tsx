@@ -2,7 +2,8 @@
 
 import posthog from "posthog-js"
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react"
-import { useEffect, useRef, type ReactNode } from "react"
+import { useEffect, useRef, type ReactNode, Suspense } from "react"
+import { usePathname, useSearchParams } from "next/navigation"
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY || ""
 const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://r.rumi.team"
@@ -70,6 +71,23 @@ export function buildCrossDomainLink(targetUrl: string): string {
   return url.toString()
 }
 
+// ── SPA pageview tracker ──
+
+function PostHogPageview() {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (pathname && posthog.__loaded) {
+      let url = window.origin + pathname
+      if (searchParams.toString()) url += `?${searchParams.toString()}`
+      posthog.capture("$pageview", { $current_url: url })
+    }
+  }, [pathname, searchParams])
+
+  return null
+}
+
 // ── Provider ──
 
 export function PostHogProvider({ children }: { children: ReactNode }) {
@@ -84,7 +102,14 @@ export function PostHogProvider({ children }: { children: ReactNode }) {
 
   if (!POSTHOG_KEY) return <>{children}</>
 
-  return <PHProvider client={posthog}>{children}</PHProvider>
+  return (
+    <PHProvider client={posthog}>
+      <Suspense fallback={null}>
+        <PostHogPageview />
+      </Suspense>
+      {children}
+    </PHProvider>
+  )
 }
 
 // ── Identify hook: call when user signs in ──
