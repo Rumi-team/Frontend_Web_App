@@ -69,7 +69,7 @@ export default function CoachPage() {
     const isMicError = mic.hasPermission === false
     return (
       <div className="flex h-dvh items-center justify-center px-4" style={{ background: "rgb(15, 18, 23)" }}>
-        <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} />
+        <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
       </div>
     )
   }
