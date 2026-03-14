@@ -99,6 +99,12 @@ body {
   color: white;
 }
 
+/* Disable blue tap highlight on mobile touch targets */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
 /* Smooth scrollbar styling for dark theme */
 ::-webkit-scrollbar {
   width: 8px;

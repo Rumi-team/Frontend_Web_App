@@ -16,18 +16,48 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
   const [mascotReady, setMascotReady] = useState(false)
   const [mascotExiting, setMascotExiting] = useState(false)
   const didPlaySound = useRef(false)
+  const isAtBottomRef = useRef(true)
+  const scrollRafRef = useRef(false)
 
   // Show all messages for full transcript scrollback
   const allMessages = messages.filter(
     (msg) => msg.content.type === "agent" || msg.content.type === "user"
   )
 
-  // Auto-scroll to bottom when new messages arrive
+  // Track whether user is at the bottom of the scroll container
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const threshold = 50 // px from bottom
+    isAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
+  }, [])
+
+  // Smart auto-scroll: only scroll if user is at the bottom.
+  // Uses ResizeObserver to detect content growth (streaming messages)
+  // and RAF to debounce scroll operations for performance.
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    const el = scrollRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver(() => {
+      if (!isAtBottomRef.current || scrollRafRef.current) return
+      scrollRafRef.current = true
+      requestAnimationFrame(() => {
+        if (scrollRef.current && isAtBottomRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+        }
+        scrollRafRef.current = false
+      })
+    })
+
+    // Observe the scroll container's direct children for size changes
+    for (const child of Array.from(el.children)) {
+      observer.observe(child)
     }
-  }, [allMessages.length])
+    observer.observe(el)
+
+    return () => observer.disconnect()
+  }, [allMessages.length]) // re-attach when message count changes
 
   // Keep reference to latest agent message for loading state detection
   const latestMessage = allMessages.length > 0
@@ -121,7 +151,7 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
   }
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto flex flex-col gap-3 px-10 py-8">
+    <div ref={scrollRef} onScroll={handleScroll} className="h-full overflow-y-auto flex flex-col gap-3 px-10 py-8">
       {/* Ready sound (plays once on first agent message) */}
       <audio ref={soundRef} src="/sounds/agent-ready.mp3" preload="auto" />
 

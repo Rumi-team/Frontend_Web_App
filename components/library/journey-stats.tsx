@@ -137,8 +137,8 @@ function TransformationInfoDialog({ onClose }: { onClose: () => void }) {
 
         <div className="space-y-3">
           <p className="text-sm text-gray-400">
-            Your transformation score is a weighted average of evaluation metrics
-            from each session:
+            Your transformation score (0-100) combines how far you are
+            in the program (55%) with the quality of your sessions (45%).
           </p>
 
           <div className="space-y-2">
@@ -167,14 +167,14 @@ function TransformationInfoDialog({ onClose }: { onClose: () => void }) {
 
         <div className="space-y-2 border-t border-gray-800 pt-4">
           <h3 className="text-sm font-semibold text-white">
-            Transformation Level (1-10)
+            What the numbers mean
           </h3>
           <div className="space-y-1 text-xs text-gray-400">
-            <p><span className="text-gray-300">1-2:</span> No movement, stayed in existing worldview</p>
-            <p><span className="text-gray-300">3-4:</span> Intellectual understanding only</p>
-            <p><span className="text-gray-300">5-6:</span> Partial shift, caught a glimpse but pulled back</p>
-            <p><span className="text-gray-300">7-8:</span> Real insight landed viscerally</p>
-            <p><span className="text-gray-300">9-10:</span> Full paradigm shift, can never unsee it</p>
+            <p><span className="text-gray-300">0-20:</span> Just getting started</p>
+            <p><span className="text-gray-300">20-40:</span> Building foundations</p>
+            <p><span className="text-gray-300">40-60:</span> Real progress &mdash; insights landing</p>
+            <p><span className="text-gray-300">60-80:</span> Deep transformation underway</p>
+            <p><span className="text-gray-300">80-100:</span> Program mastery</p>
           </div>
         </div>
 
