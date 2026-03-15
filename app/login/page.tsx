@@ -135,14 +135,12 @@ function LoginForm() {
           </button>
         </div>
 
-        <div className="text-center">
-          <a
-            href="/"
-            className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
-          >
-            ← Back to rumi.team
-          </a>
-        </div>
+        <a
+          href="/"
+          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-all mt-6"
+        >
+          Return to Landing Page
+        </a>
       </div>
     </div>
   )

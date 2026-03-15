@@ -900,7 +900,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════
             SECTION 3 — PARTNERS
             ══════════════════════════════════════════════════════ */}
-        <section id="partners" className="w-full py-24 md:py-32 relative overflow-hidden">
+        {/* <section id="partners" className="w-full py-24 md:py-32 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
 
           <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
@@ -926,7 +926,7 @@ export default function Home() {
               </div>
             </RevealSection>
           </div>
-        </section>
+        </section> */}
 
         {/* ══════════════════════════════════════════════════════
             SECTION 5 — HOW IT WORKS (no numbers)
