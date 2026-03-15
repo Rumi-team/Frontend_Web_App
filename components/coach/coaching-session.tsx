@@ -282,6 +282,7 @@ export function CoachingSession({
         <SessionSaveOverlay
           progress={sessionControl.sessionSaveProgress}
           stage={sessionControl.sessionSaveStage}
+          farewellComplete={sessionControl.endConversationCount > 0}
           onComplete={handleSaveComplete}
         />
       )}

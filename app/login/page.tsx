@@ -134,6 +134,15 @@ function LoginForm() {
             {loading ? "Redirecting..." : "Continue with Apple"}
           </button>
         </div>
+
+        <div className="text-center">
+          <a
+            href="/"
+            className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+          >
+            ← Back to rumi.team
+          </a>
+        </div>
       </div>
     </div>
   )

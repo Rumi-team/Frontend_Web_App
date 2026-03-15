@@ -95,7 +95,9 @@ export function SessionDetailSheet({
           <EvalCard label="Engagement" value={evaluation.engagement_level} />
           <EvalCard label="Openness" value={evaluation.emotional_openness} />
         </div>
-      ) : null}
+      ) : (
+        <p className="text-xs text-gray-600 italic">Evaluation unavailable for this session.</p>
+      )}
 
       {/* Coaching strategy badge (Layer 2) */}
       {evaluation?.strategy_used && (

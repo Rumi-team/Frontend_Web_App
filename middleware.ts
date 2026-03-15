@@ -4,8 +4,18 @@ import { createSupabaseMiddlewareClient } from "@/lib/supabase-auth"
 const ADMIN_EMAIL = "ali@rumi.team"
 
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = createSupabaseMiddlewareClient(request)
   const pathname = request.nextUrl.pathname
+
+  // OAuth PKCE callback lands on root with ?code= — redirect to /login so the
+  // login page's client-side exchangeCodeForSession handler can process it.
+  // Must happen BEFORE creating the Supabase client to avoid double-exchange.
+  if (pathname === "/" && request.nextUrl.searchParams.has("code")) {
+    const loginUrl = new URL("/login", request.url)
+    loginUrl.search = request.nextUrl.search
+    return NextResponse.redirect(loginUrl)
+  }
+
+  const { supabase, response } = createSupabaseMiddlewareClient(request)
 
   // Login page — if already authenticated, skip to /rumi
   // Otherwise allow through (including ?code= for PKCE exchange)

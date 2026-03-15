@@ -279,14 +279,14 @@ export function StartView({
         </div>
       )}
 
-      {/* Lyrics display — absolutely positioned so it never shifts the orb */}
+      {/* Lyrics display — sits between the orb and the song icon */}
       {isMusicPlaying && lyricsLine && (
         <p
-          className="absolute left-1/2 -translate-x-1/2 max-w-lg px-4 text-center text-3xl font-medium transition-opacity duration-500 pointer-events-none"
+          className="absolute left-1/2 -translate-x-1/2 w-full max-w-lg px-6 text-center text-2xl sm:text-3xl font-medium transition-opacity duration-500 pointer-events-none"
           style={{
             color: "rgb(255, 212, 26)",
             opacity: lyricsOpacity,
-            bottom: "6vh",
+            bottom: "calc(4rem + 6vh)",
           }}
         >
           {lyricsLine}

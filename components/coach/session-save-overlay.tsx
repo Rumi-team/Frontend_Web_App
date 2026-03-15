@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 interface SessionSaveOverlayProps {
   progress: number
   stage: string | null
+  farewellComplete: boolean
   onComplete: () => void
 }
 
@@ -28,6 +29,7 @@ const STAGE_LABELS: Record<string, string> = {
 export function SessionSaveOverlay({
   progress,
   stage,
+  farewellComplete,
   onComplete,
 }: SessionSaveOverlayProps) {
   const [isComplete, setIsComplete] = useState(false)
@@ -69,14 +71,15 @@ export function SessionSaveOverlay({
     }
   }, [isComplete])
 
+  // Gate: only complete when BOTH finalization is done AND agent has finished farewell speech
   useEffect(() => {
-    if (stage === "complete") {
+    if (stage === "complete" && farewellComplete) {
       setDisplayProgress(100)
       setIsComplete(true)
       const timer = setTimeout(onComplete, 2000)
       return () => clearTimeout(timer)
     }
-  }, [stage, onComplete])
+  }, [stage, farewellComplete, onComplete])
 
   // Safety timeout: auto-complete if server doesn't respond within 45s
   useEffect(() => {
