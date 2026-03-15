@@ -8,6 +8,7 @@ import {
 import { JourneyStats } from "@/components/library/journey-stats"
 import { SessionCard } from "@/components/library/session-card"
 import { AssignmentsPanel } from "@/components/library/assignments-panel"
+import { SessionRefresh } from "@/components/library/session-refresh"
 
 export default async function LibraryPage() {
   const supabase = await createSupabaseServerClient()
@@ -35,6 +36,7 @@ export default async function LibraryPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 space-y-6">
+      <SessionRefresh />
       <h1 className="text-2xl font-bold text-white">Your Journey</h1>
 
       <JourneyStats stats={stats} />

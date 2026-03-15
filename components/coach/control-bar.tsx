@@ -44,7 +44,7 @@ export function ControlBar({
           <MessageSquare className="h-7 w-7" />
         </button>
         <span className={cn(
-          "text-xs font-medium tracking-wide",
+          "text-sm font-medium tracking-wide",
           isTextMode ? "text-yellow-400/80" : "text-white/40"
         )}>
           Text
@@ -83,7 +83,7 @@ export function ControlBar({
           )}
         </button>
         <span className={cn(
-          "text-xs font-medium tracking-wide",
+          "text-sm font-medium tracking-wide",
           isMicrophoneEnabled ? "text-yellow-400/80" : "text-red-400/70"
         )}>
           {isMicrophoneEnabled ? "Listening" : "Muted"}
@@ -107,7 +107,7 @@ export function ControlBar({
         >
           <PhoneOff className="h-7 w-7" />
         </button>
-        <span className="text-xs font-medium tracking-wide text-red-400/60">
+        <span className="text-sm font-medium tracking-wide text-red-400/60">
           End
         </span>
       </div>
