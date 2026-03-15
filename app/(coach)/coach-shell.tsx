@@ -290,9 +290,9 @@ function SignInPage() {
 
         <Link
           href="/"
-          className="block text-center mt-4 text-gray-600 hover:text-gray-400 text-sm transition-colors"
+          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-all mt-6"
         >
-          Back to Home
+          Return to Landing Page
         </Link>
 
       </div>
