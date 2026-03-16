@@ -5,7 +5,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
-import { ChannelOnboarding } from "@/components/channel-onboarding"
 import { Button } from "@/components/ui/button"
 import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -13,13 +12,12 @@ import { cn } from "@/lib/utils"
 interface CoachShellProps {
   children: React.ReactNode
   authenticated: boolean
-  needsOnboarding?: boolean
 }
 
-export function CoachShell({ children, authenticated, needsOnboarding }: CoachShellProps) {
+export function CoachShell({ children, authenticated }: CoachShellProps) {
   return (
     <AuthProvider>
-      <CoachShellInner authenticated={authenticated} needsOnboarding={needsOnboarding}>
+      <CoachShellInner authenticated={authenticated}>
         {children}
       </CoachShellInner>
     </AuthProvider>
@@ -304,12 +302,10 @@ function SignInPage() {
 function CoachShellInner({
   children,
   authenticated,
-  needsOnboarding: initialNeedsOnboarding,
 }: CoachShellProps) {
   const { user, signOut, isLoading, displayName } = useAuth()
   const pathname = usePathname()
   const router = useRouter()
-  const [showOnboarding, setShowOnboarding] = useState(initialNeedsOnboarding ?? false)
 
   // If the server rendered as unauthenticated but the client has a session
   // (happens with implicit OAuth flow), reload to let the server see the session.
@@ -327,18 +323,6 @@ function CoachShellInner({
       <div className="flex min-h-screen items-center justify-center bg-black">
         <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
       </div>
-    )
-  }
-
-  // Authenticated but needs channel onboarding
-  if (showOnboarding) {
-    return (
-      <ChannelOnboarding
-        onComplete={() => {
-          setShowOnboarding(false)
-          router.refresh()
-        }}
-      />
     )
   }
 
