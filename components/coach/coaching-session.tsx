@@ -193,7 +193,7 @@ export function CoachingSession({
   }, [])
 
   return (
-    <div className="flex h-full flex-col relative">
+    <div className="flex h-full flex-col relative select-none" style={{ WebkitUserSelect: "none", WebkitTouchCallout: "none" }}>
       {/* Hidden audio element for agent voice playback */}
       <audio ref={audioRef} autoPlay />
 

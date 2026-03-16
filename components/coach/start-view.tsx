@@ -133,7 +133,7 @@ export function StartView({
     <div
       ref={containerRef}
       className="relative flex h-full flex-col items-center justify-center select-none overflow-hidden"
-      style={{ background: "rgb(15, 18, 23)" }}
+      style={{ background: "rgb(15, 18, 23)", WebkitUserSelect: "none", WebkitTouchCallout: "none" }}
     >
       {/* Controls overlay */}
       {!hideControls && (
@@ -205,7 +205,7 @@ export function StartView({
           height={orbSize}
           viewBox={`0 0 ${orbSize} ${orbSize}`}
           className="relative z-10"
-          style={{}}
+          style={{ pointerEvents: "none" }}
         >
           {/* Filled circle */}
           <circle
