@@ -11,6 +11,14 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const codeExchangeDone = useRef(false)
 
+  // Persist ref param across OAuth redirect
+  useEffect(() => {
+    const ref = searchParams.get("ref")
+    if (ref) {
+      localStorage.setItem("rumi_invite_ref", ref)
+    }
+  }, [searchParams])
+
   useEffect(() => {
     const err = searchParams.get("error")
     if (err) setError(decodeURIComponent(err))
@@ -24,12 +32,34 @@ function LoginForm() {
 
     setLoading(true)
     const supabase = createSupabaseBrowserClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+    supabase.auth.exchangeCodeForSession(code).then(async ({ error }) => {
       if (error) {
         console.error("PKCE code exchange error:", error)
         setError("Sign-in failed. Please try again.")
         setLoading(false)
       } else {
+        // Auto-redeem invite ref code if present
+        const ref = localStorage.getItem("rumi_invite_ref")
+        if (ref) {
+          localStorage.removeItem("rumi_invite_ref")
+          try {
+            await fetch("/api/access-code", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ code: ref }),
+            })
+          } catch {
+            // Non-blocking — user can still manually verify
+          }
+        }
+
+        // Post sign-in tracking (login_count, user_identities)
+        try {
+          await fetch("/api/auth/post-signin", { method: "POST" })
+        } catch {
+          // Non-blocking
+        }
+
         // Session established — hard redirect so server sees the cookie
         window.location.href = "/rumi"
       }
@@ -90,7 +120,7 @@ function LoginForm() {
       >
         <div className="flex flex-col items-center gap-3">
           <Image src="/rumi_logo.png" alt="Rumi" width={80} height={80} className="w-20 h-auto" />
-          <p className="text-gray-400 text-sm">Sign in to continue</p>
+          <p className="text-gray-300 text-base font-medium">Sign in to continue</p>
         </div>
 
         {error && (
@@ -137,7 +167,7 @@ function LoginForm() {
 
         <a
           href="/"
-          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-all mt-6"
+          className="block text-center text-sm text-gray-500 hover:text-gray-300 transition-colors mt-4"
         >
           Return to Landing Page
         </a>
