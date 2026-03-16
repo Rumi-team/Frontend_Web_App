@@ -38,7 +38,11 @@ export function CoachingSession({
   onDisconnect,
   remoteAudioTrack,
 }: CoachingSessionProps) {
-  const [isTextMode, setIsTextMode] = useState(false)
+  // 0 = default (no transcript, no text input)
+  // 1 = transcript visible
+  // 2 = text input visible
+  const [textMode, setTextMode] = useState<0 | 1 | 2>(0)
+  const cycleTextMode = () => setTextMode((m) => ((m + 1) % 3) as 0 | 1 | 2)
   const [showSaveOverlay, setShowSaveOverlay] = useState(false)
   const [showFeedbackOverlay, setShowFeedbackOverlay] = useState(false)
   const [showLockedOverlay, setShowLockedOverlay] = useState(false)
@@ -200,13 +204,15 @@ export function CoachingSession({
       {/* Celebration effects layer */}
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
-      {/* Transcript — scrollable full conversation history */}
-      <div className="flex flex-1 min-h-0 overflow-hidden flex-col">
-        <AgentTranscript messages={messages} />
-      </div>
+      {/* Transcript — only in mode 1 */}
+      {textMode === 1 && (
+        <div className="flex flex-1 min-h-0 overflow-hidden flex-col">
+          <AgentTranscript messages={messages} />
+        </div>
+      )}
 
-      {/* Center area: step orb / audio visualizers */}
-      <div className="flex-1 md:flex-none flex flex-col items-center justify-center md:justify-start gap-3 py-4 shrink-0">
+      {/* Center area: step orb / audio visualizers — fills space when transcript hidden */}
+      <div className={`flex flex-col items-center justify-center gap-3 py-2 shrink-0${textMode !== 1 ? " flex-1" : ""}`}>
         {/* Step progress — orb when program active, bar as fallback */}
         {sessionControl.currentStep !== null &&
           sessionControl.totalSteps !== null &&
@@ -216,7 +222,7 @@ export function CoachingSession({
             totalSteps={sessionControl.totalSteps}
             stepName={sessionControl.stepName}
             audioTrack={remoteAudioTrack}
-            isActive={!isTextMode}
+            isActive={textMode !== 2}
             currentDay={sessionControl.currentDay}
             totalDays={sessionControl.totalDays}
             isDayLocked={sessionControl.isDayLocked}
@@ -239,26 +245,24 @@ export function CoachingSession({
         ) : null}
 
         {/* Agent audio visualizer — when no session orb */}
-        {!isTextMode && remoteAudioTrack && !sessionControl.selectedProgram && (
+        {textMode !== 2 && remoteAudioTrack && !sessionControl.selectedProgram && (
           <AudioVisualizer audioTrack={remoteAudioTrack} />
         )}
 
         {/* Mic input visualizer — shows user's voice as equalizer bars */}
-        {!isTextMode && (
+        {textMode !== 2 && (
           <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
         )}
       </div>
 
-      {/* Text input or control bar */}
-      {isTextMode ? (
-        <TextInput onSend={sendMessage} />
-      ) : null}
+      {/* Text input — mode 2 only */}
+      {textMode === 2 && <TextInput onSend={sendMessage} />}
 
       <ControlBar
         isMicrophoneEnabled={isMicrophoneEnabled}
-        isTextMode={isTextMode}
+        textMode={textMode}
         onToggleMic={onToggleMic}
-        onToggleTextMode={() => setIsTextMode((v) => !v)}
+        onCycleTextMode={cycleTextMode}
         onEndSession={handleEndSession}
       />
 

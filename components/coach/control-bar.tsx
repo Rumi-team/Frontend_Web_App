@@ -5,38 +5,39 @@ import { cn } from "@/lib/utils"
 
 interface ControlBarProps {
   isMicrophoneEnabled: boolean
-  isTextMode: boolean
+  textMode: 0 | 1 | 2
   onToggleMic: () => void
-  onToggleTextMode: () => void
+  onCycleTextMode: () => void
   onEndSession: () => void
 }
 
 export function ControlBar({
   isMicrophoneEnabled,
-  isTextMode,
+  textMode,
   onToggleMic,
-  onToggleTextMode,
+  onCycleTextMode,
   onEndSession,
 }: ControlBarProps) {
+  const textActive = textMode !== 0
   return (
     <div className="flex items-center justify-center gap-8 px-6 py-5">
-      {/* ── Text Mode Button ── */}
+      {/* ── Text Mode Button (cycles: off → transcript → input → off) ── */}
       <div className="flex flex-col items-center gap-2">
         <button
-          onClick={onToggleTextMode}
+          onClick={onCycleTextMode}
           className={cn(
             "relative h-16 w-16 rounded-full transition-all duration-300",
             "flex items-center justify-center",
             "border-2",
-            isTextMode
+            textActive
               ? "border-yellow-400/60 text-yellow-300"
               : "border-white/15 text-white/70 hover:border-white/30 hover:text-white"
           )}
           style={{
-            background: isTextMode
+            background: textActive
               ? "linear-gradient(145deg, rgba(250,204,21,0.25), rgba(255,152,0,0.15))"
               : "linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-            boxShadow: isTextMode
+            boxShadow: textActive
               ? "0 0 20px rgba(250,204,21,0.2), inset 0 1px 0 rgba(255,255,255,0.1)"
               : "inset 0 1px 0 rgba(255,255,255,0.06)",
           }}
@@ -45,7 +46,7 @@ export function ControlBar({
         </button>
         <span className={cn(
           "text-sm font-medium tracking-wide",
-          isTextMode ? "text-yellow-400/80" : "text-white/40"
+          textActive ? "text-yellow-400/80" : "text-white/40"
         )}>
           Text
         </span>
