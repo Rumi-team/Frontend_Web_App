@@ -34,6 +34,13 @@ function LoginForm() {
     const supabase = createSupabaseBrowserClient()
     supabase.auth.exchangeCodeForSession(code).then(async ({ error }) => {
       if (error) {
+        // Middleware may have already exchanged this code — check for existing session
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          // Session exists — middleware got it first, proceed normally
+          window.location.href = "/rumi"
+          return
+        }
         console.error("PKCE code exchange error:", error)
         setError("Sign-in failed. Please try again.")
         setLoading(false)
