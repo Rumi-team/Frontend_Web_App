@@ -36,3 +36,4 @@ supabase/.temp/
 .claude/agent-memory/
 .claude/agents/
 settings.local.json
+.gstack/

@@ -5,6 +5,8 @@ import { useState, useRef, useCallback, useEffect } from "react"
 interface StartViewProps {
   onStartSession: () => void
   displayName?: string | null
+  userEmail?: string | null
+  authProvider?: string | null
   onOpenSettings?: () => void
   onOpenLibrary?: () => void
   onOpenAssignments?: () => void
@@ -50,6 +52,8 @@ function useOrbSize(containerRef: React.RefObject<HTMLDivElement | null>) {
 export function StartView({
   onStartSession,
   displayName,
+  userEmail,
+  authProvider,
   onOpenSettings,
   onOpenLibrary,
   onOpenAssignments,
@@ -331,6 +335,8 @@ export function StartView({
       {showNameEdit && (
         <NameEditDialog
           currentName={displayName ?? ""}
+          userEmail={userEmail}
+          authProvider={authProvider}
           onClose={() => setShowNameEdit(false)}
         />
       )}
@@ -511,9 +517,13 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
 
 function NameEditDialog({
   currentName,
+  userEmail,
+  authProvider,
   onClose,
 }: {
   currentName: string
+  userEmail?: string | null
+  authProvider?: string | null
   onClose: () => void
 }) {
   const [name, setName] = useState(currentName)
@@ -539,6 +549,10 @@ function NameEditDialog({
     onClose()
   }
 
+  const emailDisplay = authProvider === "apple"
+    ? "Logged in with your Apple ID"
+    : userEmail ?? null
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={onClose}>
       <div
@@ -547,6 +561,9 @@ function NameEditDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-semibold text-white">Hi {currentName}</h2>
+        {emailDisplay && (
+          <p className="text-xs text-gray-500 -mt-2 truncate">{emailDisplay}</p>
+        )}
         <p className="text-sm text-gray-400">What do you like Rumi to call you?</p>
         <input
           value={name}

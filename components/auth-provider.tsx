@@ -20,6 +20,8 @@ interface AuthContextValue {
   oauthError: string | null
   providerUserId: string | null
   displayName: string | null
+  userEmail: string | null
+  authProvider: string | null
   signInWithGoogle: () => Promise<void>
   signInWithApple: () => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>
@@ -299,6 +301,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user?.email?.split("@")[0] ??
     null
 
+  const userEmail = user?.email ?? null
+
+  // Detect auth provider from identities (prefer the primary identity)
+  const authProvider = (() => {
+    if (!user) return null
+    const identities = user.identities ?? []
+    if (identities.some((i) => i.provider === "apple")) return "apple"
+    if (identities.some((i) => i.provider === "google")) return "google"
+    return user.app_metadata?.provider ?? "email"
+  })()
+
   return (
     <AuthContext.Provider
       value={{
@@ -309,6 +322,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         oauthError,
         providerUserId,
         displayName,
+        userEmail,
+        authProvider,
         signInWithGoogle,
         signInWithApple,
         signInWithEmail,
