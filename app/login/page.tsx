@@ -167,7 +167,7 @@ function LoginForm() {
 
         <a
           href="/"
-          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-all mt-6"
+          className="block text-center text-sm text-gray-500 hover:text-gray-300 transition-colors mt-4"
         >
           Return to Landing Page
         </a>
