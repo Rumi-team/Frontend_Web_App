@@ -1185,7 +1185,7 @@ export default function Home() {
                 Copyright &copy;2026, Rumi, Inc. Los Angeles, California. All rights reserved.
               </p>
             </div>
-            <div>
+            <div className="flex flex-col items-center md:items-end gap-3">
               <button
                 onClick={() => setIsContactModalOpen(true)}
                 className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200"
@@ -1193,6 +1193,14 @@ export default function Home() {
                 <Mail className="h-7 w-7 mr-2" />
                 Contact Support
               </button>
+              <a
+                href="https://rumiagent.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200"
+              >
+                For developers &amp; enterprise → rumiagent.com
+              </a>
             </div>
           </div>
         </div>
