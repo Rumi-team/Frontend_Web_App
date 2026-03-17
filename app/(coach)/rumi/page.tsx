@@ -13,7 +13,7 @@ import { AssignmentsSheet } from "@/components/coach/assignments-sheet"
 import { Loader2 } from "lucide-react"
 
 export default function CoachPage() {
-  const { displayName, signOut, providerUserId } = useAuth()
+  const { displayName, signOut, providerUserId, userEmail, authProvider } = useAuth()
   const mic = useMicrophonePermission()
   const lk = useLiveKitConnection()
   const lyrics = useLyricsManager()
@@ -80,6 +80,8 @@ export default function CoachPage() {
       <StartView
         onStartSession={handleStart}
         displayName={displayName}
+        userEmail={userEmail}
+        authProvider={authProvider}
         onOpenLibrary={() => setShowLibrary(true)}
         onOpenAssignments={() => setShowAssignments(true)}
         onSignOut={signOut}
