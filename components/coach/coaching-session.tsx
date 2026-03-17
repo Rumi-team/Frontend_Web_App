@@ -213,53 +213,42 @@ export function CoachingSession({
           </div>
         ) : (
           <>
-            {/* Step progress — orb when program active, bar as fallback, mascot in free mode */}
-            {sessionControl.currentStep !== null &&
-              sessionControl.totalSteps !== null &&
-              sessionControl.selectedProgram ? (
-              <SessionOrb
-                currentStep={sessionControl.currentStep}
-                totalSteps={sessionControl.totalSteps}
-                stepName={sessionControl.stepName}
-                audioTrack={remoteAudioTrack}
-                isActive={textMode !== 2}
-                currentDay={sessionControl.currentDay}
-                totalDays={sessionControl.totalDays}
-                isDayLocked={sessionControl.isDayLocked}
-                allowedStepMin={sessionControl.allowedStepMin}
-                allowedStepMax={sessionControl.allowedStepMax}
-                mascotMood={mascotMood}
-              />
-            ) : sessionControl.currentStep !== null &&
-              sessionControl.totalSteps !== null ? (
-              <StepProgress
-                currentStep={sessionControl.currentStep}
-                totalSteps={sessionControl.totalSteps}
-                stepName={sessionControl.stepName}
-                currentDay={sessionControl.currentDay}
-                totalDays={sessionControl.totalDays}
-                isDayLocked={sessionControl.isDayLocked}
-                allowedStepMin={sessionControl.allowedStepMin}
-                allowedStepMax={sessionControl.allowedStepMax}
-              />
-            ) : (
-              /* Free conversation — show standalone mascot */
-              <RumiMascot
-                mood={mascotMood}
-                audioTrack={remoteAudioTrack}
-                size={180}
-              />
-            )}
+            {/* Mascot area with overlaid visualizers */}
+            <div className="relative flex flex-col items-center justify-center">
+              {/* Session orb (with steps + mascot) or standalone mascot */}
+              {sessionControl.currentStep !== null &&
+                sessionControl.totalSteps !== null ? (
+                <SessionOrb
+                  currentStep={sessionControl.currentStep}
+                  totalSteps={sessionControl.totalSteps}
+                  stepName={sessionControl.stepName}
+                  audioTrack={remoteAudioTrack}
+                  isActive={textMode !== 2}
+                  currentDay={sessionControl.currentDay}
+                  totalDays={sessionControl.totalDays}
+                  isDayLocked={sessionControl.isDayLocked}
+                  allowedStepMin={sessionControl.allowedStepMin}
+                  allowedStepMax={sessionControl.allowedStepMax}
+                  mascotMood={mascotMood}
+                />
+              ) : (
+                <RumiMascot
+                  mood={mascotMood}
+                  audioTrack={remoteAudioTrack}
+                  size={180}
+                />
+              )}
 
-            {/* Agent audio visualizer — when no session orb */}
-            {textMode !== 2 && remoteAudioTrack && !sessionControl.selectedProgram && (
-              <AudioVisualizer audioTrack={remoteAudioTrack} />
-            )}
-
-            {/* Mic input visualizer — shows user's voice as equalizer bars */}
-            {textMode !== 2 && (
-              <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
-            )}
+              {/* Visualizers overlaid at bottom of mascot area */}
+              {textMode !== 2 && (
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none">
+                  {remoteAudioTrack && !sessionControl.selectedProgram && (
+                    <AudioVisualizer audioTrack={remoteAudioTrack} />
+                  )}
+                  <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>
