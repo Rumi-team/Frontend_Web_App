@@ -16,7 +16,7 @@ import { DayLockedOverlay } from "./day-locked-overlay"
 import { DayCompleteCelebration } from "./day-complete-celebration"
 import { AudioVisualizer } from "./audio-visualizer"
 import { MicVisualizer } from "./mic-visualizer"
-import type { MascotMood } from "./rumi-mascot"
+import { RumiMascot, type MascotMood } from "./rumi-mascot"
 import {
   CelebrationEffects,
   StreakBadge,
@@ -204,54 +204,63 @@ export function CoachingSession({
       {/* Celebration effects layer */}
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
-      {/* Transcript — only in mode 1 */}
-      {textMode === 1 && (
-        <div className="flex flex-1 min-h-0 overflow-hidden flex-col">
-          <AgentTranscript messages={messages} />
-        </div>
-      )}
+      {/* Center area: transcript OR mascot/orb/visualizers — always flex-1 */}
+      <div className="flex flex-col items-center justify-center gap-3 py-2 flex-1 min-h-0">
+        {textMode === 1 ? (
+          /* Transcript replaces center content when Text mode is active */
+          <div className="flex flex-1 min-h-0 overflow-hidden flex-col w-full">
+            <AgentTranscript messages={messages} />
+          </div>
+        ) : (
+          <>
+            {/* Step progress — orb when program active, bar as fallback, mascot in free mode */}
+            {sessionControl.currentStep !== null &&
+              sessionControl.totalSteps !== null &&
+              sessionControl.selectedProgram ? (
+              <SessionOrb
+                currentStep={sessionControl.currentStep}
+                totalSteps={sessionControl.totalSteps}
+                stepName={sessionControl.stepName}
+                audioTrack={remoteAudioTrack}
+                isActive={textMode !== 2}
+                currentDay={sessionControl.currentDay}
+                totalDays={sessionControl.totalDays}
+                isDayLocked={sessionControl.isDayLocked}
+                allowedStepMin={sessionControl.allowedStepMin}
+                allowedStepMax={sessionControl.allowedStepMax}
+                mascotMood={mascotMood}
+              />
+            ) : sessionControl.currentStep !== null &&
+              sessionControl.totalSteps !== null ? (
+              <StepProgress
+                currentStep={sessionControl.currentStep}
+                totalSteps={sessionControl.totalSteps}
+                stepName={sessionControl.stepName}
+                currentDay={sessionControl.currentDay}
+                totalDays={sessionControl.totalDays}
+                isDayLocked={sessionControl.isDayLocked}
+                allowedStepMin={sessionControl.allowedStepMin}
+                allowedStepMax={sessionControl.allowedStepMax}
+              />
+            ) : (
+              /* Free conversation — show standalone mascot */
+              <RumiMascot
+                mood={mascotMood}
+                audioTrack={remoteAudioTrack}
+                size={180}
+              />
+            )}
 
-      {/* Center area: step orb / audio visualizers — fills space when transcript hidden */}
-      <div className={`flex flex-col items-center justify-center gap-3 py-2 shrink-0${textMode !== 1 ? " flex-1" : ""}`}>
-        {/* Step progress — orb when program active, bar as fallback */}
-        {sessionControl.currentStep !== null &&
-          sessionControl.totalSteps !== null &&
-          sessionControl.selectedProgram ? (
-          <SessionOrb
-            currentStep={sessionControl.currentStep}
-            totalSteps={sessionControl.totalSteps}
-            stepName={sessionControl.stepName}
-            audioTrack={remoteAudioTrack}
-            isActive={textMode !== 2}
-            currentDay={sessionControl.currentDay}
-            totalDays={sessionControl.totalDays}
-            isDayLocked={sessionControl.isDayLocked}
-            allowedStepMin={sessionControl.allowedStepMin}
-            allowedStepMax={sessionControl.allowedStepMax}
-            mascotMood={mascotMood}
-          />
-        ) : sessionControl.currentStep !== null &&
-          sessionControl.totalSteps !== null ? (
-          <StepProgress
-            currentStep={sessionControl.currentStep}
-            totalSteps={sessionControl.totalSteps}
-            stepName={sessionControl.stepName}
-            currentDay={sessionControl.currentDay}
-            totalDays={sessionControl.totalDays}
-            isDayLocked={sessionControl.isDayLocked}
-            allowedStepMin={sessionControl.allowedStepMin}
-            allowedStepMax={sessionControl.allowedStepMax}
-          />
-        ) : null}
+            {/* Agent audio visualizer — when no session orb */}
+            {textMode !== 2 && remoteAudioTrack && !sessionControl.selectedProgram && (
+              <AudioVisualizer audioTrack={remoteAudioTrack} />
+            )}
 
-        {/* Agent audio visualizer — when no session orb */}
-        {textMode !== 2 && remoteAudioTrack && !sessionControl.selectedProgram && (
-          <AudioVisualizer audioTrack={remoteAudioTrack} />
-        )}
-
-        {/* Mic input visualizer — shows user's voice as equalizer bars */}
-        {textMode !== 2 && (
-          <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
+            {/* Mic input visualizer — shows user's voice as equalizer bars */}
+            {textMode !== 2 && (
+              <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
+            )}
+          </>
         )}
       </div>
 
