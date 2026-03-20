@@ -1188,7 +1188,7 @@ export default function Home() {
             <div className="flex flex-col items-center md:items-end gap-3">
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2"
+                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2 cursor-pointer hover:underline underline-offset-4"
                 aria-label="Contact Support"
               >
                 <Mail className="h-7 w-7 mr-2" aria-hidden="true" />
