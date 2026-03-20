@@ -1188,7 +1188,7 @@ export default function Home() {
             <div className="flex flex-col items-center md:items-end gap-3">
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200"
+                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2"
               >
                 <Mail className="h-7 w-7 mr-2" />
                 Contact Support
@@ -1197,7 +1197,7 @@ export default function Home() {
                 href="https://rumiagent.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200"
+                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200 py-3"
               >
                 For developers &amp; enterprise → rumiagent.com
               </a>
