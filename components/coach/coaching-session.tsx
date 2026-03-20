@@ -213,8 +213,8 @@ export function CoachingSession({
           </div>
         ) : (
           <>
-            {/* Mascot area with overlaid visualizers */}
-            <div className="relative flex flex-col items-center justify-center">
+            {/* Mascot / Orb area */}
+            <div className="flex flex-col items-center justify-center">
               {/* Session orb (with steps + mascot) or standalone mascot */}
               {sessionControl.currentStep !== null &&
                 sessionControl.totalSteps !== null ? (
@@ -238,17 +238,17 @@ export function CoachingSession({
                   size={180}
                 />
               )}
-
-              {/* Visualizers overlaid at bottom of mascot area */}
-              {textMode !== 2 && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 pointer-events-none">
-                  {remoteAudioTrack && !sessionControl.selectedProgram && (
-                    <AudioVisualizer audioTrack={remoteAudioTrack} />
-                  )}
-                  <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
-                </div>
-              )}
             </div>
+
+            {/* Visualizers below mascot — never overlapping */}
+            {textMode !== 2 && (
+              <div className="flex flex-col items-center gap-1 pointer-events-none">
+                {remoteAudioTrack && (
+                  <AudioVisualizer audioTrack={remoteAudioTrack} />
+                )}
+                <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
+              </div>
+            )}
           </>
         )}
       </div>
