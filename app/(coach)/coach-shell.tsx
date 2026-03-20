@@ -310,15 +310,20 @@ function CoachShellInner({
   // If the server rendered as unauthenticated but the client has a session
   // (happens with implicit OAuth flow), reload to let the server see the session.
   // If no client session either, redirect to /login as safety net.
+  const isE2ETesting =
+    process.env.NEXT_PUBLIC_E2E_TESTING === "true" &&
+    process.env.NODE_ENV === "development"
+
   useEffect(() => {
+    if (isE2ETesting) return
     if (!authenticated && user) {
       router.refresh()
     } else if (!authenticated && !user && !isLoading) {
       window.location.href = "/login"
     }
-  }, [authenticated, user, isLoading, router])
+  }, [authenticated, user, isLoading, router, isE2ETesting])
 
-  if (isLoading || !authenticated) {
+  if (!isE2ETesting && (isLoading || !authenticated)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
         <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
