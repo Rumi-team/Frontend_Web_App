@@ -354,6 +354,7 @@ function CoachShellInner({
               alt="Rumi"
               width={303}
               height={101}
+              priority
               className="h-6 w-auto"
             />
           </Link>

@@ -3,8 +3,19 @@ import { createSupabaseMiddlewareClient } from "@/lib/supabase-auth"
 
 const ADMIN_EMAIL = "ali@rumi.team"
 
+// E2E testing bypass — only active in local development (NODE_ENV guard)
+// NEVER runs in production (Vercel sets NODE_ENV=production always)
+const isE2ETesting =
+  process.env.E2E_BYPASS_AUTH === "true" &&
+  process.env.NODE_ENV === "development"
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+
+  // E2E mode: skip all auth checks, pass every request through
+  if (isE2ETesting) {
+    return NextResponse.next()
+  }
 
   // OAuth PKCE callback lands on root with ?code= — redirect to /login so the
   // login page's client-side exchangeCodeForSession handler can process it.

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { useLiveKitConnection } from "@/hooks/use-livekit-connection"
 import { useMicrophonePermission } from "@/hooks/use-microphone-permission"
 import { useLyricsManager } from "@/hooks/use-lyrics-manager"
@@ -38,23 +38,6 @@ export default function CoachPage() {
     { role: "agent", text: "E2E mode active. Auth and mic bypassed. Type a message below." },
   ])
 
-  // Auto-start music on first user interaction (browsers block autoplay)
-  useEffect(() => {
-    const startOnInteraction = () => {
-      lyrics.start()
-      document.removeEventListener("pointerdown", startOnInteraction)
-      document.removeEventListener("keydown", startOnInteraction)
-    }
-    document.addEventListener("pointerdown", startOnInteraction, { once: true })
-    document.addEventListener("keydown", startOnInteraction, { once: true })
-    // Also try immediately (works if user already interacted with the page)
-    lyrics.start()
-    return () => {
-      document.removeEventListener("pointerdown", startOnInteraction)
-      document.removeEventListener("keydown", startOnInteraction)
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleStart = useCallback(async () => {
     lyrics.stop()
 
@@ -90,7 +73,7 @@ export default function CoachPage() {
           <span className="text-yellow-400 font-semibold text-xs tracking-wide uppercase">E2E Test Mode — Text Only</span>
           <button
             onClick={() => setE2EConnected(false)}
-            className="text-gray-400 text-xs hover:text-white transition-colors"
+            className="text-gray-400 text-xs hover:text-white transition-colors min-h-[44px] px-2"
           >
             ← Back to Start
           </button>

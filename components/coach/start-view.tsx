@@ -19,7 +19,12 @@ interface StartViewProps {
   isConnecting?: boolean
 }
 
-const HOLD_DURATION = 3000 // 3 seconds in ms
+// E2E mode: instant hold (0ms) so a single click triggers onStartSession
+const isE2ETesting =
+  process.env.NEXT_PUBLIC_E2E_TESTING === "true" &&
+  process.env.NODE_ENV === "development"
+
+const HOLD_DURATION = isE2ETesting ? 0 : 3000 // 3 seconds in production, instant in E2E
 const STROKE_WIDTH = 6
 const PROGRESS_STROKE_WIDTH = 10
 
@@ -90,7 +95,7 @@ export function StartView({
     const animate = (now: number) => {
       if (!holdingRef.current) return
       const elapsed = now - startTimeRef.current
-      const progress = Math.min(elapsed / HOLD_DURATION, 1)
+      const progress = HOLD_DURATION <= 0 ? 1 : Math.min(elapsed / HOLD_DURATION, 1)
       setHoldProgress(progress)
 
       if (progress >= 1) {
@@ -158,7 +163,7 @@ export function StartView({
           Tap &amp; Hold to
         </p>
         <p className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
-          Start Transformation
+          Start Your Transformation
         </p>
       </div>
 
