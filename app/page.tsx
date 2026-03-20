@@ -579,10 +579,10 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           HEADER
           ══════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl">
-        <div className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto">
+      <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl" role="banner">
+        <nav className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto" aria-label="Main navigation">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center" aria-label="Rumi home">
               <Image
                 src="/rumi_logo.png"
                 alt="Rumi Logo"
@@ -601,7 +601,7 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-        </div>
+        </nav>
       </header>
 
       <main className="flex-1">
@@ -1173,7 +1173,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           FOOTER
           ══════════════════════════════════════════════════════ */}
-      <footer className="w-full py-12 bg-black border-t border-white/[0.06]">
+      <footer className="w-full py-12 bg-black border-t border-white/[0.06]" role="contentinfo">
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col items-center md:items-start gap-2">
@@ -1189,8 +1189,9 @@ export default function Home() {
               <button
                 onClick={() => setIsContactModalOpen(true)}
                 className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2"
+                aria-label="Contact Support"
               >
-                <Mail className="h-7 w-7 mr-2" />
+                <Mail className="h-7 w-7 mr-2" aria-hidden="true" />
                 Contact Support
               </button>
               <a
