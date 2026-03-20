@@ -1064,78 +1064,123 @@ export default function Home() {
               </div>
             </RevealSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  icon: MessageSquareText,
-                  title: "AI-Powered Conversations",
-                  desc: "Real-time, natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — available 24/7.",
-                },
-                {
-                  icon: BookOpen,
-                  title: "Proven Transformational Programs",
-                  desc: "Structured programs built on decades of proven transformational frameworks, delivered as guided journeys with clear milestones and measurable outcomes.",
-                },
-                {
-                  icon: UserCog,
-                  title: "Hyper Personalization",
-                  desc: "Learns your character, goals, and mood over time — adapting every session to your unique patterns and growth edge.",
-                },
-                {
-                  icon: Heart,
-                  title: "Emotional Intelligence",
-                  desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are emotionally.",
-                },
-                {
-                  icon: Award,
-                  title: "Transformation Scoring",
-                  desc: "After every session, Rumi evaluates your progress with a multi-dimensional transformation score — tracking real breakthroughs, not just attendance.",
-                },
-                {
-                  icon: ClipboardCheck,
-                  title: "Smart Assignments",
-                  desc: "Personalized action items created exactly when you need them — with deadlines, accountability, and completion tracking that drive real change.",
-                },
-                {
-                  icon: Sliders,
-                  title: "Adaptive Leadership Style",
-                  desc: "Dynamically adjusts its approach based on what actually works for you — pacing, technique, and intensity evolve with every session.",
-                },
-                {
-                  icon: LineChart,
-                  title: "Growth Trajectory",
-                  desc: "Track your transformation journey over weeks and months. See plateaus before they happen, celebrate milestones, and watch your growth unfold.",
-                },
-                {
-                  icon: BellRing,
-                  title: "Proactive Accountability",
-                  desc: "Rumi doesn't wait for you to show up. Check-ins, reminders, and accountability nudges keep your momentum strong between sessions.",
-                },
-                {
-                  icon: Layers,
-                  title: "Multiple Growth Journeys",
-                  desc: "Specialized transformational programs for different areas of your life — each with its own milestones, assignments, and progression path.",
-                },
-                {
-                  icon: Target,
-                  title: "Accountability System",
-                  desc: "Daily check-ins, progress tracking, and reflective prompts that keep you on track and turn insights into lasting behavioral shifts.",
-                },
-                {
-                  icon: Shield,
-                  title: "Your Data Stays Yours",
-                  desc: "Your conversations are completely confidential. Your data is never shared with third parties. Built on Google Cloud with enterprise-grade security.",
-                },
-              ].map((feature, i) => (
-                <RevealSection key={feature.title} delay={i * 100}>
-                  <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 md:p-8 hover:border-yellow-400/20 transition-all duration-500 h-full">
-                    <feature.icon className="h-8 w-8 text-yellow-400 mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+            {/* ── Group 1: Coaching Intelligence ── */}
+            <RevealSection className="mb-16">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Coaching Intelligence
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {([
+                  {
+                    icon: MessageSquareText,
+                    title: "AI-Powered Conversations",
+                    desc: "Natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — 24/7.",
+                  },
+                  {
+                    icon: Heart,
+                    title: "Emotional Intelligence",
+                    desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are.",
+                  },
+                  {
+                    icon: UserCog,
+                    title: "Hyper Personalization",
+                    desc: "Learns your character, goals, and mood over time — adapting every session to your unique growth edge.",
+                  },
+                  {
+                    icon: Sliders,
+                    title: "Adaptive Style",
+                    desc: "Pacing, technique, and intensity evolve with every session based on what actually works for you.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
                     <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
                   </div>
-                </RevealSection>
-              ))}
-            </div>
+                ))}
+              </div>
+            </RevealSection>
+
+            {/* ── Group 2: Reinforcement Engine ── */}
+            <RevealSection className="mb-16" delay={200}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Reinforcement Engine
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {([
+                  {
+                    icon: BookOpen,
+                    title: "Proven Programs",
+                    desc: "Structured journeys built on decades of transformational frameworks, with clear milestones and measurable outcomes.",
+                  },
+                  {
+                    icon: Award,
+                    title: "Transformation Scoring",
+                    desc: "After every session, a multi-dimensional score tracks real breakthroughs — not just attendance.",
+                  },
+                  {
+                    icon: ClipboardCheck,
+                    title: "Smart Assignments",
+                    desc: "Personalized action items with deadlines and completion tracking, created exactly when you need them.",
+                  },
+                  {
+                    icon: BellRing,
+                    title: "Proactive Accountability",
+                    desc: "Check-ins, reminders, and nudges keep your momentum strong between sessions. Rumi doesn't wait for you to show up.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
+
+            {/* ── Group 3: Your Journey ── */}
+            <RevealSection delay={400}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Your Journey
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {([
+                  {
+                    icon: LineChart,
+                    title: "Growth Trajectory",
+                    desc: "Track your transformation over weeks and months. See plateaus before they happen and celebrate milestones.",
+                  },
+                  {
+                    icon: Layers,
+                    title: "Multiple Journeys",
+                    desc: "Specialized programs for different areas of your life — each with its own milestones and progression path.",
+                  },
+                  {
+                    icon: Shield,
+                    title: "Your Data Stays Yours",
+                    desc: "Completely confidential. Never shared with third parties. Enterprise-grade security on Google Cloud.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
           </div>
         </section>
 
