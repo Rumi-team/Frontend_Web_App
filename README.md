@@ -28,6 +28,15 @@ To run the project locally:
 npm run dev
 \`\`\`
 
+## Testing
+
+```bash
+pnpm test          # single run
+pnpm test:watch    # watch mode
+```
+
+See [TESTING.md](./TESTING.md) for conventions and framework details.
+
 ## Environment Variables
 
 Make sure you have the following environment variables set up for Supabase:
