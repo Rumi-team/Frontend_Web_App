@@ -48,7 +48,7 @@ export function ControlBar({
           "text-sm font-medium tracking-wide",
           textActive ? "text-yellow-400/80" : "text-white/40"
         )}>
-          {textMode === 1 ? "Transcript" : "Text"}
+          {textMode === 0 ? "Transcript" : textMode === 1 ? "Text" : "Off"}
         </span>
       </div>
 

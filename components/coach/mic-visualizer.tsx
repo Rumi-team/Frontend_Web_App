@@ -75,11 +75,11 @@ export function MicVisualizer({ isMicEnabled }: MicVisualizerProps) {
     const bufferLength = analyser.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
 
-    const barCount = 28
-    const barWidth = 5
+    const barCount = 20
+    const barWidth = 4
     const gap = 3
     const totalWidth = barCount * (barWidth + gap) - gap
-    const height = 96
+    const height = 48
 
     canvas.width = totalWidth
     canvas.height = height
@@ -124,7 +124,7 @@ export function MicVisualizer({ isMicEnabled }: MicVisualizerProps) {
       <canvas
         ref={canvasRef}
         className="opacity-90"
-        style={{ width: 224, height: 96 }}
+        style={{ width: 137, height: 48 }}
       />
     </div>
   )

@@ -64,8 +64,8 @@ export function CoachingSession({
     if (!el) return
     const obs = new ResizeObserver(([entry]) => {
       const { width: w, height: h } = entry.contentRect
-      // Reserve ~180px for visualizers + gaps + padding; clamp 140–290
-      setOrbSize(Math.min(290, Math.max(140, Math.min(w - 40, h - 180))))
+      // Reserve ~120px for visualizers + gaps + padding; clamp 140–290
+      setOrbSize(Math.min(290, Math.max(140, Math.min(w - 40, h - 120))))
     })
     obs.observe(el)
     return () => obs.disconnect()
@@ -195,59 +195,48 @@ export function CoachingSession({
       {/* Celebration effects layer */}
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
-      {/* Center area: transcript OR mascot/orb/visualizers — always flex-1 */}
-      <div ref={centerAreaRef} className="flex flex-col items-center justify-center gap-3 py-2 flex-1 min-h-0 overflow-hidden w-full">
+      {/* Center area: transcript OR mascot/orb — always flex-1, no visualizers inside */}
+      <div ref={centerAreaRef} className="flex flex-col items-center py-2 flex-1 min-h-0 overflow-hidden w-full">
         {textMode === 1 ? (
           /* Transcript replaces center content when Text mode is active */
-          <div className="flex flex-1 min-h-0 overflow-hidden flex-col w-full">
-            <AgentTranscript messages={messages} />
-            {/* Mic visualizer stays visible so user knows listening is active */}
-            {isMicrophoneEnabled && (
-              <div className="flex justify-center py-2 pointer-events-none shrink-0">
-                <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
-              </div>
+          <AgentTranscript messages={messages} />
+        ) : (
+          /* Mascot / Orb area — fills available space */
+          <div className="flex flex-1 flex-col items-center justify-center min-h-0">
+            {sessionControl.currentStep !== null &&
+              sessionControl.totalSteps !== null ? (
+              <SessionOrb
+                currentStep={sessionControl.currentStep}
+                totalSteps={sessionControl.totalSteps}
+                stepName={sessionControl.stepName}
+                audioTrack={remoteAudioTrack}
+                isActive={textMode !== 2}
+                currentDay={sessionControl.currentDay}
+                totalDays={sessionControl.totalDays}
+                isDayLocked={sessionControl.isDayLocked}
+                allowedStepMin={sessionControl.allowedStepMin}
+                allowedStepMax={sessionControl.allowedStepMax}
+                mascotMood={mascotMood}
+                size={orbSize}
+              />
+            ) : (
+              <RumiMascot
+                mood={mascotMood}
+                audioTrack={remoteAudioTrack}
+                size={180}
+              />
             )}
           </div>
-        ) : (
-          <>
-            {/* Mascot / Orb area */}
-            <div className="flex flex-col items-center justify-center">
-              {/* Session orb (with steps + mascot) or standalone mascot */}
-              {sessionControl.currentStep !== null &&
-                sessionControl.totalSteps !== null ? (
-                <SessionOrb
-                  currentStep={sessionControl.currentStep}
-                  totalSteps={sessionControl.totalSteps}
-                  stepName={sessionControl.stepName}
-                  audioTrack={remoteAudioTrack}
-                  isActive={textMode !== 2}
-                  currentDay={sessionControl.currentDay}
-                  totalDays={sessionControl.totalDays}
-                  isDayLocked={sessionControl.isDayLocked}
-                  allowedStepMin={sessionControl.allowedStepMin}
-                  allowedStepMax={sessionControl.allowedStepMax}
-                  mascotMood={mascotMood}
-                  size={orbSize}
-                />
-              ) : (
-                <RumiMascot
-                  mood={mascotMood}
-                  audioTrack={remoteAudioTrack}
-                  size={180}
-                />
-              )}
-            </div>
+        )}
+      </div>
 
-            {/* Visualizers below mascot — never overlapping */}
-            {textMode !== 2 && (
-              <div className="flex flex-col items-center gap-1 pointer-events-none">
-                {remoteAudioTrack && (
-                  <AudioVisualizer audioTrack={remoteAudioTrack} />
-                )}
-                <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
-              </div>
-            )}
-          </>
+      {/* Visualizers — always below orb/transcript, never overlapping, always visible when active */}
+      <div className="flex shrink-0 flex-col items-center gap-1 pointer-events-none pb-1">
+        {textMode !== 1 && remoteAudioTrack && (
+          <AudioVisualizer audioTrack={remoteAudioTrack} />
+        )}
+        {isMicrophoneEnabled && (
+          <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
         )}
       </div>
 
