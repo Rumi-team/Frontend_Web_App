@@ -47,7 +47,9 @@ export function CoachingSession({
   const [showFeedbackOverlay, setShowFeedbackOverlay] = useState(false)
   const [showLockedOverlay, setShowLockedOverlay] = useState(false)
   const [mascotMood, setMascotMood] = useState<MascotMood>("idle")
+  const [orbSize, setOrbSize] = useState(290)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const centerAreaRef = useRef<HTMLDivElement>(null)
   const prevStepRef = useRef<number | null>(null)
   const prevHighlightCountRef = useRef(0)
   const mascotTimerRef = useRef<ReturnType<typeof setTimeout>>()
@@ -55,6 +57,19 @@ export function CoachingSession({
   const sessionControl = useSessionControl(room)
   const { messages, sendMessage } = useChatMessages(room)
   const { state: celebrationState, streak, celebrate, clear: clearCelebration } = useCelebration()
+
+  // Responsive orb size — fits inside the center area without overlapping visualizers
+  useEffect(() => {
+    const el = centerAreaRef.current
+    if (!el) return
+    const obs = new ResizeObserver(([entry]) => {
+      const { width: w, height: h } = entry.contentRect
+      // Reserve ~180px for visualizers + gaps + padding; clamp 140–290
+      setOrbSize(Math.min(290, Math.max(140, Math.min(w - 40, h - 180))))
+    })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   // Helper: temporarily change mascot mood, then return to idle
   const flashMascotMood = useCallback((mood: MascotMood, durationMs = 3000) => {
@@ -205,11 +220,17 @@ export function CoachingSession({
       <CelebrationEffects state={celebrationState} onClear={clearCelebration} />
 
       {/* Center area: transcript OR mascot/orb/visualizers — always flex-1 */}
-      <div className="flex flex-col items-center justify-center gap-3 py-2 flex-1 min-h-0">
+      <div ref={centerAreaRef} className="flex flex-col items-center justify-center gap-3 py-2 flex-1 min-h-0 overflow-hidden w-full">
         {textMode === 1 ? (
           /* Transcript replaces center content when Text mode is active */
           <div className="flex flex-1 min-h-0 overflow-hidden flex-col w-full">
             <AgentTranscript messages={messages} />
+            {/* Mic visualizer stays visible so user knows listening is active */}
+            {isMicrophoneEnabled && (
+              <div className="flex justify-center py-2 pointer-events-none shrink-0">
+                <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
+              </div>
+            )}
           </div>
         ) : (
           <>
@@ -230,6 +251,7 @@ export function CoachingSession({
                   allowedStepMin={sessionControl.allowedStepMin}
                   allowedStepMax={sessionControl.allowedStepMax}
                   mascotMood={mascotMood}
+                  size={orbSize}
                 />
               ) : (
                 <RumiMascot

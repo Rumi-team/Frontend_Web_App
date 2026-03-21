@@ -15,6 +15,7 @@ interface SessionOrbProps {
   allowedStepMin?: number
   allowedStepMax?: number
   mascotMood?: MascotMood
+  size?: number
 }
 
 // Compact canvas — dots stay inside viewBox
@@ -35,7 +36,9 @@ export function SessionOrb({
   allowedStepMin = 1,
   allowedStepMax = 5,
   mascotMood = "idle",
+  size = SVG_SIZE,
 }: SessionOrbProps) {
+  const scale = size / SVG_SIZE
   const [celebrating, setCelebrating] = useState(false)
   const prevStepRef = useRef(currentStep)
 
@@ -140,7 +143,7 @@ export function SessionOrb({
       {/* Orb */}
       <div
         className={`relative ${celebrating ? "animate-step-celebrate" : ""}`}
-        style={{ width: SVG_SIZE, height: SVG_SIZE }}
+        style={{ width: size, height: size }}
       >
         {celebrating && (
           <div
@@ -153,17 +156,17 @@ export function SessionOrb({
         <div
           className="absolute rounded-full"
           style={{
-            width: RING_RADIUS * 2 + 40,
-            height: RING_RADIUS * 2 + 40,
-            left: CENTER - RING_RADIUS - 20,
-            top: CENTER - RING_RADIUS - 20,
+            width: (RING_RADIUS * 2 + 40) * scale,
+            height: (RING_RADIUS * 2 + 40) * scale,
+            left: (CENTER - RING_RADIUS - 20) * scale,
+            top: (CENTER - RING_RADIUS - 20) * scale,
             background: "radial-gradient(circle, rgba(38,189,255,0.05) 0%, transparent 70%)",
           }}
         />
 
         <svg
-          width={SVG_SIZE}
-          height={SVG_SIZE}
+          width={size}
+          height={size}
           viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
           className="relative z-10"
         >
@@ -214,10 +217,10 @@ export function SessionOrb({
         <div
           className="absolute z-20 rounded-full overflow-hidden"
           style={{
-            width: RING_RADIUS * 1.4,
-            height: RING_RADIUS * 1.4,
-            left: CENTER - RING_RADIUS * 0.7,
-            top: CENTER - RING_RADIUS * 0.7,
+            width: RING_RADIUS * 1.4 * scale,
+            height: RING_RADIUS * 1.4 * scale,
+            left: (CENTER - RING_RADIUS * 0.7) * scale,
+            top: (CENTER - RING_RADIUS * 0.7) * scale,
           }}
         >
           <img
@@ -231,8 +234,12 @@ export function SessionOrb({
       {/* Step name */}
       {stepName && (
         <p
-          className="text-2xl font-bold text-center max-w-[340px] leading-tight"
-          style={{ color: "rgb(255, 212, 26)" }}
+          className="font-bold text-center leading-tight"
+          style={{
+            color: "rgb(255, 212, 26)",
+            fontSize: Math.max(14, Math.round(24 * scale)),
+            maxWidth: size * 1.2,
+          }}
         >
           {stepName}
         </p>
