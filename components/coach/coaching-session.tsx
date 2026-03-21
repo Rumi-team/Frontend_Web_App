@@ -11,7 +11,6 @@ import { ProgramSelection } from "./program-selection"
 import { StepProgress } from "./step-progress"
 import { SessionOrb } from "./session-orb"
 import { SessionSaveOverlay } from "./session-save-overlay"
-import { FeedbackOverlay } from "./feedback-overlay"
 import { DayLockedOverlay } from "./day-locked-overlay"
 import { DayCompleteCelebration } from "./day-complete-celebration"
 import { AudioVisualizer } from "./audio-visualizer"
@@ -28,6 +27,7 @@ interface CoachingSessionProps {
   isMicrophoneEnabled: boolean
   onToggleMic: () => void
   onDisconnect: () => void
+  onRequestFeedback: (sessionId: string) => void
   remoteAudioTrack: MediaStreamTrack | null
 }
 
@@ -36,6 +36,7 @@ export function CoachingSession({
   isMicrophoneEnabled,
   onToggleMic,
   onDisconnect,
+  onRequestFeedback,
   remoteAudioTrack,
 }: CoachingSessionProps) {
   // 0 = default (no transcript, no text input)
@@ -44,7 +45,6 @@ export function CoachingSession({
   const [textMode, setTextMode] = useState<0 | 1 | 2>(0)
   const cycleTextMode = () => setTextMode((m) => ((m + 1) % 3) as 0 | 1 | 2)
   const [showSaveOverlay, setShowSaveOverlay] = useState(false)
-  const [showFeedbackOverlay, setShowFeedbackOverlay] = useState(false)
   const [showLockedOverlay, setShowLockedOverlay] = useState(false)
   const [mascotMood, setMascotMood] = useState<MascotMood>("idle")
   const [orbSize, setOrbSize] = useState(290)
@@ -144,20 +144,7 @@ export function CoachingSession({
     }
   }, [sessionControl.endConversationCount])
 
-  // Ensure feedback shows on unexpected disconnections (e.g., room timeout, network drop)
-  useEffect(() => {
-    if (!room) return
-    const handleDisconnected = () => {
-      // Only show feedback if not already showing save/feedback overlays
-      if (!showFeedbackOverlay && !showSaveOverlay) {
-        setShowFeedbackOverlay(true)
-      }
-    }
-    room.on("disconnected", handleDisconnected)
-    return () => {
-      room.off("disconnected", handleDisconnected)
-    }
-  }, [room, showFeedbackOverlay, showSaveOverlay])
+  // Unexpected disconnections are handled at the page level via onRequestFeedback
 
   // Session gating disabled — no locked overlay
 
@@ -191,21 +178,10 @@ export function CoachingSession({
   }, [room, onDisconnect])
 
   const handleSaveComplete = useCallback(() => {
-    // Disconnect after server finalization is complete
-    try {
-      room.disconnect()
-    } catch {
-      // already disconnected
-    }
     setShowSaveOverlay(false)
-    // Show feedback overlay after save completes
-    setShowFeedbackOverlay(true)
-  }, [room])
-
-  const handleFeedbackComplete = useCallback(() => {
-    setShowFeedbackOverlay(false)
-    onDisconnect()
-  }, [onDisconnect])
+    // Lift feedback to page level — it survives the LiveKit room teardown
+    onRequestFeedback(room.name || "unknown")
+  }, [room, onRequestFeedback])
 
   const handleDayCelebrationDismiss = useCallback(() => {
     // Celebration dismissed — no lock, user can continue
@@ -308,14 +284,6 @@ export function CoachingSession({
           stage={sessionControl.sessionSaveStage}
           farewellComplete={sessionControl.endConversationCount > 0}
           onComplete={handleSaveComplete}
-        />
-      )}
-
-      {/* Post-session feedback */}
-      {showFeedbackOverlay && (
-        <FeedbackOverlay
-          sessionId={room.name || "unknown"}
-          onComplete={handleFeedbackComplete}
         />
       )}
 

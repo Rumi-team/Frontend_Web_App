@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useLiveKitConnection } from "@/hooks/use-livekit-connection"
 import { useMicrophonePermission } from "@/hooks/use-microphone-permission"
 import { useLyricsManager } from "@/hooks/use-lyrics-manager"
 import { useAuth } from "@/components/auth-provider"
 import { CoachingSession } from "@/components/coach/coaching-session"
+import { FeedbackOverlay } from "@/components/coach/feedback-overlay"
 import { ConnectionError } from "@/components/coach/connection-error"
 import { StartView } from "@/components/coach/start-view"
 import { LibrarySheet } from "@/components/library/library-sheet"
@@ -31,6 +32,11 @@ export default function CoachPage() {
 
   const [showLibrary, setShowLibrary] = useState(false)
   const [showAssignments, setShowAssignments] = useState(false)
+
+  // Feedback overlay — kept at page level so it survives session teardown on disconnect
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [feedbackSessionId, setFeedbackSessionId] = useState("unknown")
+  const [hadActiveSession, setHadActiveSession] = useState(false)
 
   // E2E-only state: skip LiveKit, show text-only coaching UI
   const [e2eConnected, setE2EConnected] = useState(false)
@@ -61,6 +67,33 @@ export default function CoachPage() {
       { role: "agent", text: `[E2E echo] ${text}` },
     ])
   }, [])
+
+  // Save session ID when connected so we have it after disconnect
+  useEffect(() => {
+    if (lk.connectionState === "connected" && lk.room) {
+      setHadActiveSession(true)
+      setFeedbackSessionId(lk.room.name || "unknown")
+    }
+  }, [lk.connectionState, lk.room])
+
+  // Show feedback when room disconnects unexpectedly (network drop, server timeout, etc.)
+  useEffect(() => {
+    if (lk.connectionState === "disconnected" && hadActiveSession && !showFeedback) {
+      setHadActiveSession(false)
+      setShowFeedback(true)
+    }
+  }, [lk.connectionState, hadActiveSession, showFeedback])
+
+  const handleRequestFeedback = useCallback((sessionId: string) => {
+    setHadActiveSession(false)
+    setFeedbackSessionId(sessionId)
+    setShowFeedback(true)
+  }, [])
+
+  const handleFeedbackComplete = useCallback(() => {
+    setShowFeedback(false)
+    lk.disconnect()
+  }, [lk])
 
   const error = lk.error || mic.error
 
@@ -103,15 +136,24 @@ export default function CoachPage() {
   // Connected — show coaching session
   if (lk.connectionState === "connected" && lk.room) {
     return (
-      <div className="h-dvh">
-        <CoachingSession
-          room={lk.room}
-          isMicrophoneEnabled={lk.isMicrophoneEnabled}
-          onToggleMic={lk.toggleMicrophone}
-          onDisconnect={lk.disconnect}
-          remoteAudioTrack={lk.remoteAudioTrack}
-        />
-      </div>
+      <>
+        <div className="h-dvh">
+          <CoachingSession
+            room={lk.room}
+            isMicrophoneEnabled={lk.isMicrophoneEnabled}
+            onToggleMic={lk.toggleMicrophone}
+            onDisconnect={lk.disconnect}
+            onRequestFeedback={handleRequestFeedback}
+            remoteAudioTrack={lk.remoteAudioTrack}
+          />
+        </div>
+        {showFeedback && (
+          <FeedbackOverlay
+            sessionId={feedbackSessionId}
+            onComplete={handleFeedbackComplete}
+          />
+        )}
+      </>
     )
   }
 
@@ -127,36 +169,46 @@ export default function CoachPage() {
 
   // Disconnected — show StartView with sun orb
   return (
-    <div className="h-dvh">
-      <StartView
-        onStartSession={handleStart}
-        displayName={displayName}
-        userEmail={userEmail}
-        authProvider={authProvider}
-        onOpenLibrary={() => setShowLibrary(true)}
-        onOpenAssignments={() => setShowAssignments(true)}
-        onSignOut={signOut}
-        isMusicPlaying={lyrics.isMusicPlaying}
-        onToggleMusic={lyrics.toggleMusic}
-        lyricsLine={lyrics.currentLine}
-        lyricsOpacity={lyrics.lyricOpacity}
-        isConnecting={lk.connectionState === "connecting"}
-      />
+    <>
+      <div className="h-dvh">
+        <StartView
+          onStartSession={handleStart}
+          displayName={displayName}
+          userEmail={userEmail}
+          authProvider={authProvider}
+          onOpenLibrary={() => setShowLibrary(true)}
+          onOpenAssignments={() => setShowAssignments(true)}
+          onSignOut={signOut}
+          isMusicPlaying={lyrics.isMusicPlaying}
+          onToggleMusic={lyrics.toggleMusic}
+          lyricsLine={lyrics.currentLine}
+          lyricsOpacity={lyrics.lyricOpacity}
+          isConnecting={lk.connectionState === "connecting"}
+        />
 
-      {/* Library sheet overlay */}
-      <LibrarySheet
-        isOpen={showLibrary}
-        onClose={() => setShowLibrary(false)}
-        providerUserId={providerUserId}
-        displayName={displayName}
-      />
+        {/* Library sheet overlay */}
+        <LibrarySheet
+          isOpen={showLibrary}
+          onClose={() => setShowLibrary(false)}
+          providerUserId={providerUserId}
+          displayName={displayName}
+        />
 
-      {/* Assignments sheet overlay */}
-      <AssignmentsSheet
-        isOpen={showAssignments}
-        onClose={() => setShowAssignments(false)}
-        providerUserId={providerUserId}
-      />
-    </div>
+        {/* Assignments sheet overlay */}
+        <AssignmentsSheet
+          isOpen={showAssignments}
+          onClose={() => setShowAssignments(false)}
+          providerUserId={providerUserId}
+        />
+      </div>
+
+      {/* Feedback overlay — shown after unexpected disconnect while on StartView */}
+      {showFeedback && (
+        <FeedbackOverlay
+          sessionId={feedbackSessionId}
+          onComplete={handleFeedbackComplete}
+        />
+      )}
+    </>
   )
 }
