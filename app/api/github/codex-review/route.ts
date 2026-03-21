@@ -5,7 +5,7 @@
  * Triggered by pull_request events (opened, synchronize, reopened).
  * Model: gpt-5.4
  *
- * Flow: GitHub webhook → verify HMAC-SHA256 → fetch diff → GPT-5.4 review → post PR comment
+ * Flow: GitHub webhook -> verify HMAC-SHA256 -> fetch diff -> GPT-5.4 review -> post PR comment
  *
  * Required env vars:
  *   GITHUB_WEBHOOK_SECRET  — secret set when creating the GitHub org webhook
@@ -109,6 +109,7 @@ If the code looks clean, say so briefly.`,
     const err = await res.text().catch(() => "")
     throw new Error(`OpenAI error: ${res.status} — ${err}`)
   }
+
   const data = (await res.json()) as {
     choices: Array<{ message: { content: string } }>
   }
