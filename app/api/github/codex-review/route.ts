@@ -1,21 +1,18 @@
 /**
  * POST /api/github/codex-review
  *
- * GitHub organization webhook receiver for automatic PR code review.
- * Triggered by pull_request events (opened, synchronize, reopened).
+ * GitHub organization webhook for automatic PR code review.
  * Model: gpt-5.4
  *
- * Flow: GitHub webhook -> verify HMAC-SHA256 -> fetch diff -> GPT-5.4 review -> post PR comment
+ * Flow: GitHub webhook → verify HMAC → fetch diff via API → GPT-5.4 review → post PR comment
  *
- * Required env vars:
- *   GITHUB_WEBHOOK_SECRET  — secret set when creating the GitHub org webhook
- *   GITHUB_TOKEN           — PAT with repo scope
- *   OPENAI_API_KEY         — OpenAI API key
+ * Env vars: GITHUB_WEBHOOK_SECRET, GITHUB_TOKEN, OPENAI_API_KEY
  */
 
 import { createHmac } from "crypto"
-import { after } from "next/server"
 import { NextRequest, NextResponse } from "next/server"
+
+export const maxDuration = 60
 
 const REVIEW_MODEL = "gpt-5.4"
 const MAX_DIFF_CHARS = 14000
@@ -41,7 +38,6 @@ async function fetchDiff(
   pullNumber: number,
   githubToken: string
 ): Promise<string> {
-  // Use GitHub API endpoint (not diff_url) — handles private repo auth correctly
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}`,
     {
@@ -50,10 +46,9 @@ async function fetchDiff(
         Accept: "application/vnd.github.v3.diff",
         "User-Agent": "Rumi-Codex-Review-Bot",
       },
-      redirect: "follow",
     }
   )
-  if (!res.ok) throw new Error(`Diff fetch failed: ${res.status} for ${owner}/${repo}#${pullNumber}`)
+  if (!res.ok) throw new Error(`Diff fetch failed: ${res.status}`)
   return res.text()
 }
 
@@ -79,18 +74,18 @@ async function generateReview(
       messages: [
         {
           role: "system",
-          content: `You are a senior software engineer reviewing a PR in the ${repoName} repository.
+          content: `You are a senior software engineer reviewing a PR in ${repoName}.
 
-Review the diff for:
-- **Bugs & logic errors** — incorrect conditions, race conditions, off-by-one errors
-- **Security vulnerabilities** — injection, XSS, SSRF, hardcoded secrets, insecure auth
+Review for:
+- **Bugs & logic errors** — incorrect conditions, race conditions
+- **Security vulnerabilities** — injection, XSS, hardcoded secrets
 - **Performance issues** — N+1 queries, blocking ops, memory leaks
-- **Error handling gaps** — unhandled exceptions, missing validation, silent failures
+- **Error handling gaps** — unhandled exceptions, missing validation
 
-Format using severity levels:
+Severity levels:
 🔴 **Critical** — must fix before merge
 🟡 **Warning** — should fix
-🟢 **Suggestion** — optional improvement
+🟢 **Suggestion** — optional
 
 Be specific: cite filenames and line context. Skip style nitpicks.
 If the code looks clean, say so briefly.`,
@@ -109,7 +104,6 @@ If the code looks clean, say so briefly.`,
     const err = await res.text().catch(() => "")
     throw new Error(`OpenAI error: ${res.status} — ${err}`)
   }
-
   const data = (await res.json()) as {
     choices: Array<{ message: { content: string } }>
   }
@@ -120,7 +114,7 @@ async function postPRReview(
   owner: string,
   repo: string,
   pullNumber: number,
-  body: string,
+  reviewBody: string,
   githubToken: string
 ): Promise<void> {
   const res = await fetch(
@@ -134,7 +128,7 @@ async function postPRReview(
         "User-Agent": "Rumi-Codex-Review-Bot",
       },
       body: JSON.stringify({
-        body: `## 🤖 Codex AI Review\n\n${body}\n\n---\n*Reviewed by ${REVIEW_MODEL}*`,
+        body: `## 🤖 Codex AI Review\n\n${reviewBody}\n\n---\n*Reviewed by ${REVIEW_MODEL}*`,
         event: "COMMENT",
       }),
     }
@@ -155,9 +149,9 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.text()
-  const signatureHeader = req.headers.get("x-hub-signature-256") ?? ""
+  const sig = req.headers.get("x-hub-signature-256") ?? ""
 
-  if (!signatureHeader || !verifySignature(body, signatureHeader, webhookSecret)) {
+  if (!sig || !verifySignature(body, sig, webhookSecret)) {
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 })
   }
 
@@ -195,18 +189,19 @@ export async function POST(req: NextRequest) {
   const owner = repository.owner.login
   const repo = repository.name
 
-  // Return 200 immediately — review runs in background
-  after(async () => {
-    try {
-      const diff = await fetchDiff(owner, repo, pr.number, githubToken)
-      if (!diff.trim()) return
-      const review = await generateReview(diff, pr.title, pr.body ?? "", repository.full_name)
-      await postPRReview(owner, repo, pr.number, review, githubToken)
-      console.log(`[codex-review] Posted review on ${repository.full_name}#${pr.number}`)
-    } catch (err) {
-      console.error(`[codex-review] Failed on ${repository.full_name}#${pr.number}:`, err)
+  try {
+    const diff = await fetchDiff(owner, repo, pr.number, githubToken)
+    if (!diff.trim()) {
+      return NextResponse.json({ skipped: true, reason: "empty diff" })
     }
-  })
-
-  return NextResponse.json({ accepted: true, pr: pr.number, repo: repository.full_name })
+    const review = await generateReview(diff, pr.title, pr.body ?? "", repository.full_name)
+    await postPRReview(owner, repo, pr.number, review, githubToken)
+    return NextResponse.json({ success: true, pr: pr.number, repo: repository.full_name })
+  } catch (err) {
+    console.error(`[codex-review] Error on ${repository.full_name}#${pr.number}:`, err)
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : String(err) },
+      { status: 500 }
+    )
+  }
 }
