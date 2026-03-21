@@ -118,11 +118,12 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-400
         ${visible ? "opacity-100" : "opacity-0"}`}
-      style={{ background: "rgba(9, 11, 17, 0.97)", backdropFilter: "blur(6px)" }}
+      style={{ background: "rgb(9, 11, 17)" }}
     >
       <div
-        className={`flex flex-col items-center w-full max-w-sm px-6 text-center transform transition-all duration-500
+        className={`flex flex-col items-center w-full max-w-sm px-6 py-8 text-center rounded-3xl transform transition-all duration-500
           ${visible ? "translate-y-0 scale-100" : "translate-y-8 scale-95"}`}
+        style={{ background: "rgb(15, 17, 26)", border: "1px solid rgba(255,255,255,0.07)" }}
       >
         {/* Mascot */}
         <img
