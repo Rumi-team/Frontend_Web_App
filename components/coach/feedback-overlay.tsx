@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { useAuth } from "@/components/auth-provider"
 import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
+import { Paperclip, Loader2, CheckCircle2 } from "lucide-react"
 
 interface FeedbackOverlayProps {
   sessionId: string
@@ -32,6 +33,8 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
   const [step, setStep] = useState<"rate" | "nps" | "comment">("rate")
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "done" | "error">("idle")
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     requestAnimationFrame(() => setVisible(true))
@@ -91,13 +94,31 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
     if (rating) submit(rating, npsScore, "")
   }, [rating, npsScore, submit])
 
+  const handleFileUpload = useCallback(async (file: File) => {
+    setUploadState("uploading")
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const res = await fetch("/api/feedback/process-doc", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? "Upload failed")
+      setComment(data.text ?? "")
+      setUploadState("done")
+    } catch (err) {
+      console.error("Doc upload failed:", err)
+      setUploadState("error")
+      setTimeout(() => setUploadState("idle"), 3000)
+    }
+  }, [])
+
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-400
         ${visible ? "opacity-100" : "opacity-0"}`}
-      style={{
-        background: "radial-gradient(ellipse at center, rgba(250,204,21,0.06) 0%, rgba(0,0,0,0.94) 70%)",
-      }}
+      style={{ background: "rgba(9, 11, 17, 0.97)", backdropFilter: "blur(6px)" }}
     >
       <div
         className={`flex flex-col items-center w-full max-w-sm px-6 text-center transform transition-all duration-500
@@ -190,12 +211,49 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Tell us what happened..."
-              rows={2}
+              rows={3}
               autoFocus
               className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500
                 border border-white/10 bg-white/5 focus:border-yellow-400/50 focus:outline-none
-                focus:ring-1 focus:ring-yellow-400/30 resize-none transition-all mb-4"
+                focus:ring-1 focus:ring-yellow-400/30 resize-none transition-all mb-3"
             />
+
+            {/* Doc upload row */}
+            <div className="w-full mb-4">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) handleFileUpload(file)
+                  e.target.value = ""
+                }}
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadState === "uploading" || submitting}
+                className="flex items-center gap-2 text-xs text-gray-400 hover:text-gray-200
+                  transition-colors disabled:opacity-40"
+              >
+                {uploadState === "uploading" ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : uploadState === "done" ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 text-green-400" />
+                ) : (
+                  <Paperclip className="h-3.5 w-3.5" />
+                )}
+                {uploadState === "uploading"
+                  ? "Processing document…"
+                  : uploadState === "done"
+                    ? "Document added"
+                    : uploadState === "error"
+                      ? "Upload failed — try again"
+                      : "Attach PDF or Word doc"}
+              </button>
+            </div>
+
             <div className="flex gap-3 w-full">
               <button
                 onClick={handleSkipComment}
@@ -215,7 +273,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
                   boxShadow: "0 4px 16px rgba(250,204,21,0.3)",
                 }}
               >
-                {submitting ? "Sending..." : "Submit"}
+                {submitting ? "Sending…" : "Submit"}
               </button>
             </div>
           </>
