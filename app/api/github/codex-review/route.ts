@@ -35,15 +35,25 @@ function verifySignature(body: string, header: string, secret: string): boolean 
   return timingSafeEqual(expected, header)
 }
 
-async function fetchDiff(diffUrl: string, githubToken: string): Promise<string> {
-  const res = await fetch(diffUrl, {
-    headers: {
-      Authorization: `token ${githubToken}`,
-      Accept: "application/vnd.github.v3.diff",
-      "User-Agent": "Rumi-Codex-Review-Bot",
-    },
-  })
-  if (!res.ok) throw new Error(`Diff fetch failed: ${res.status}`)
+async function fetchDiff(
+  owner: string,
+  repo: string,
+  pullNumber: number,
+  githubToken: string
+): Promise<string> {
+  // Use GitHub API endpoint (not diff_url) — handles private repo auth correctly
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/pulls/${pullNumber}`,
+    {
+      headers: {
+        Authorization: `token ${githubToken}`,
+        Accept: "application/vnd.github.v3.diff",
+        "User-Agent": "Rumi-Codex-Review-Bot",
+      },
+      redirect: "follow",
+    }
+  )
+  if (!res.ok) throw new Error(`Diff fetch failed: ${res.status} for ${owner}/${repo}#${pullNumber}`)
   return res.text()
 }
 
@@ -161,7 +171,6 @@ export async function POST(req: NextRequest) {
       number: number
       title: string
       body: string | null
-      diff_url: string
       draft: boolean
     }
     repository: { name: string; full_name: string; owner: { login: string } }
@@ -188,7 +197,7 @@ export async function POST(req: NextRequest) {
   // Return 200 immediately — review runs in background
   after(async () => {
     try {
-      const diff = await fetchDiff(pr.diff_url, githubToken)
+      const diff = await fetchDiff(owner, repo, pr.number, githubToken)
       if (!diff.trim()) return
       const review = await generateReview(diff, pr.title, pr.body ?? "", repository.full_name)
       await postPRReview(owner, repo, pr.number, review, githubToken)
