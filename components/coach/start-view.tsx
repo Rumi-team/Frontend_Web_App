@@ -88,6 +88,12 @@ export function StartView({
 
   const startHold = useCallback(() => {
     if (holdComplete) return
+    // E2E fast path: skip rAF so same-tick mousedown+mouseup always fires onStartSession
+    if (HOLD_DURATION <= 0) {
+      setHoldComplete(true)
+      onStartSession()
+      return
+    }
     setIsHolding(true)
     holdingRef.current = true
     startTimeRef.current = performance.now()
