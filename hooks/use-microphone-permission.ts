@@ -5,6 +5,11 @@ import posthog from "posthog-js"
 
 export type MicPermissionState = "granted" | "prompt" | "denied" | "unknown"
 
+// E2E testing bypass — only active in local development (NODE_ENV guard)
+const isE2ETesting =
+  process.env.NEXT_PUBLIC_E2E_TESTING === "true" &&
+  process.env.NODE_ENV === "development"
+
 interface UseMicrophonePermissionReturn {
   hasPermission: boolean | null
   permissionState: MicPermissionState
@@ -13,12 +18,17 @@ interface UseMicrophonePermissionReturn {
 }
 
 export function useMicrophonePermission(): UseMicrophonePermissionReturn {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null)
-  const [permissionState, setPermissionState] = useState<MicPermissionState>("unknown")
+  const [hasPermission, setHasPermission] = useState<boolean | null>(
+    isE2ETesting ? true : null
+  )
+  const [permissionState, setPermissionState] = useState<MicPermissionState>(
+    isE2ETesting ? "granted" : "unknown"
+  )
   const [error, setError] = useState<string | null>(null)
 
   // Check permission state on mount via Permissions API
   useEffect(() => {
+    if (isE2ETesting) return
     let cancelled = false
 
     async function checkPermission() {

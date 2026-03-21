@@ -73,7 +73,7 @@ function RevealSection({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      className={`transition-[opacity,transform] duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         } ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
@@ -579,10 +579,10 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           HEADER
           ══════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl">
-        <div className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto">
+      <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl" role="banner">
+        <nav className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto" aria-label="Main navigation">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center" aria-label="Rumi home">
               <Image
                 src="/rumi_logo.png"
                 alt="Rumi Logo"
@@ -595,13 +595,13 @@ export default function Home() {
           </div>
 
           <div className="flex items-center">
-            <Link href="/login">
+            <Link href="/login" className="inline-flex items-center">
               <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
                 Sign In
               </Button>
             </Link>
           </div>
-        </div>
+        </nav>
       </header>
 
       <main className="flex-1">
@@ -1064,78 +1064,123 @@ export default function Home() {
               </div>
             </RevealSection>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  icon: MessageSquareText,
-                  title: "AI-Powered Conversations",
-                  desc: "Real-time, natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — available 24/7.",
-                },
-                {
-                  icon: BookOpen,
-                  title: "Proven Transformational Programs",
-                  desc: "Structured programs built on decades of proven transformational frameworks, delivered as guided journeys with clear milestones and measurable outcomes.",
-                },
-                {
-                  icon: UserCog,
-                  title: "Hyper Personalization",
-                  desc: "Learns your character, goals, and mood over time — adapting every session to your unique patterns and growth edge.",
-                },
-                {
-                  icon: Heart,
-                  title: "Emotional Intelligence",
-                  desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are emotionally.",
-                },
-                {
-                  icon: Award,
-                  title: "Transformation Scoring",
-                  desc: "After every session, Rumi evaluates your progress with a multi-dimensional transformation score — tracking real breakthroughs, not just attendance.",
-                },
-                {
-                  icon: ClipboardCheck,
-                  title: "Smart Assignments",
-                  desc: "Personalized action items created exactly when you need them — with deadlines, accountability, and completion tracking that drive real change.",
-                },
-                {
-                  icon: Sliders,
-                  title: "Adaptive Leadership Style",
-                  desc: "Dynamically adjusts its approach based on what actually works for you — pacing, technique, and intensity evolve with every session.",
-                },
-                {
-                  icon: LineChart,
-                  title: "Growth Trajectory",
-                  desc: "Track your transformation journey over weeks and months. See plateaus before they happen, celebrate milestones, and watch your growth unfold.",
-                },
-                {
-                  icon: BellRing,
-                  title: "Proactive Accountability",
-                  desc: "Rumi doesn't wait for you to show up. Check-ins, reminders, and accountability nudges keep your momentum strong between sessions.",
-                },
-                {
-                  icon: Layers,
-                  title: "Multiple Growth Journeys",
-                  desc: "Specialized transformational programs for different areas of your life — each with its own milestones, assignments, and progression path.",
-                },
-                {
-                  icon: Target,
-                  title: "Accountability System",
-                  desc: "Daily check-ins, progress tracking, and reflective prompts that keep you on track and turn insights into lasting behavioral shifts.",
-                },
-                {
-                  icon: Shield,
-                  title: "Your Data Stays Yours",
-                  desc: "Your conversations are completely confidential. Your data is never shared with third parties. Built on Google Cloud with enterprise-grade security.",
-                },
-              ].map((feature, i) => (
-                <RevealSection key={feature.title} delay={i * 100}>
-                  <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 md:p-8 hover:border-yellow-400/20 transition-all duration-500 h-full">
-                    <feature.icon className="h-8 w-8 text-yellow-400 mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+            {/* ── Group 1: Coaching Intelligence ── */}
+            <RevealSection className="mb-16">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Coaching Intelligence
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {([
+                  {
+                    icon: MessageSquareText,
+                    title: "AI-Powered Conversations",
+                    desc: "Natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — 24/7.",
+                  },
+                  {
+                    icon: Heart,
+                    title: "Emotional Intelligence",
+                    desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are.",
+                  },
+                  {
+                    icon: UserCog,
+                    title: "Hyper Personalization",
+                    desc: "Learns your character, goals, and mood over time — adapting every session to your unique growth edge.",
+                  },
+                  {
+                    icon: Sliders,
+                    title: "Adaptive Style",
+                    desc: "Pacing, technique, and intensity evolve with every session based on what actually works for you.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
                     <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
                   </div>
-                </RevealSection>
-              ))}
-            </div>
+                ))}
+              </div>
+            </RevealSection>
+
+            {/* ── Group 2: Reinforcement Engine ── */}
+            <RevealSection className="mb-16" delay={200}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Reinforcement Engine
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {([
+                  {
+                    icon: BookOpen,
+                    title: "Proven Programs",
+                    desc: "Structured journeys built on decades of transformational frameworks, with clear milestones and measurable outcomes.",
+                  },
+                  {
+                    icon: Award,
+                    title: "Transformation Scoring",
+                    desc: "After every session, a multi-dimensional score tracks real breakthroughs — not just attendance.",
+                  },
+                  {
+                    icon: ClipboardCheck,
+                    title: "Smart Assignments",
+                    desc: "Personalized action items with deadlines and completion tracking, created exactly when you need them.",
+                  },
+                  {
+                    icon: BellRing,
+                    title: "Proactive Accountability",
+                    desc: "Check-ins, reminders, and nudges keep your momentum strong between sessions. Rumi doesn't wait for you to show up.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
+
+            {/* ── Group 3: Your Journey ── */}
+            <RevealSection delay={400}>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
+                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
+                  Your Journey
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {([
+                  {
+                    icon: LineChart,
+                    title: "Growth Trajectory",
+                    desc: "Track your transformation over weeks and months. See plateaus before they happen and celebrate milestones.",
+                  },
+                  {
+                    icon: Layers,
+                    title: "Multiple Journeys",
+                    desc: "Specialized programs for different areas of your life — each with its own milestones and progression path.",
+                  },
+                  {
+                    icon: Shield,
+                    title: "Your Data Stays Yours",
+                    desc: "Completely confidential. Never shared with third parties. Enterprise-grade security on Google Cloud.",
+                  },
+                ] as const).map((feature) => (
+                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
+                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
+                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </RevealSection>
           </div>
         </section>
 
@@ -1159,7 +1204,7 @@ export default function Home() {
                 <Lock className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
               </div>
-              <Link href="/login">
+              <Link href="/login" className="inline-flex items-center">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
                   Sign In
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -1173,7 +1218,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           FOOTER
           ══════════════════════════════════════════════════════ */}
-      <footer className="w-full py-12 bg-black border-t border-white/[0.06]">
+      <footer className="w-full py-12 bg-black border-t border-white/[0.06]" role="contentinfo">
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col items-center md:items-start gap-2">
@@ -1188,16 +1233,17 @@ export default function Home() {
             <div className="flex flex-col items-center md:items-end gap-3">
               <button
                 onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200"
+                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2 cursor-pointer hover:underline underline-offset-4"
+                aria-label="Contact Support"
               >
-                <Mail className="h-7 w-7 mr-2" />
+                <Mail className="h-7 w-7 mr-2" aria-hidden="true" />
                 Contact Support
               </button>
               <a
                 href="https://rumiagent.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200"
+                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200 py-3"
               >
                 For developers &amp; enterprise → rumiagent.com
               </a>

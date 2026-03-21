@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+// E2E testing bypass — only active in local development (NODE_ENV guard)
+const isE2ETesting =
+  process.env.NEXT_PUBLIC_E2E_TESTING === "true" &&
+  process.env.NODE_ENV === "development"
+
 interface CoachShellProps {
   children: React.ReactNode
   authenticated: boolean
@@ -311,6 +316,7 @@ function CoachShellInner({
   // (happens with implicit OAuth flow), reload to let the server see the session.
   // If no client session either, redirect to /login as safety net.
   useEffect(() => {
+    if (isE2ETesting) return
     if (!authenticated && user) {
       router.refresh()
     } else if (!authenticated && !user && !isLoading) {
@@ -318,7 +324,7 @@ function CoachShellInner({
     }
   }, [authenticated, user, isLoading, router])
 
-  if (isLoading || !authenticated) {
+  if (!isE2ETesting && (isLoading || !authenticated)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
         <Loader2 className="h-8 w-8 animate-spin text-yellow-400" />
@@ -349,6 +355,7 @@ function CoachShellInner({
               alt="Rumi"
               width={303}
               height={101}
+              priority
               className="h-6 w-auto"
             />
           </Link>
