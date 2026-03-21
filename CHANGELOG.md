@@ -12,7 +12,7 @@ All notable changes to the Frontend Web App are documented here.
 - PKCE double-exchange guard in auth provider to prevent token reuse on fast OAuth redirects
 
 ### Fixed
-- `startHold` rAF race: same-tick `mousedown`+`mouseup` (Playwright synthetic clicks) could cancel the hold before the animation frame ran — fixed with an early-return bypass when `HOLD_DURATION <= 0`
+- Orb press reliability: same-tick `mousedown`+`mouseup` (e.g. Playwright synthetic click) could silently drop a session start due to a `requestAnimationFrame` timing race — fixed with an early-return bypass when `HOLD_DURATION <= 0`
 - ControlBar text-mode label: was always `"Text"`; now shows `"Transcript"` when `textMode === 1` and `"Text"` otherwise
 - Equalizer bars overlapping mascot/orb on small viewports — visualizers moved to a separate `pointer-events-none` container below the mascot
 - NaN `strokeDashoffset` on session orb when step data was `null` before first load — guarded with `|| 0`

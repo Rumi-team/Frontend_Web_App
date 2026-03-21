@@ -24,9 +24,9 @@ When deploying to Vercel or another hosting platform, make sure to include the `
 
 To run the project locally:
 
-\`\`\`bash
-npm run dev
-\`\`\`
+```bash
+pnpm dev
+```
 
 ## Testing
 
@@ -39,9 +39,13 @@ See [TESTING.md](./TESTING.md) for conventions and framework details.
 
 ## Environment Variables
 
-Make sure you have the following environment variables set up for Supabase:
+Make sure you have the following environment variables set:
 
+**Supabase (required):**
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-\`\`\`
+
+**Local E2E testing only (never set in production):**
+- `E2E_BYPASS_AUTH=true` — skips Supabase auth so `/rumi` loads without login
+- `NEXT_PUBLIC_E2E_TESTING=true` — auto-grants mic permission; pressing the orb enters a text-only chat UI instead of starting a LiveKit session
