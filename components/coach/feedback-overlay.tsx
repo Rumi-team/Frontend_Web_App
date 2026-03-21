@@ -45,7 +45,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
     setSubmitting(true)
     try {
       const supabase = createSupabaseBrowserClient()
-      await supabase.from("user_feedback").insert({
+      const { error } = await supabase.from("user_feedback").insert({
         session_id: sessionId,
         provider_user_id: providerUserId,
         overall_rating: finalRating,
@@ -55,6 +55,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
         had_bugs: false,
         had_ui_issues: false,
       })
+      if (error) console.error("Failed to save feedback:", error)
     } catch (err) {
       console.error("Failed to save feedback:", err)
     }
