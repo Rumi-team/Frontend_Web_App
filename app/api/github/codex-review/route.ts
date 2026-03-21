@@ -3,6 +3,7 @@
  *
  * GitHub organization webhook receiver for automatic PR code review.
  * Triggered by pull_request events (opened, synchronize, reopened).
+ * Model: gpt-5.4
  *
  * Flow: GitHub webhook → verify HMAC-SHA256 → fetch diff → OpenAI review → post PR comment
  *
