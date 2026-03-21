@@ -2,7 +2,7 @@
  * POST /api/github/codex-review
  *
  * GitHub organization webhook receiver for automatic PR code review + auto-fix.
- * Model: gpt-5.4
+ * Model: gpt-5.4 — review + auto-fix critical issues
  *
  * Flow:
  *   1. Validate HMAC-SHA256 signature → return 200 immediately
