@@ -77,14 +77,10 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
 
   const handleNps = useCallback((value: number) => {
     setNpsScore(value)
-    // For high NPS (9-10) + high rating (4-5), auto-submit
-    if (value >= 9 && rating && rating >= 4) {
-      submit(rating, value, "")
-    } else {
-      // Ask for comment when NPS is low or rating is low
-      setTimeout(() => setStep("comment"), 300)
-    }
-  }, [rating, submit])
+    // Always show comment step — user can Skip if they have nothing to add.
+    // This ensures the PDF/doc upload option is always reachable.
+    setTimeout(() => setStep("comment"), 300)
+  }, [])
 
   const handleSubmitComment = useCallback(() => {
     if (rating) submit(rating, npsScore, comment)
@@ -116,12 +112,12 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-400
+      className={`fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto py-4 sm:py-0 transition-opacity duration-400
         ${visible ? "opacity-100" : "opacity-0"}`}
       style={{ background: "rgb(9, 11, 17)" }}
     >
       <div
-        className={`flex flex-col items-center w-full max-w-2xl px-12 py-16 text-center rounded-3xl transform transition-all duration-500
+        className={`flex flex-col items-center w-full max-w-2xl mx-4 sm:mx-0 px-5 sm:px-12 py-8 sm:py-16 text-center rounded-3xl transform transition-all duration-500
           ${visible ? "translate-y-0 scale-100" : "translate-y-8 scale-95"}`}
         style={{ background: "rgb(15, 17, 26)", border: "1px solid rgba(255,255,255,0.07)" }}
       >
@@ -129,25 +125,25 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
         <img
           src="/rumi_mascot.png"
           alt="Rumi"
-          className="w-40 h-40 rounded-full object-cover mb-8"
+          className="w-24 h-24 sm:w-40 sm:h-40 rounded-full object-cover mb-4 sm:mb-8"
         />
 
         {submitted ? (
           <div className="flex flex-col items-center gap-4">
-            <h2 className="text-3xl font-bold text-yellow-400">Thank you!</h2>
-            <p className="text-gray-400 text-lg">Your feedback helps Rumi grow</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400">Thank you!</h2>
+            <p className="text-gray-400 text-base sm:text-lg">Your feedback helps Rumi grow</p>
           </div>
         ) : step === "rate" ? (
           <>
-            <h2 className="text-3xl font-semibold text-white mb-3">How was your session?</h2>
-            <p className="text-gray-500 text-base mb-8">Tap to rate</p>
-            <div className="flex gap-5 mb-6">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-2 sm:mb-3">How was your session?</h2>
+            <p className="text-gray-500 text-sm sm:text-base mb-5 sm:mb-8">Tap to rate</p>
+            <div className="flex gap-2 sm:gap-5 mb-4 sm:mb-6 flex-wrap justify-center">
               {RATINGS.map((r, i) => (
                 <button
                   key={r.value}
                   onClick={() => handleRating(r.value)}
                   disabled={submitting}
-                  className={`flex flex-col items-center gap-2 px-6 py-5 rounded-2xl
+                  className={`flex flex-col items-center gap-1 sm:gap-2 px-3 py-3 sm:px-6 sm:py-5 rounded-2xl
                     transition-all duration-200 border-2
                     ${rating === r.value
                       ? "border-yellow-400 bg-yellow-400/15 scale-110"
@@ -159,8 +155,8 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
                       : "none",
                   }}
                 >
-                  <span className="text-5xl">{r.emoji}</span>
-                  <span className={`text-sm font-medium ${
+                  <span className="text-4xl sm:text-5xl">{r.emoji}</span>
+                  <span className={`text-xs sm:text-sm font-medium ${
                     rating === r.value ? "text-yellow-300" : "text-gray-500"
                   }`}>
                     {r.label}
@@ -171,17 +167,17 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
           </>
         ) : step === "nps" ? (
           <>
-            <h2 className="text-3xl font-semibold text-white mb-3">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-2 sm:mb-3">
               Would you tell a friend about Rumi?
             </h2>
-            <p className="text-gray-500 text-base mb-8">0 = not likely &middot; 10 = absolutely</p>
-            <div className="flex flex-wrap justify-center gap-3 mb-4">
+            <p className="text-gray-500 text-sm sm:text-base mb-5 sm:mb-8">0 = not likely &middot; 10 = absolutely</p>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-4">
               {Array.from({ length: 11 }, (_, i) => (
                 <button
                   key={i}
                   onClick={() => handleNps(i)}
                   disabled={submitting}
-                  className={`w-16 h-16 rounded-full text-xl font-bold
+                  className={`w-11 h-11 sm:w-16 sm:h-16 rounded-full text-base sm:text-xl font-bold
                     transition-all duration-200 border-2
                     ${npsScore === i
                       ? "border-yellow-400 bg-yellow-400/20 text-yellow-300 scale-110"
@@ -204,23 +200,23 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
           </>
         ) : (
           <>
-            <h2 className="text-3xl font-semibold text-white mb-3">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-2 sm:mb-3">
               {rating && rating <= 3 ? "What could be better?" : "Any thoughts to share?"}
             </h2>
-            <p className="text-gray-500 text-base mb-8">Optional — helps us improve</p>
+            <p className="text-gray-500 text-sm sm:text-base mb-5 sm:mb-8">Optional — helps us improve</p>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Tell us what happened..."
               rows={3}
               autoFocus
-              className="w-full rounded-2xl px-6 py-5 text-lg text-white placeholder-gray-500
+              className="w-full rounded-2xl px-4 sm:px-6 py-4 sm:py-5 text-base sm:text-lg text-white placeholder-gray-500
                 border border-white/10 bg-white/5 focus:border-yellow-400/50 focus:outline-none
-                focus:ring-1 focus:ring-yellow-400/30 resize-none transition-all mb-6"
+                focus:ring-1 focus:ring-yellow-400/30 resize-none transition-all mb-4 sm:mb-6"
             />
 
             {/* Doc upload row */}
-            <div className="w-full mb-8">
+            <div className="w-full mb-5 sm:mb-8">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -259,7 +255,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
               <button
                 onClick={handleSkipComment}
                 disabled={submitting}
-                className="flex-1 px-8 py-5 rounded-full text-lg font-medium text-gray-400
+                className="flex-1 px-5 sm:px-8 py-4 sm:py-5 rounded-full text-base sm:text-lg font-medium text-gray-400
                   border border-white/10 hover:border-white/20 transition-all disabled:opacity-50"
               >
                 Skip
@@ -267,7 +263,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
               <button
                 onClick={handleSubmitComment}
                 disabled={submitting}
-                className="flex-1 px-8 py-5 rounded-full text-lg font-bold text-black
+                className="flex-1 px-5 sm:px-8 py-4 sm:py-5 rounded-full text-base sm:text-lg font-bold text-black
                   transition-all disabled:opacity-50"
                 style={{
                   background: "linear-gradient(135deg, rgb(250,204,21), rgb(255,160,0))",
