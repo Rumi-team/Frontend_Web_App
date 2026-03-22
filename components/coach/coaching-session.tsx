@@ -28,6 +28,8 @@ interface CoachingSessionProps {
   onToggleMic: () => void
   onDisconnect: () => void
   onRequestFeedback: (sessionId: string) => void
+  onSessionComplete: () => void
+  feedbackDone: boolean
   remoteAudioTrack: MediaStreamTrack | null
 }
 
@@ -37,6 +39,8 @@ export function CoachingSession({
   onToggleMic,
   onDisconnect,
   onRequestFeedback,
+  onSessionComplete,
+  feedbackDone,
   remoteAudioTrack,
 }: CoachingSessionProps) {
   // 0 = default (no transcript, no text input)
@@ -137,19 +141,27 @@ export function CoachingSession({
     }
   }, [remoteAudioTrack])
 
-  // Show save overlay when end_conversation fires
+  // Show feedback form when end_conversation fires (feedback comes first, save overlay after)
   useEffect(() => {
-    if (sessionControl.endConversationCount > 0) {
+    if (sessionControl.endConversationCount > 0 && !feedbackDone) {
+      onRequestFeedback(room.name || "unknown")
+    }
+  }, [sessionControl.endConversationCount, feedbackDone, onRequestFeedback, room])
+
+  // After feedback is done, show save overlay
+  useEffect(() => {
+    if (feedbackDone && sessionControl.endConversationCount > 0) {
       setShowSaveOverlay(true)
     }
-  }, [sessionControl.endConversationCount])
+  }, [feedbackDone, sessionControl.endConversationCount])
 
   // Unexpected disconnections are handled at the page level via onRequestFeedback
 
   // Session gating disabled — no locked overlay
 
   const handleEndSession = useCallback(async () => {
-    setShowSaveOverlay(true)
+    // Don't show save overlay yet — feedback form will show first when
+    // the agent sends end_conversation, then save overlay after feedback.
 
     // Send farewell_request via BOTH data channel and text stream.
     // Backend listens on both: data_received (publishData) and
@@ -179,9 +191,8 @@ export function CoachingSession({
 
   const handleSaveComplete = useCallback(() => {
     setShowSaveOverlay(false)
-    // Lift feedback to page level — it survives the LiveKit room teardown
-    onRequestFeedback(room.name || "unknown")
-  }, [room, onRequestFeedback])
+    onSessionComplete()
+  }, [onSessionComplete])
 
   const handleDayCelebrationDismiss = useCallback(() => {
     // Celebration dismissed — no lock, user can continue
