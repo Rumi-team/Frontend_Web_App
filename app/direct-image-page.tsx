@@ -331,7 +331,7 @@ export default function DirectImagePage() {
 
             {/* Center: Copyright */}
             <div className="mb-4 md:mb-0 text-center">
-              <p className="text-sm text-gray-400">© 2025 Rumi Team LLC. All rights reserved.</p>
+              <p className="text-sm text-gray-400">© 2025 Rumi Team LLC.</p>
             </div>
 
             {/* Right: Contact */}

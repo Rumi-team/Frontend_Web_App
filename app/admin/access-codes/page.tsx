@@ -379,7 +379,7 @@ export default function AccessCodesPage() {
       </main>
 
       <footer className="mt-12 pt-4 border-t border-gray-800 text-center text-gray-500">
-        <p>&copy; {new Date().getFullYear()} Rumi. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Rumi.</p>
       </footer>
     </div>
   )

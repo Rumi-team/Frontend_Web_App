@@ -83,7 +83,7 @@ export default async function UsersPage() {
       </main>
 
       <footer className="mt-12 pt-4 border-t border-gray-800 text-center text-gray-500">
-        <p>© {new Date().getFullYear()} Rumi. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Rumi.</p>
       </footer>
     </div>
   )

@@ -1227,7 +1227,7 @@ export default function Home() {
             </div>
             <div className="text-center">
               <p className="text-base text-gray-500">
-                Copyright &copy;2026, Rumi, Inc. Los Angeles, California. All rights reserved.
+                Copyright &copy;2026, Rumi, Inc. Made in California.
               </p>
             </div>
             <div className="flex flex-col items-center md:items-end gap-3">
