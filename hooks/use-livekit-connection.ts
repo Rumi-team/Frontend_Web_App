@@ -10,6 +10,7 @@ interface UseLiveKitConnectionReturn {
   isMicrophoneEnabled: boolean
   connect: (displayName?: string) => Promise<void>
   disconnect: () => Promise<void>
+  forceDisconnect: () => Promise<void>
   toggleMicrophone: () => Promise<void>
   error: string | null
   remoteAudioTrack: MediaStreamTrack | null
@@ -141,17 +142,13 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
     setIsMicrophoneEnabled(newState)
   }, [isMicrophoneEnabled])
 
-  // Expose forceDisconnect via room ref custom property
-  if (roomRef.current) {
-    ;(roomRef.current as any).__forceDisconnect = forceDisconnect
-  }
-
   return {
     connectionState,
     room: roomRef.current,
     isMicrophoneEnabled,
     connect,
     disconnect,
+    forceDisconnect,
     toggleMicrophone,
     error,
     remoteAudioTrack,

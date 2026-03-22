@@ -36,6 +36,7 @@ export default function CoachPage() {
   // Feedback overlay — kept at page level so it survives session teardown on disconnect
   const [showFeedback, setShowFeedback] = useState(false)
   const [feedbackSessionId, setFeedbackSessionId] = useState("unknown")
+  const [feedbackDone, setFeedbackDone] = useState(false)
   const [hadActiveSession, setHadActiveSession] = useState(false)
 
   // E2E-only state: skip LiveKit, show text-only coaching UI
@@ -82,7 +83,11 @@ export default function CoachPage() {
       setHadActiveSession(false)
       setShowFeedback(true)
     }
-  }, [lk.connectionState, hadActiveSession, showFeedback])
+    // If room disconnects after feedback was done (during save), just reset to orb
+    if (lk.connectionState === "disconnected" && feedbackDone) {
+      setFeedbackDone(false)
+    }
+  }, [lk.connectionState, hadActiveSession, showFeedback, feedbackDone])
 
   const handleRequestFeedback = useCallback((sessionId: string) => {
     setHadActiveSession(false)
@@ -92,7 +97,18 @@ export default function CoachPage() {
 
   const handleFeedbackComplete = useCallback(() => {
     setShowFeedback(false)
-    lk.disconnect()
+    // If room already disconnected (unexpected disconnect), go straight to orb
+    if (lk.connectionState === "disconnected") {
+      setFeedbackDone(false)
+      return
+    }
+    // Otherwise, signal coaching session to show save overlay then disconnect
+    setFeedbackDone(true)
+  }, [lk.connectionState])
+
+  const handleSessionComplete = useCallback(() => {
+    setFeedbackDone(false)
+    lk.forceDisconnect()
   }, [lk])
 
   const error = lk.error || mic.error
@@ -144,6 +160,8 @@ export default function CoachPage() {
             onToggleMic={lk.toggleMicrophone}
             onDisconnect={lk.disconnect}
             onRequestFeedback={handleRequestFeedback}
+            onSessionComplete={handleSessionComplete}
+            feedbackDone={feedbackDone}
             remoteAudioTrack={lk.remoteAudioTrack}
           />
         </div>
