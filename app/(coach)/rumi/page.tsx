@@ -149,10 +149,13 @@ export default function CoachPage() {
     )
   }
 
-  // Connected — show coaching session
-  if (lk.connectionState === "connected" && lk.room) {
-    return (
-      <>
+  // Single return — FeedbackOverlay is outside all connection-state branches so it
+  // never remounts when the room transitions between connected/disconnected mid-feedback.
+  const isMicError = mic.hasPermission === false
+
+  return (
+    <>
+      {lk.connectionState === "connected" && lk.room ? (
         <div className="h-dvh">
           <CoachingSession
             room={lk.room}
@@ -165,62 +168,43 @@ export default function CoachPage() {
             remoteAudioTrack={lk.remoteAudioTrack}
           />
         </div>
-        {showFeedback && (
-          <FeedbackOverlay
-            sessionId={feedbackSessionId}
-            onComplete={handleFeedbackComplete}
+      ) : error ? (
+        <div className="flex h-dvh items-center justify-center px-4" style={{ background: "rgb(15, 18, 23)" }}>
+          <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
+        </div>
+      ) : (
+        <div className="h-dvh">
+          <StartView
+            onStartSession={handleStart}
+            displayName={displayName}
+            userEmail={userEmail}
+            authProvider={authProvider}
+            onOpenLibrary={() => setShowLibrary(true)}
+            onOpenAssignments={() => setShowAssignments(true)}
+            onSignOut={signOut}
+            isMusicPlaying={lyrics.isMusicPlaying}
+            onToggleMusic={lyrics.toggleMusic}
+            lyricsLine={lyrics.currentLine}
+            lyricsOpacity={lyrics.lyricOpacity}
+            isConnecting={lk.connectionState === "connecting"}
           />
-        )}
-      </>
-    )
-  }
+        </div>
+      )}
 
-  // Error state
-  if (error) {
-    const isMicError = mic.hasPermission === false
-    return (
-      <div className="flex h-dvh items-center justify-center px-4" style={{ background: "rgb(15, 18, 23)" }}>
-        <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
-      </div>
-    )
-  }
+      {/* Library and assignments sheets — always mounted, controlled by open state */}
+      <LibrarySheet
+        isOpen={showLibrary}
+        onClose={() => setShowLibrary(false)}
+        providerUserId={providerUserId}
+        displayName={displayName}
+      />
+      <AssignmentsSheet
+        isOpen={showAssignments}
+        onClose={() => setShowAssignments(false)}
+        providerUserId={providerUserId}
+      />
 
-  // Disconnected — show StartView with sun orb
-  return (
-    <>
-      <div className="h-dvh">
-        <StartView
-          onStartSession={handleStart}
-          displayName={displayName}
-          userEmail={userEmail}
-          authProvider={authProvider}
-          onOpenLibrary={() => setShowLibrary(true)}
-          onOpenAssignments={() => setShowAssignments(true)}
-          onSignOut={signOut}
-          isMusicPlaying={lyrics.isMusicPlaying}
-          onToggleMusic={lyrics.toggleMusic}
-          lyricsLine={lyrics.currentLine}
-          lyricsOpacity={lyrics.lyricOpacity}
-          isConnecting={lk.connectionState === "connecting"}
-        />
-
-        {/* Library sheet overlay */}
-        <LibrarySheet
-          isOpen={showLibrary}
-          onClose={() => setShowLibrary(false)}
-          providerUserId={providerUserId}
-          displayName={displayName}
-        />
-
-        {/* Assignments sheet overlay */}
-        <AssignmentsSheet
-          isOpen={showAssignments}
-          onClose={() => setShowAssignments(false)}
-          providerUserId={providerUserId}
-        />
-      </div>
-
-      {/* Feedback overlay — shown after unexpected disconnect while on StartView */}
+      {/* Feedback overlay — single stable instance, survives all connection-state transitions */}
       {showFeedback && (
         <FeedbackOverlay
           sessionId={feedbackSessionId}
