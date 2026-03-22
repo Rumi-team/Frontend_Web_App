@@ -57,6 +57,8 @@ export function CoachingSession({
   const prevStepRef = useRef<number | null>(null)
   const prevHighlightCountRef = useRef(0)
   const mascotTimerRef = useRef<ReturnType<typeof setTimeout>>()
+  // One-shot guard — feedback may only be requested once per session mount
+  const feedbackRequestedRef = useRef(false)
 
   const sessionControl = useSessionControl(room)
   const { messages, sendMessage } = useChatMessages(room)
@@ -142,8 +144,11 @@ export function CoachingSession({
   }, [remoteAudioTrack])
 
   // Show feedback form when end_conversation fires (feedback comes first, save overlay after)
+  // feedbackRequestedRef ensures this fires at most once per session mount, regardless of
+  // feedbackDone toggling (e.g. during save → disconnect sequencing).
   useEffect(() => {
-    if (sessionControl.endConversationCount > 0 && !feedbackDone) {
+    if (sessionControl.endConversationCount > 0 && !feedbackDone && !feedbackRequestedRef.current) {
+      feedbackRequestedRef.current = true
       onRequestFeedback(room.name || "unknown")
     }
   }, [sessionControl.endConversationCount, feedbackDone, onRequestFeedback, room])
