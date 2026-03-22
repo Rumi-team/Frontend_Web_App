@@ -15,7 +15,7 @@ import { DayLockedOverlay } from "./day-locked-overlay"
 import { DayCompleteCelebration } from "./day-complete-celebration"
 import { AudioVisualizer } from "./audio-visualizer"
 import { MicVisualizer } from "./mic-visualizer"
-import { RumiMascot, type MascotMood } from "./rumi-mascot"
+import { type MascotMood } from "./rumi-mascot"
 import {
   CelebrationEffects,
   StreakBadge,
@@ -215,7 +215,7 @@ export function CoachingSession({
           /* Mascot / Orb area — fills available space */
           <div className="flex flex-1 flex-col items-center justify-center min-h-0">
             {sessionControl.currentStep !== null &&
-              sessionControl.totalSteps !== null ? (
+              sessionControl.totalSteps !== null && (
               <SessionOrb
                 currentStep={sessionControl.currentStep}
                 totalSteps={sessionControl.totalSteps}
@@ -229,12 +229,6 @@ export function CoachingSession({
                 allowedStepMax={sessionControl.allowedStepMax}
                 mascotMood={mascotMood}
                 size={orbSize}
-              />
-            ) : (
-              <RumiMascot
-                mood={mascotMood}
-                audioTrack={remoteAudioTrack}
-                size={180}
               />
             )}
           </div>
