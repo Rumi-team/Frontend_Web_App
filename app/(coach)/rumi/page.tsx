@@ -107,7 +107,10 @@ export default function CoachPage() {
   }, [lk.connectionState])
 
   const handleSessionComplete = useCallback(() => {
-    setFeedbackDone(false)
+    // Do NOT reset feedbackDone here — doing so would cause coaching-session's
+    // end_conversation effect to re-fire onRequestFeedback while the room is
+    // still connected and the component still mounted.
+    // The disconnect useEffect resets feedbackDone after forceDisconnect fires.
     lk.forceDisconnect()
   }, [lk])
 
