@@ -224,7 +224,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf,.docx"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0]

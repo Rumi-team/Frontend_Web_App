@@ -16,6 +16,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import * as mammoth from "mammoth"
 import { GoogleAuth } from "google-auth-library"
+import { createSupabaseServerClient } from "@/lib/supabase-auth"
 
 export const maxDuration = 30
 
@@ -93,6 +94,12 @@ async function callGemini(parts: unknown[]): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
+    const supabase = await createSupabaseServerClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const formData = await req.formData()
     const file = formData.get("file") as File | null
 
@@ -117,7 +124,7 @@ export async function POST(req: NextRequest) {
         { inline_data: { mime_type: "application/pdf", data: base64 } },
         { text: FEEDBACK_PROMPT },
       ])
-    } else if (name.endsWith(".docx") || name.endsWith(".doc")) {
+    } else if (name.endsWith(".docx")) {
       const bytes = await file.arrayBuffer()
       const result = await mammoth.extractRawText({ buffer: Buffer.from(bytes) })
       const text = result.value.trim()
@@ -143,7 +150,7 @@ export async function POST(req: NextRequest) {
       ])
     } else {
       return NextResponse.json(
-        { error: "Unsupported file type. Please upload a PDF or Word document." },
+        { error: "Unsupported file type. Please upload a PDF or .docx document." },
         { status: 400 },
       )
     }
