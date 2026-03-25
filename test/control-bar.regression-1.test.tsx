@@ -1,5 +1,7 @@
-// Regression: ISSUE-001 — ControlBar text mode button always showed "Text"
-// regardless of whether the transcript was active.
+// Regression: ISSUE-001 — ControlBar text mode button label cycles correctly.
+// textMode 0 (voice only): "Transcript" — click to show transcript
+// textMode 1 (transcript overlay): "Transcript" — transcript active
+// textMode 2 (text input): "Text" — text input active
 // Found by /qa on 2026-03-20
 // Report: .gstack/qa-reports/qa-report-localhost-2026-03-20.md
 
@@ -18,7 +20,7 @@ vi.mock("lucide-react", () => ({
 const noop = () => {}
 
 describe("ControlBar text-mode button label (regression ISSUE-001)", () => {
-  it("shows 'Text' when textMode is 0 (voice only)", () => {
+  it("shows 'Transcript' when textMode is 0 (voice only — click to show transcript)", () => {
     render(
       <ControlBar
         isMicrophoneEnabled={true}
@@ -28,8 +30,8 @@ describe("ControlBar text-mode button label (regression ISSUE-001)", () => {
         onEndSession={noop}
       />
     )
-    expect(screen.getByText("Text")).toBeTruthy()
-    expect(screen.queryByText("Transcript")).toBeNull()
+    expect(screen.getByText("Transcript")).toBeTruthy()
+    expect(screen.queryByText("Text")).toBeNull()
   })
 
   it("shows 'Transcript' when textMode is 1 (transcript overlay active)", () => {
