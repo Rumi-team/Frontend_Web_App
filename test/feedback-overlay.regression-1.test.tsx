@@ -1,6 +1,6 @@
 // Regression: ISSUE-004 — FeedbackOverlay NPS step flow and npsCategory logic
-// Ensures rating click advances to NPS step, high NPS + high rating auto-submits,
-// low NPS advances to comment step.
+// Ensures rating click advances to NPS step, any NPS always advances to comment step
+// (promoter fast path removed — comment step is always shown so PDF upload is reachable).
 // Found by /qa on 2026-03-20
 // Report: .gstack/qa-reports/qa-report-localhost-2026-03-20.md
 
@@ -47,7 +47,7 @@ describe("FeedbackOverlay NPS step flow (regression ISSUE-004)", () => {
     expect(screen.getByText("Would you tell a friend about Rumi?")).toBeTruthy()
   })
 
-  it("auto-submits when NPS >= 9 and rating >= 4 (promoter fast path)", async () => {
+  it("always advances to comment step even for high NPS + high rating (no auto-submit)", async () => {
     const onComplete = vi.fn()
     render(<FeedbackOverlay sessionId="sess-2" onComplete={onComplete} />)
 
@@ -55,23 +55,17 @@ describe("FeedbackOverlay NPS step flow (regression ISSUE-004)", () => {
     fireEvent.click(screen.getByText("Good").closest("button")!)
     await act(async () => { vi.advanceTimersByTime(400) })
 
-    // Click NPS 9
+    // Click NPS 9 (was the old "promoter fast path" trigger)
     const npsBtn = screen.getByText("9")
     fireEvent.click(npsBtn)
-    await act(async () => { vi.advanceTimersByTime(100) })
+    await act(async () => { vi.advanceTimersByTime(400) })
 
-    // Should have called insert (auto-submit triggered)
-    expect(mockInsert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        session_id: "sess-2",
-        overall_rating: 4,
-        nps_score: 9,
-        nps_category: "promoter",
-      })
-    )
+    // Should NOT auto-submit — should show comment step instead
+    expect(mockInsert).not.toHaveBeenCalled()
+    expect(screen.getByText("Any thoughts to share?")).toBeTruthy()
   })
 
-  it("advances to comment step when NPS <= 8 after rating", async () => {
+  it("advances to comment step for low NPS after rating", async () => {
     render(<FeedbackOverlay sessionId="sess-3" onComplete={vi.fn()} />)
 
     // Click rating 3 ("OK")
