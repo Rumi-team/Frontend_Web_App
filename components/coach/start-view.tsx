@@ -165,16 +165,18 @@ export function StartView({
         className="mb-[4vh] sm:mb-[6vh] text-center transition-opacity duration-300 px-4"
         style={{ opacity: showText ? 1 : 0 }}
       >
-        <p className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+        <h1 className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
           Tap &amp; Hold to
-        </p>
-        <p className="text-2xl sm:text-4xl font-semibold" style={{ color: "rgb(255, 212, 26)" }}>
+          <br />
           Start Your Transformation
-        </p>
+        </h1>
       </div>
 
       {/* Orb container */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Hold to start coaching session"
         className="relative cursor-pointer transition-opacity duration-1000"
         style={{
           width: orbSize,
@@ -187,6 +189,8 @@ export function StartView({
         onTouchStart={(e) => { e.preventDefault(); startHold() }}
         onTouchEnd={cancelHold}
         onTouchCancel={cancelHold}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startHold() } }}
+        onKeyUp={(e) => { if (e.key === "Enter" || e.key === " ") { cancelHold() } }}
       >
         {/* Outer glow (pulsing) */}
         <div
@@ -312,7 +316,8 @@ export function StartView({
       {!hideControls && (
         <button
           onClick={onToggleMusic}
-          className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3 rounded-full px-5 py-2.5 sm:px-7 sm:py-3.5 transition-all hover:bg-white/[0.08]"
+          aria-label={isMusicPlaying ? "Pause music" : "Play music"}
+          className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 sm:gap-3 rounded-full px-5 py-2.5 sm:px-7 sm:py-3.5 transition-colors hover:bg-white/[0.08]"
           style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(8px)" }}
         >
           {isMusicPlaying ? (
