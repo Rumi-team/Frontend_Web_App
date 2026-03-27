@@ -2,6 +2,23 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.1.1] - 2026-03-26
+
+### Fixed
+- Feedback overlay: responsive layout improvements for mobile, comment step always shown regardless of NPS score
+- Favicon and OG logo: removed alpha transparency causing rendering issues on some platforms
+
+### Style / Accessibility
+- Main CTA: orb container now keyboard-accessible with `role="button"`, `tabIndex`, and Enter/Space handlers
+- Main CTA: "Tap & Hold to Start Your Transformation" text upgraded from `<p>` to `<h1>` for proper heading hierarchy
+- Library sheet, assignments sheet, feedback overlay: added `role="dialog"`, `aria-modal="true"`, and descriptive `aria-label`
+- Icon-only buttons: added `aria-label` to close buttons, password toggle, sign-out, and music toggle
+- Replaced `transition-all` with specific property transitions across coach-shell, start-view, and feedback-overlay to reduce unnecessary repaints
+
+### Tests
+- Updated regression tests: control-bar label and feedback overlay flow tests aligned with current behavior
+- Total: 18 tests, 4 test files, all passing
+
 ## [0.1.1.0] - 2026-03-20
 
 ### Added
