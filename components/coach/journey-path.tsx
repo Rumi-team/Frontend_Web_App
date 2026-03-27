@@ -12,7 +12,7 @@ interface JourneyPathProps {
 }
 
 export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
-  const { data, loading } = useStepProgress()
+  const { data, loading, error, refresh } = useStepProgress()
   const [selectedStep, setSelectedStep] = useState<StepInfo | null>(null)
   const [holdProgress, setHoldProgress] = useState(0)
   const [holdTimer, setHoldTimer] = useState<ReturnType<typeof setInterval> | null>(null)
@@ -50,10 +50,32 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
     setHoldProgress(0)
   }, [holdTimer])
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
         <div className="w-8 h-8 border-2 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  // Fallback: if progress API fails, still let the user start a session
+  if (!data) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6">
+        <p className="text-gray-400 text-sm">
+          {displayName ? `Welcome back, ${displayName}` : "Welcome"}
+        </p>
+        <button
+          onClick={onStartSession}
+          className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-semibold rounded-full"
+        >
+          Start Session
+        </button>
+        {error && (
+          <button onClick={refresh} className="text-gray-500 text-xs hover:text-gray-300">
+            Retry loading progress
+          </button>
+        )}
       </div>
     )
   }
@@ -106,6 +128,15 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
                           onMouseLeave={handleHoldEnd}
                           onTouchStart={handleHoldStart}
                           onTouchEnd={handleHoldEnd}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault()
+                              onStartSession()
+                            }
+                          }}
+                          tabIndex={0}
+                          role="button"
+                          aria-label={`Start session: ${currentStepInfo?.concept || "next step"}. Hold to begin.`}
                         >
                           <StepNode step={step} position={position} onTap={handleStepTap} />
                           {/* Hold progress ring */}

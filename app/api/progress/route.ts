@@ -66,14 +66,32 @@ export async function GET() {
 
     const serviceClient = createServerSupabaseClient()
 
+    // Resolve provider_user_id (same pattern as /api/token)
+    const { data: identity } = await serviceClient
+      .from("user_identities")
+      .select("provider_user_id")
+      .eq("user_id", user.id)
+      .single()
+
+    const providerUserId =
+      identity?.provider_user_id ?? user.identities?.[0]?.id ?? user.id
+
     // Read user_state from Supabase
     const { data: stateRow } = await serviceClient
       .from("user_state")
       .select("state")
-      .eq("provider_user_id", user.id)
+      .eq("provider_user_id", providerUserId)
       .single()
 
-    const state = stateRow?.state || {}
+    // Handle possibly double-encoded JSON string (same pattern as use-library-data)
+    let state = stateRow?.state || {}
+    if (typeof state === "string") {
+      try {
+        state = JSON.parse(state)
+      } catch {
+        state = {}
+      }
+    }
     const program = state.program || {}
 
     const currentStep: number = program.current_step || 0
