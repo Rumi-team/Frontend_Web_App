@@ -189,7 +189,7 @@ export function StartView({
         onTouchStart={(e) => { e.preventDefault(); startHold() }}
         onTouchEnd={cancelHold}
         onTouchCancel={cancelHold}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startHold() } }}
+        onKeyDown={(e) => { if (!e.repeat && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); startHold() } }}
         onKeyUp={(e) => { if (e.key === "Enter" || e.key === " ") { cancelHold() } }}
       >
         {/* Outer glow (pulsing) */}

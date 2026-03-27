@@ -33,9 +33,9 @@ export function LibrarySheet({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Your Journey">
+    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Your Journey" onKeyDown={(e) => { if (e.key === "Escape") onClose() }}>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/80" onClick={onClose} onKeyDown={(e) => { if (e.key === "Escape") onClose() }} />
+      <div className="absolute inset-0 bg-black/80" onClick={onClose} />
 
       {/* Sheet panel */}
       <div
