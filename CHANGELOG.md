@@ -2,6 +2,21 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.2.0] - 2026-03-27
+
+### Added
+- **Listening Coach (Phase 1):** SessionOrb now accepts `sessionPhase` prop, shows "Listening..." indicator during free-form opening, and includes `aria-label` for screen reader accessibility
+- **Visual Teacher (Phase 2):** New `TeachingCard` component for full-screen concept image takeover during teaching phases. `use-session-control.ts` handles `concept_image` and `teaching_complete` data messages with crossfade transitions
+- **Journey Path (Phase 3):** Duolingo-style roadmap replaces StartView as the home screen. Includes `JourneyPath`, `StepNode`, `SectionBanner`, and `StepSummarySheet` components with hold-to-start interaction, completed/current/locked states, and dark/gold aesthetic
+- New `/api/progress` route reads user step progress from Supabase (resolves `provider_user_id` via `user_identities` table, handles double-encoded JSON)
+- New `useStepProgress` hook for client-side progress data fetching
+- Fallback UI when `/api/progress` fails: "Start Session" button + retry link (users never stuck on spinner)
+- Keyboard Enter/Space activation for hold-to-start step node (accessibility)
+
+### Changed
+- `rumi/page.tsx`: JourneyPath replaces StartView in disconnected state, bottom nav preserved
+- `coaching-session.tsx`: passes `sessionPhase` to SessionOrb, renders TeachingCard overlay during teaching
+
 ## [0.1.1.2] - 2026-03-26
 
 ### Fixed
