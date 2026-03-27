@@ -2,11 +2,14 @@
 
 All notable changes to the Frontend Web App are documented here.
 
-## [0.1.1.1] - 2026-03-26
+## [0.1.1.2] - 2026-03-26
 
 ### Fixed
 - Feedback overlay: responsive layout improvements for mobile, comment step always shown regardless of NPS score
 - Favicon and OG logo: removed alpha transparency causing rendering issues on some platforms
+- Vertex REST API: use camelCase (`inlineData`, `mimeType`) for PDF upload request body
+- Orb keyboard handler: guard against key auto-repeat preventing hold timer restart on each repeat event
+- Sheet Escape handler: moved from non-focusable backdrop to dialog container so keyboard events actually fire
 
 ### Style / Accessibility
 - Main CTA: orb container now keyboard-accessible with `role="button"`, `tabIndex`, and Enter/Space handlers
@@ -16,8 +19,9 @@ All notable changes to the Frontend Web App are documented here.
 - Replaced `transition-all` with specific property transitions across coach-shell, start-view, and feedback-overlay to reduce unnecessary repaints
 
 ### Tests
+- Added keyboard accessibility tests: Escape key on sheet dialogs, ARIA attributes on sheets
 - Updated regression tests: control-bar label and feedback overlay flow tests aligned with current behavior
-- Total: 18 tests, 4 test files, all passing
+- Total: 22 tests, 5 test files, all passing
 
 ## [0.1.1.0] - 2026-03-20
 
