@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer()
       const base64 = Buffer.from(bytes).toString("base64")
       summary = await callGemini([
-        { inline_data: { mime_type: "application/pdf", data: base64 } },
+        { inlineData: { mimeType: "application/pdf", data: base64 } },
         { text: FEEDBACK_PROMPT },
       ])
     } else if (name.endsWith(".docx")) {

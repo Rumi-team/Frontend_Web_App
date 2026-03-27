@@ -20,6 +20,8 @@ export type SessionControlAction =
   | "session_save_progress"
   | "session_gate_status"
   | "day_complete"
+  | "session_phase"
+  | "step_deferred"
 
 export interface SessionControlMessage {
   type: "session_control"
@@ -45,6 +47,9 @@ export interface SessionControlMessage {
   day?: number               // Which day completed (day_complete)
   cooldown_hours?: number    // Cooldown duration (day_complete)
   next_unlock_at?: string    // When next day unlocks (day_complete)
+  // Session phase fields (Listening Coach)
+  phase?: string             // "opening" | "coaching" | "closing"
+  next_step?: number         // Next step after deferral
 }
 
 export interface VisualizationImageData {

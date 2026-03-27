@@ -2,6 +2,42 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.2.0] - 2026-03-27
+
+### Added
+- **Listening Coach (Phase 1):** SessionOrb now accepts `sessionPhase` prop, shows "Listening..." indicator during free-form opening, and includes `aria-label` for screen reader accessibility
+- **Visual Teacher (Phase 2):** New `TeachingCard` component for full-screen concept image takeover during teaching phases. `use-session-control.ts` handles `concept_image` and `teaching_complete` data messages with crossfade transitions
+- **Journey Path (Phase 3):** Duolingo-style roadmap replaces StartView as the home screen. Includes `JourneyPath`, `StepNode`, `SectionBanner`, and `StepSummarySheet` components with hold-to-start interaction, completed/current/locked states, and dark/gold aesthetic
+- New `/api/progress` route reads user step progress from Supabase (resolves `provider_user_id` via `user_identities` table, handles double-encoded JSON)
+- New `useStepProgress` hook for client-side progress data fetching
+- Fallback UI when `/api/progress` fails: "Start Session" button + retry link (users never stuck on spinner)
+- Keyboard Enter/Space activation for hold-to-start step node (accessibility)
+
+### Changed
+- `rumi/page.tsx`: JourneyPath replaces StartView in disconnected state, bottom nav preserved
+- `coaching-session.tsx`: passes `sessionPhase` to SessionOrb, renders TeachingCard overlay during teaching
+
+## [0.1.1.2] - 2026-03-26
+
+### Fixed
+- Feedback overlay: responsive layout improvements for mobile, comment step always shown regardless of NPS score
+- Favicon and OG logo: removed alpha transparency causing rendering issues on some platforms
+- Vertex REST API: use camelCase (`inlineData`, `mimeType`) for PDF upload request body
+- Orb keyboard handler: guard against key auto-repeat preventing hold timer restart on each repeat event
+- Sheet Escape handler: moved from non-focusable backdrop to dialog container so keyboard events actually fire
+
+### Style / Accessibility
+- Main CTA: orb container now keyboard-accessible with `role="button"`, `tabIndex`, and Enter/Space handlers
+- Main CTA: "Tap & Hold to Start Your Transformation" text upgraded from `<p>` to `<h1>` for proper heading hierarchy
+- Library sheet, assignments sheet, feedback overlay: added `role="dialog"`, `aria-modal="true"`, and descriptive `aria-label`
+- Icon-only buttons: added `aria-label` to close buttons, password toggle, sign-out, and music toggle
+- Replaced `transition-all` with specific property transitions across coach-shell, start-view, and feedback-overlay to reduce unnecessary repaints
+
+### Tests
+- Added keyboard accessibility tests: Escape key on sheet dialogs, ARIA attributes on sheets
+- Updated regression tests: control-bar label and feedback overlay flow tests aligned with current behavior
+- Total: 22 tests, 5 test files, all passing
+
 ## [0.1.1.0] - 2026-03-20
 
 ### Added

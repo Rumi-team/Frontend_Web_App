@@ -112,12 +112,15 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Session feedback"
       className={`fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto py-4 sm:py-0 transition-opacity duration-400
         ${visible ? "opacity-100" : "opacity-0"}`}
       style={{ background: "rgb(9, 11, 17)" }}
     >
       <div
-        className={`flex flex-col items-center w-full max-w-2xl mx-4 sm:mx-0 px-5 sm:px-12 py-8 sm:py-16 text-center rounded-3xl transform transition-all duration-500
+        className={`flex flex-col items-center w-full max-w-2xl mx-4 sm:mx-0 px-5 sm:px-12 py-8 sm:py-16 text-center rounded-3xl transform transition-[transform,opacity] duration-500
           ${visible ? "translate-y-0 scale-100" : "translate-y-8 scale-95"}`}
         style={{ background: "rgb(15, 17, 26)", border: "1px solid rgba(255,255,255,0.07)" }}
       >

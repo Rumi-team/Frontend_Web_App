@@ -81,7 +81,7 @@ export function AssignmentsSheet({
   })
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Your Assignments" onKeyDown={(e) => { if (e.key === "Escape") onClose() }}>
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/80" onClick={onClose} />
 
@@ -95,6 +95,7 @@ export function AssignmentsSheet({
           <h2 className="text-2xl font-bold text-white">Your Assignments</h2>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="text-gray-400 hover:text-white transition-colors"
           >
             <X className="h-5 w-5" />

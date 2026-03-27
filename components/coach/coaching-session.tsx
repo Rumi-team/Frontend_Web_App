@@ -13,6 +13,7 @@ import { SessionOrb } from "./session-orb"
 import { SessionSaveOverlay } from "./session-save-overlay"
 import { DayLockedOverlay } from "./day-locked-overlay"
 import { DayCompleteCelebration } from "./day-complete-celebration"
+import { TeachingCard } from "./teaching-card"
 import { AudioVisualizer } from "./audio-visualizer"
 import { MicVisualizer } from "./mic-visualizer"
 import { type MascotMood } from "./rumi-mascot"
@@ -218,22 +219,29 @@ export function CoachingSession({
           <AgentTranscript messages={messages} />
         ) : (
           /* Mascot / Orb area — fills available space */
-          <div className="flex flex-1 flex-col items-center justify-center min-h-0">
-            {sessionControl.currentStep !== null &&
-              sessionControl.totalSteps !== null && (
-              <SessionOrb
-                currentStep={sessionControl.currentStep}
-                totalSteps={sessionControl.totalSteps}
-                stepName={sessionControl.stepName}
-                audioTrack={remoteAudioTrack}
-                isActive={textMode !== 2}
-                currentDay={sessionControl.currentDay}
-                totalDays={sessionControl.totalDays}
-                isDayLocked={sessionControl.isDayLocked}
-                allowedStepMin={sessionControl.allowedStepMin}
-                allowedStepMax={sessionControl.allowedStepMax}
-                mascotMood={mascotMood}
-                size={orbSize}
+          <div className="relative flex flex-1 flex-col items-center justify-center min-h-0">
+            <SessionOrb
+              currentStep={sessionControl.currentStep ?? 0}
+              totalSteps={sessionControl.totalSteps ?? 20}
+              stepName={sessionControl.stepName}
+              audioTrack={remoteAudioTrack}
+              isActive={textMode !== 2}
+              currentDay={sessionControl.currentDay}
+              totalDays={sessionControl.totalDays}
+              isDayLocked={sessionControl.isDayLocked}
+              allowedStepMin={sessionControl.allowedStepMin}
+              allowedStepMax={sessionControl.allowedStepMax}
+              mascotMood={mascotMood}
+              size={orbSize}
+              sessionPhase={sessionControl.sessionPhase}
+            />
+            {/* Visual Teacher: full-screen image takeover during teaching */}
+            {sessionControl.teachingImage && (
+              <TeachingCard
+                concept={sessionControl.teachingImage.concept}
+                imageUrl={sessionControl.teachingImage.imageUrl}
+                altText={sessionControl.teachingImage.altText}
+                isActive={sessionControl.isTeaching}
               />
             )}
           </div>

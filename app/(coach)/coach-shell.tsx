@@ -157,7 +157,7 @@ function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full h-14 pl-12 pr-4 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
+                  className="w-full h-14 pl-12 pr-4 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-colors"
                   autoComplete="email"
                 />
               </div>
@@ -175,12 +175,13 @@ function SignInPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={isSignUp ? "At least 6 characters" : "Your password"}
-                  className="w-full h-14 pl-12 pr-14 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-all"
+                  className="w-full h-14 pl-12 pr-14 rounded-xl bg-white/[0.06] border border-white/[0.08] text-white text-lg placeholder:text-gray-600 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/30 transition-colors"
                   autoComplete={isSignUp ? "new-password" : "current-password"}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -197,7 +198,7 @@ function SignInPage() {
             <button
               type="submit"
               disabled={isSigningIn}
-              className="w-full h-14 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-lg hover:from-yellow-400 hover:to-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/30"
+              className="w-full h-14 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-lg hover:from-yellow-400 hover:to-amber-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background,opacity,box-shadow] shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/30"
             >
               {isSigningIn ? (
                 <Loader2 className="h-6 w-6 animate-spin mx-auto" />
@@ -228,7 +229,7 @@ function SignInPage() {
             <button
               onClick={signInWithGoogle}
               disabled={isSigningIn}
-              className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-white hover:bg-gray-100 text-gray-800 font-semibold text-lg disabled:opacity-50 transition-all"
+              className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-white hover:bg-gray-100 text-gray-800 font-semibold text-lg disabled:opacity-50 transition-colors"
             >
               <svg className="h-6 w-6" viewBox="0 0 24 24">
                 <path
@@ -255,7 +256,7 @@ function SignInPage() {
             <button
               onClick={signInWithApple}
               disabled={isSigningIn}
-              className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-black hover:bg-gray-900 border border-gray-700 text-white font-semibold text-lg disabled:opacity-50 transition-all"
+              className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-black hover:bg-gray-900 border border-gray-700 text-white font-semibold text-lg disabled:opacity-50 transition-colors"
             >
               <svg className="h-5 w-5" viewBox="0 0 814 1000" fill="white">
                 <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.3-164-39.3c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 192.5-49 30.8 0 108.2 2.6 168.5 80.9zm-126.7-94.7c-18.7-22.5-48.4-39.4-73.7-39.4-2.8 0-5.8.3-8.3.6 2.5 29.4 18.7 59.5 39.9 80.9 19.4 19.4 46.4 38.2 76.2 42.9-2.9-30.4-19.5-62-34.1-85z"/>
@@ -293,7 +294,7 @@ function SignInPage() {
 
         <Link
           href="/"
-          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-all mt-6"
+          className="flex items-center justify-center gap-3 w-full h-14 rounded-xl bg-transparent hover:bg-white/[0.03] border border-gray-700 text-gray-300 font-semibold text-base transition-colors mt-6"
         >
           Return to Landing Page
         </Link>
@@ -428,6 +429,7 @@ function CoachShellInner({
             variant="ghost"
             size="sm"
             onClick={signOut}
+            aria-label="Sign out"
             className="text-gray-500 hover:text-white"
           >
             <LogOut className="h-4 w-4" />
