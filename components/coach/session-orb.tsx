@@ -16,7 +16,12 @@ interface SessionOrbProps {
   allowedStepMax?: number
   mascotMood?: MascotMood
   size?: number
+  sessionPhase?: "opening" | "coaching" | "closing" | null
 }
+
+// Debug flag: show step dots, progress ring, and counter in session UI
+// Set NEXT_PUBLIC_SHOW_STEP_DEBUG=true in .env.local to enable
+const SHOW_STEP_DEBUG = process.env.NEXT_PUBLIC_SHOW_STEP_DEBUG === "true"
 
 // Compact canvas — dots stay inside viewBox
 const SVG_SIZE = 290
@@ -37,6 +42,7 @@ export function SessionOrb({
   allowedStepMax = 5,
   mascotMood = "idle",
   size = SVG_SIZE,
+  sessionPhase = null,
 }: SessionOrbProps) {
   const scale = size / SVG_SIZE
   const [celebrating, setCelebrating] = useState(false)
@@ -144,6 +150,7 @@ export function SessionOrb({
       <div
         className={`relative ${celebrating ? "animate-step-celebrate" : ""}`}
         style={{ width: size, height: size }}
+        aria-label={SHOW_STEP_DEBUG ? `Section ${currentDay} — Step ${dayProgress} of ${stepsInDay}` : "Coaching session in progress"}
       >
         {celebrating && (
           <div
@@ -191,26 +198,26 @@ export function SessionOrb({
             strokeWidth={STROKE_WIDTH}
           />
 
-          {/* Progress ring */}
-          <circle
-            cx={CENTER}
-            cy={CENTER}
-            r={RING_RADIUS}
-            fill="none"
-            stroke="url(#ring-progress-gradient)"
-            strokeWidth={STROKE_WIDTH}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={progressOffset}
-            transform={`rotate(-90 ${CENTER} ${CENTER})`}
-            className="transition-all duration-700 ease-out"
-          />
-
-          {/* Section indicator arcs */}
-          {sectionArcs}
-
-          {/* Step dots */}
-          {stepDots}
+          {/* Progress ring, section arcs, step dots — hidden unless debug */}
+          {SHOW_STEP_DEBUG && (
+            <>
+              <circle
+                cx={CENTER}
+                cy={CENTER}
+                r={RING_RADIUS}
+                fill="none"
+                stroke="url(#ring-progress-gradient)"
+                strokeWidth={STROKE_WIDTH}
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                strokeDashoffset={progressOffset}
+                transform={`rotate(-90 ${CENTER} ${CENTER})`}
+                className="transition-all duration-700 ease-out"
+              />
+              {sectionArcs}
+              {stepDots}
+            </>
+          )}
         </svg>
 
         {/* Mascot at center of orb */}
@@ -231,24 +238,33 @@ export function SessionOrb({
         </div>
       </div>
 
-      {/* Step name */}
-      {stepName && (
-        <p
-          className="font-bold text-center leading-tight"
-          style={{
-            color: "rgb(255, 212, 26)",
-            fontSize: Math.max(14, Math.round(24 * scale)),
-            maxWidth: size * 1.2,
-          }}
-        >
-          {stepName}
-        </p>
+      {/* Step name + counter — hidden unless debug */}
+      {SHOW_STEP_DEBUG && (
+        <>
+          {stepName && (
+            <p
+              className="font-bold text-center leading-tight"
+              style={{
+                color: "rgb(255, 212, 26)",
+                fontSize: Math.max(14, Math.round(24 * scale)),
+                maxWidth: size * 1.2,
+              }}
+            >
+              {stepName}
+            </p>
+          )}
+          <p className="text-lg text-gray-400 font-semibold tracking-wide">
+            Section {currentDay} &mdash; Step {dayProgress} of {stepsInDay}
+          </p>
+        </>
       )}
 
-      {/* Section + step counter */}
-      <p className="text-lg text-gray-400 font-semibold tracking-wide">
-        Section {currentDay} &mdash; Step {dayProgress} of {stepsInDay}
-      </p>
+      {/* "Listening..." indicator during free-form opening phase */}
+      {!SHOW_STEP_DEBUG && sessionPhase === "opening" && (
+        <p className="text-lg text-gray-400 font-medium tracking-wide animate-pulse">
+          Listening...
+        </p>
+      )}
     </div>
   )
 }

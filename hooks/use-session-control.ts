@@ -30,6 +30,11 @@ interface UseSessionControlReturn {
   allowedStepMax: number
   showDayComplete: boolean
   completedDay: number
+  // Session phase (Listening Coach)
+  sessionPhase: "opening" | "coaching" | "closing" | null
+  // Visual Teacher
+  teachingImage: { concept: string; imageUrl: string; altText: string } | null
+  isTeaching: boolean
 }
 
 export function useSessionControl(
@@ -58,6 +63,9 @@ export function useSessionControl(
   const [allowedStepMax, setAllowedStepMax] = useState(5)
   const [showDayComplete, setShowDayComplete] = useState(false)
   const [completedDay, setCompletedDay] = useState(0)
+  const [sessionPhase, setSessionPhase] = useState<"opening" | "coaching" | "closing" | null>(null)
+  const [teachingImage, setTeachingImage] = useState<{ concept: string; imageUrl: string; altText: string } | null>(null)
+  const [isTeaching, setIsTeaching] = useState(false)
 
   const handleMessage = useCallback((msg: SessionControlMessage) => {
     switch (msg.action) {
@@ -114,6 +122,31 @@ export function useSessionControl(
         setShowDayComplete(true)
         break
 
+      case "session_phase":
+        if (msg.phase) setSessionPhase(msg.phase as "opening" | "coaching" | "closing")
+        break
+
+      case "step_deferred":
+        // Analytics-only: step was deferred for later revisit
+        break
+
+      case "concept_image":
+        if (msg.image_url && msg.concept) {
+          setTeachingImage({
+            concept: msg.concept as string,
+            imageUrl: msg.image_url as string,
+            altText: (msg.alt_text as string) || `Illustration of ${msg.concept}`,
+          })
+          setIsTeaching(true)
+        }
+        break
+
+      case "teaching_complete":
+        setIsTeaching(false)
+        // Keep teachingImage for a brief crossfade, then clear
+        setTimeout(() => setTeachingImage(null), 1000)
+        break
+
       case "greeting_started":
       case "session_bootstrap":
       case "show_journey_orb":
@@ -165,5 +198,8 @@ export function useSessionControl(
     allowedStepMax,
     showDayComplete,
     completedDay,
+    sessionPhase,
+    teachingImage,
+    isTeaching,
   }
 }

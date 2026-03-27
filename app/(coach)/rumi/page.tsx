@@ -9,6 +9,7 @@ import { CoachingSession } from "@/components/coach/coaching-session"
 import { FeedbackOverlay } from "@/components/coach/feedback-overlay"
 import { ConnectionError } from "@/components/coach/connection-error"
 import { StartView } from "@/components/coach/start-view"
+import { JourneyPath } from "@/components/coach/journey-path"
 import { LibrarySheet } from "@/components/library/library-sheet"
 import { AssignmentsSheet } from "@/components/coach/assignments-sheet"
 import { TextInput } from "@/components/coach/text-input"
@@ -176,21 +177,32 @@ export default function CoachPage() {
           <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
         </div>
       ) : (
-        <div className="h-dvh">
-          <StartView
-            onStartSession={handleStart}
+        <div className="h-dvh flex flex-col" style={{ background: "rgb(15, 18, 23)" }}>
+          <JourneyPath
             displayName={displayName}
-            userEmail={userEmail}
-            authProvider={authProvider}
-            onOpenLibrary={() => setShowLibrary(true)}
-            onOpenAssignments={() => setShowAssignments(true)}
-            onSignOut={signOut}
-            isMusicPlaying={lyrics.isMusicPlaying}
-            onToggleMusic={lyrics.toggleMusic}
-            lyricsLine={lyrics.currentLine}
-            lyricsOpacity={lyrics.lyricOpacity}
-            isConnecting={lk.connectionState === "connecting"}
+            onStartSession={handleStart}
           />
+          {/* Bottom nav — preserved from StartView */}
+          <div className="flex-shrink-0 flex items-center justify-center gap-6 px-6 pb-6 pt-2">
+            <button
+              onClick={() => setShowLibrary(true)}
+              className="text-gray-400 hover:text-white text-sm transition-colors"
+            >
+              Library
+            </button>
+            <button
+              onClick={() => setShowAssignments(true)}
+              className="text-gray-400 hover:text-white text-sm transition-colors"
+            >
+              Assignments
+            </button>
+            <button
+              onClick={signOut}
+              className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       )}
 
