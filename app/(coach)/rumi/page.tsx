@@ -236,7 +236,6 @@ export default function CoachPage() {
           </div>
         )}
       </div>
-      )}
 
       {/* Library and assignments sheets — always mounted, controlled by open state */}
       <LibrarySheet
