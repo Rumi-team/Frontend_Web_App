@@ -46,8 +46,10 @@ export function SessionOrb({
 }: SessionOrbProps) {
   const scale = size / SVG_SIZE
   const [celebrating, setCelebrating] = useState(false)
+  const [connecting, setConnecting] = useState(false)
   const prevStepRef = useRef(currentStep)
 
+  // Step completion celebration — fires even when step UI is hidden
   useEffect(() => {
     if (currentStep > prevStepRef.current && prevStepRef.current > 0) {
       setCelebrating(true)
@@ -56,6 +58,19 @@ export function SessionOrb({
     }
     prevStepRef.current = currentStep
   }, [currentStep])
+
+  // Connection timeout: if active but no session_phase after 8s, show "Connecting..."
+  useEffect(() => {
+    if (isActive && sessionPhase === null) {
+      setConnecting(true)
+      const t = setTimeout(() => {
+        // Only show if still no phase after 8s
+        if (sessionPhase === null) setConnecting(true)
+      }, 8000)
+      return () => clearTimeout(t)
+    }
+    setConnecting(false)
+  }, [isActive, sessionPhase])
 
   // Day-based progress
   const stepsInDay = allowedStepMax - allowedStepMin + 1
@@ -159,15 +174,17 @@ export function SessionOrb({
           />
         )}
 
-        {/* Ambient glow */}
+        {/* Ambient glow — shifts warm during closing */}
         <div
-          className="absolute rounded-full"
+          className={`absolute rounded-full transition-all duration-1500 ${sessionPhase === "opening" ? "animate-pulse" : ""}`}
           style={{
             width: (RING_RADIUS * 2 + 40) * scale,
             height: (RING_RADIUS * 2 + 40) * scale,
             left: (CENTER - RING_RADIUS - 20) * scale,
             top: (CENTER - RING_RADIUS - 20) * scale,
-            background: "radial-gradient(circle, rgba(38,189,255,0.05) 0%, transparent 70%)",
+            background: sessionPhase === "closing"
+              ? "radial-gradient(circle, rgba(255,200,50,0.08) 0%, transparent 70%)"
+              : "radial-gradient(circle, rgba(38,189,255,0.05) 0%, transparent 70%)",
           }}
         />
 
@@ -259,11 +276,25 @@ export function SessionOrb({
         </>
       )}
 
-      {/* "Listening..." indicator during free-form opening phase */}
-      {!SHOW_STEP_DEBUG && sessionPhase === "opening" && (
-        <p className="text-lg text-gray-400 font-medium tracking-wide animate-pulse">
-          Listening...
-        </p>
+      {/* Phase-aware status — only when step debug is off */}
+      {!SHOW_STEP_DEBUG && (
+        <>
+          {connecting && sessionPhase === null && (
+            <p className="text-sm text-gray-500 font-medium tracking-wide animate-pulse">
+              Connecting...
+            </p>
+          )}
+          {sessionPhase === "opening" && (
+            <p className="text-lg text-gray-400 font-medium tracking-wide animate-pulse">
+              Listening...
+            </p>
+          )}
+          {sessionPhase === "closing" && (
+            <p className="text-lg text-amber-400/70 font-medium tracking-wide">
+              Session complete
+            </p>
+          )}
+        </>
       )}
     </div>
   )
