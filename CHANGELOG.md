@@ -2,6 +2,15 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.2.1] - 2026-03-28
+
+### Fixed
+- **Short session feedback gate:** Sessions under 30 seconds no longer trigger the NPS feedback overlay. Users who briefly connect and disconnect are not asked to rate.
+- **Smooth screen transitions:** JourneyPath and coaching session now crossfade with opacity + scale animations (700ms ease-in-out) instead of hard-cutting between views. "Connecting to Rumi..." intermediate state with pulsing mascot.
+
+### Changed
+- **Duolingo-style roadmap redesign:** Centered zigzag S-curve layout, tap-to-start (removed hold gesture), "START" callout badge on current step, pulsing ring with glow, compact 72px node spacing, dotted connecting lines, selective labels on completed + current steps only.
+
 ## [0.1.2.0] - 2026-03-27
 
 ### Added
