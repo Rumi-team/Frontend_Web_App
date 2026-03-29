@@ -27,7 +27,7 @@ export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
         className="relative my-8"
       >
         <Image
-          src="/RumiMascot.png"
+          src="/rumi_mascot.png"
           alt="Rumi"
           width={240}
           height={240}
