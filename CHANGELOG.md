@@ -2,6 +2,18 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.4.0] - 2026-03-29
+
+### Added
+- **8 real Gemini Live voices:** Voice selection grid now shows Puck, Charon, Kore, Fenrir, Aoede, Leda, Orus, Zephyr with personality descriptions. Selected voice ID passes directly to Gemini API.
+- **Back navigation on all onboarding screens:** ChevronLeft button on every screen (except the first post-auth step). Users can go back to change answers.
+- **Strong personality directives:** Communication style and radar calibration now generate explicit behavioral instructions in the coaching prompt (e.g., "BE DIRECT", "CHALLENGE MODE") instead of soft context.
+- **Per-user voice in backend:** agent.py loads the user's chosen Gemini voice from `user_onboarding.voice_persona_id` and uses it for the session instead of the env var default.
+
+### Changed
+- **Themes:** Replaced generic color themes with 4 black/gold variants matching Rumi brand (Obsidian Gold, Midnight Amber, Charcoal Honey, Pure Black).
+- **Landing page:** Outcome-first copy redesign with Server Component architecture.
+
 ## [0.1.3.0] - 2026-03-29
 
 ### Added
