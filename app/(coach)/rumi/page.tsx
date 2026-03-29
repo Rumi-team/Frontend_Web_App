@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { useLiveKitConnection } from "@/hooks/use-livekit-connection"
 import { useMicrophonePermission } from "@/hooks/use-microphone-permission"
 import { useLyricsManager } from "@/hooks/use-lyrics-manager"
@@ -39,6 +39,8 @@ export default function CoachPage() {
   const [feedbackSessionId, setFeedbackSessionId] = useState("unknown")
   const [feedbackDone, setFeedbackDone] = useState(false)
   const [hadActiveSession, setHadActiveSession] = useState(false)
+  const sessionStartTimeRef = useRef<number>(0)
+  const MIN_SESSION_FOR_FEEDBACK = 30_000 // 30 seconds
 
   // E2E-only state: skip LiveKit, show text-only coaching UI
   const [e2eConnected, setE2EConnected] = useState(false)
@@ -71,19 +73,23 @@ export default function CoachPage() {
     ])
   }, [])
 
-  // Save session ID when connected so we have it after disconnect
+  // Save session ID and start time when connected
   useEffect(() => {
     if (lk.connectionState === "connected" && lk.room) {
       setHadActiveSession(true)
+      sessionStartTimeRef.current = Date.now()
       setFeedbackSessionId(lk.room.name || "unknown")
     }
   }, [lk.connectionState, lk.room])
 
-  // Show feedback when room disconnects unexpectedly (network drop, server timeout, etc.)
+  // Show feedback when room disconnects, but only if session was long enough
   useEffect(() => {
     if (lk.connectionState === "disconnected" && hadActiveSession && !showFeedback) {
       setHadActiveSession(false)
-      setShowFeedback(true)
+      const sessionDuration = Date.now() - sessionStartTimeRef.current
+      if (sessionDuration >= MIN_SESSION_FOR_FEEDBACK) {
+        setShowFeedback(true)
+      }
     }
     // If room disconnects after feedback was done (during save), just reset to orb
     if (lk.connectionState === "disconnected" && feedbackDone) {
@@ -160,30 +166,18 @@ export default function CoachPage() {
 
   return (
     <>
-      {lk.connectionState === "connected" && lk.room ? (
-        <div className="h-dvh">
-          <CoachingSession
-            room={lk.room}
-            isMicrophoneEnabled={lk.isMicrophoneEnabled}
-            onToggleMic={lk.toggleMicrophone}
-            onDisconnect={lk.disconnect}
-            onRequestFeedback={handleRequestFeedback}
-            onSessionComplete={handleSessionComplete}
-            feedbackDone={feedbackDone}
-            remoteAudioTrack={lk.remoteAudioTrack}
-          />
-        </div>
-      ) : error ? (
-        <div className="flex h-dvh items-center justify-center px-4" style={{ background: "rgb(15, 18, 23)" }}>
-          <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
-        </div>
-      ) : (
-        <div className="h-dvh flex flex-col" style={{ background: "rgb(15, 18, 23)" }}>
+      {/* Layered views with crossfade transitions */}
+      <div className="relative h-dvh" style={{ background: "rgb(15, 18, 23)" }}>
+        {/* Journey Path (home screen) — fades out when connecting/connected */}
+        <div className={`absolute inset-0 flex flex-col transition-all duration-700 ease-in-out ${
+          lk.connectionState === "disconnected" && !error
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-[0.97] pointer-events-none"
+        }`}>
           <JourneyPath
             displayName={displayName}
             onStartSession={handleStart}
           />
-          {/* Bottom nav — preserved from StartView */}
           <div className="flex-shrink-0 flex items-center justify-center gap-6 px-6 pb-6 pt-2">
             <button
               onClick={() => setShowLibrary(true)}
@@ -205,7 +199,44 @@ export default function CoachPage() {
             </button>
           </div>
         </div>
-      )}
+
+        {/* Coaching session — fades in when connected */}
+        <div className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+          lk.connectionState === "connected" && lk.room
+            ? "opacity-100 scale-100"
+            : "opacity-0 scale-[1.03] pointer-events-none"
+        }`}>
+          {lk.connectionState === "connected" && lk.room && (
+            <CoachingSession
+              room={lk.room}
+              isMicrophoneEnabled={lk.isMicrophoneEnabled}
+              onToggleMic={lk.toggleMicrophone}
+              onDisconnect={lk.disconnect}
+              onRequestFeedback={handleRequestFeedback}
+              onSessionComplete={handleSessionComplete}
+              feedbackDone={feedbackDone}
+              remoteAudioTrack={lk.remoteAudioTrack}
+            />
+          )}
+        </div>
+
+        {/* Connecting state — centered spinner while LiveKit connects */}
+        {lk.connectionState === "connecting" && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-20 animate-fade-in">
+            <div className="w-16 h-16 rounded-full overflow-hidden mb-4 animate-pulse">
+              <img src="/rumi_mascot.png" alt="Rumi" className="w-full h-full object-cover" />
+            </div>
+            <p className="text-gray-400 text-sm animate-pulse">Connecting to Rumi...</p>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center px-4 z-20">
+            <ConnectionError message={error} onRetry={handleStart} isMicError={isMicError} permissionState={mic.permissionState} />
+          </div>
+        )}
+      </div>
 
       {/* Library and assignments sheets — always mounted, controlled by open state */}
       <LibrarySheet
