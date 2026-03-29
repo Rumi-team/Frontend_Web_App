@@ -7,6 +7,7 @@ import { useOnboardingStore } from "@/store/onboardingStore"
 interface YourLifeScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const OCCUPATION_OPTIONS = [
@@ -30,7 +31,7 @@ const RELATIONSHIP_OPTIONS = [
   { value: "prefer_not", label: "Prefer not to say" },
 ]
 
-export function YourLifeScreen({ onNext, onSkip }: YourLifeScreenProps) {
+export function YourLifeScreen({ onNext, onSkip, onBack }: YourLifeScreenProps) {
   const { occupation, relationshipStatus, setField } = useOnboardingStore()
   const [localOcc, setLocalOcc] = useState(occupation)
   const [localRel, setLocalRel] = useState(relationshipStatus)
@@ -44,7 +45,7 @@ export function YourLifeScreen({ onNext, onSkip }: YourLifeScreenProps) {
   const canProceed = localOcc !== "" && localRel !== ""
 
   return (
-    <WizardLayout step={2} totalSteps={10} onSkip={onSkip}>
+    <WizardLayout step={2} totalSteps={10} onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md space-y-8">
         <div>
           <h1 className="mb-6 text-2xl font-bold text-white">Your life</h1>

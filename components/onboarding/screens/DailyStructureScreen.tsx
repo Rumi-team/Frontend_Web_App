@@ -1,11 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Sun, Moon, MessageCircle, Target, BookOpen } from "lucide-react"
+import { Sun, Moon, MessageCircle, Target, BookOpen, ChevronLeft } from "lucide-react"
 import { OnboardingButton } from "../shared"
 
 interface DailyStructureScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 const QUESTS = [
@@ -16,9 +17,14 @@ const QUESTS = [
   { icon: Moon, label: "Evening Reflection", desc: "Close the day with clarity" },
 ]
 
-export function DailyStructureScreen({ onNext }: DailyStructureScreenProps) {
+export function DailyStructureScreen({ onNext, onBack }: DailyStructureScreenProps) {
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <div />
 
       <div className="w-full max-w-md">

@@ -7,6 +7,7 @@ import { useOnboardingStore } from "@/store/onboardingStore"
 interface AboutYouScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const AGE_OPTIONS = [
@@ -27,7 +28,7 @@ const GENDER_OPTIONS = [
   { value: "prefer_not", label: "Prefer not to say" },
 ]
 
-export function AboutYouScreen({ onNext, onSkip }: AboutYouScreenProps) {
+export function AboutYouScreen({ onNext, onSkip, onBack }: AboutYouScreenProps) {
   const { ageRange, gender, setField } = useOnboardingStore()
   const [localAge, setLocalAge] = useState(ageRange)
   const [localGender, setLocalGender] = useState(gender)
@@ -41,7 +42,7 @@ export function AboutYouScreen({ onNext, onSkip }: AboutYouScreenProps) {
   const canProceed = localAge !== "" && localGender !== ""
 
   return (
-    <WizardLayout step={1} totalSteps={10} onSkip={onSkip}>
+    <WizardLayout step={1} totalSteps={10} onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md space-y-8">
         <div>
           <h1 className="mb-6 text-2xl font-bold text-white">About you</h1>

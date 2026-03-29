@@ -7,6 +7,7 @@ import { useOnboardingStore } from "@/store/onboardingStore"
 interface StrugglesScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const STRUGGLES = [
@@ -24,7 +25,7 @@ const STRUGGLES = [
   "Burnout",
 ]
 
-export function StrugglesScreen({ onNext, onSkip }: StrugglesScreenProps) {
+export function StrugglesScreen({ onNext, onSkip, onBack }: StrugglesScreenProps) {
   const { currentStruggles, setField } = useOnboardingStore()
   const [selected, setSelected] = useState<string[]>(currentStruggles)
 
@@ -34,7 +35,7 @@ export function StrugglesScreen({ onNext, onSkip }: StrugglesScreenProps) {
   }
 
   return (
-    <WizardLayout step={4} totalSteps={10} onSkip={onSkip}>
+    <WizardLayout step={4} totalSteps={10} onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-2xl font-bold text-white">
           What are you dealing with right now?
