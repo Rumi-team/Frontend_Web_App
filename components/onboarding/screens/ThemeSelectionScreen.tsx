@@ -2,42 +2,45 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { OnboardingButton } from "../shared"
 import { useOnboardingStore } from "@/store/onboardingStore"
 
 interface ThemeSelectionScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
+// Black/gold variants matching Rumi's brand aesthetic
 const THEMES = [
   {
-    id: "warm-gold",
-    name: "Warm Gold",
-    gradient: "from-[#1a1400] via-[#2d2200] to-[#0a0800]",
+    id: "obsidian-gold",
+    name: "Obsidian Gold",
+    gradient: "from-[#0a0a00] via-[#141005] to-[#080800]",
     accent: "#FFD41A",
   },
   {
-    id: "deep-navy",
-    name: "Deep Navy",
-    gradient: "from-[#0a0f1a] via-[#0d1b2a] to-[#070b14]",
-    accent: "#60A5FA",
+    id: "midnight-amber",
+    name: "Midnight Amber",
+    gradient: "from-[#0d0800] via-[#1a0f00] to-[#080500]",
+    accent: "#F59E0B",
   },
   {
-    id: "forest-green",
-    name: "Forest",
-    gradient: "from-[#0a1a0f] via-[#0d2a15] to-[#070f0a]",
-    accent: "#34D399",
+    id: "charcoal-honey",
+    name: "Charcoal Honey",
+    gradient: "from-[#0f0d08] via-[#1a1610] to-[#0a0905]",
+    accent: "#FBBF24",
   },
   {
-    id: "twilight",
-    name: "Twilight",
-    gradient: "from-[#1a0a1a] via-[#2a0d2a] to-[#0f070f]",
-    accent: "#A78BFA",
+    id: "pure-black",
+    name: "Pure Black",
+    gradient: "from-[#080808] via-[#0a0a0a] to-[#050505]",
+    accent: "#FFD41A",
   },
 ]
 
-export function ThemeSelectionScreen({ onNext }: ThemeSelectionScreenProps) {
+export function ThemeSelectionScreen({ onNext, onBack }: ThemeSelectionScreenProps) {
   const { selectedTheme, setField } = useOnboardingStore()
   const [current, setCurrent] = useState(
     THEMES.findIndex((t) => t.id === selectedTheme) >= 0
@@ -53,7 +56,12 @@ export function ThemeSelectionScreen({ onNext }: ThemeSelectionScreenProps) {
   const theme = THEMES[current]
 
   return (
-    <div className={cn("flex min-h-[100dvh] flex-col items-center justify-between bg-gradient-to-b px-6 py-12", theme.gradient)}>
+    <div className={cn("relative flex min-h-[100dvh] flex-col items-center justify-between bg-gradient-to-b px-6 py-12", theme.gradient)}>
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
