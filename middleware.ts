@@ -32,21 +32,23 @@ export async function middleware(request: NextRequest) {
 
   const { supabase, response } = createSupabaseMiddlewareClient(request)
 
-  // Login page — if already authenticated, skip to /rumi
+  // Login page — if already authenticated, skip to /rumi (or /onboarding if not completed)
   // Otherwise allow through (including ?code= for PKCE exchange)
   if (pathname === "/login") {
     const { data: { user } } = await supabase.auth.getUser()
     if (user && !request.nextUrl.searchParams.has("code")) {
-      return NextResponse.redirect(new URL("/rumi", request.url))
+      const dest = request.cookies.get("rumi_onboarding_complete") ? "/rumi" : "/onboarding"
+      return NextResponse.redirect(new URL(dest, request.url))
     }
     return response
   }
 
-  // Landing page — if user is authenticated, redirect to /rumi (start view)
+  // Landing page — if user is authenticated, redirect to /rumi (or /onboarding)
   if (pathname === "/") {
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      return NextResponse.redirect(new URL("/rumi", request.url))
+      const dest = request.cookies.get("rumi_onboarding_complete") ? "/rumi" : "/onboarding"
+      return NextResponse.redirect(new URL(dest, request.url))
     }
     return response
   }
