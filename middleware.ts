@@ -9,6 +9,10 @@ const isE2ETesting =
   process.env.E2E_BYPASS_AUTH === "true" &&
   process.env.NODE_ENV === "development"
 
+const isE2EBypassOnboarding =
+  process.env.E2E_BYPASS_ONBOARDING === "true" &&
+  process.env.NODE_ENV === "development"
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
@@ -47,6 +51,11 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Welcome + onboarding pages — pass through without auth
+  if (pathname === "/welcome" || pathname.startsWith("/welcome/")) {
+    return response
+  }
+
   // Refresh the auth session cookie so it doesn't expire mid-visit.
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -58,6 +67,15 @@ export async function middleware(request: NextRequest) {
 
   if (!user && isCoachRoute) {
     return NextResponse.redirect(new URL("/login", request.url))
+  }
+
+  // Onboarding gate — redirect to /onboarding if not completed
+  // Uses cookie (no DB query) set by POST /api/onboarding/complete
+  if (user && isCoachRoute && !isE2ETesting && !isE2EBypassOnboarding) {
+    const onboardingComplete = request.cookies.get("rumi_onboarding_complete")
+    if (!onboardingComplete) {
+      return NextResponse.redirect(new URL("/onboarding", request.url))
+    }
   }
 
   // Require authentication for other protected routes (e.g. /admin)
@@ -76,5 +94,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/login"],
+  matcher: ["/", "/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/login", "/onboarding/:path*", "/welcome/:path*"],
 }

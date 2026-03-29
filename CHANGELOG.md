@@ -2,6 +2,24 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.1.3.0] - 2026-03-29
+
+### Added
+- **Full onboarding flow (28 screens):** 25-screen wizard + 3 post-session screens adapted from Sonia spec for Rumi. Collects user context, goals, AI personality calibration, and communication preferences before the first coaching session.
+- **Pre-auth flow (`/welcome`):** Welcome, Mission, Acquisition survey, then OAuth. Auth happens after users see value, framed as "save your progress."
+- **Post-auth wizard (`/onboarding`):** Surveys (combined demographics, struggles, life events), social proof, goal setting, privacy assurance, AI calibration radar chart, voice persona selection, theme picker, setup completion with confetti.
+- **Post-first-session flow:** Plan generation loading, personalized plan summary, day-1 streak dashboard. Triggered after first coaching session completes.
+- **Zustand store** (`store/onboardingStore.ts`) with localStorage persist and debounced Supabase save for cross-device resume.
+- **Resume interstitial:** Returning users see "Welcome back, continue where you left off" with progress indicator.
+- **9 shared components:** WizardLayout, SurveyRadio, SurveyMultiSelect, FABArrow, ProgressiveChecklist, OnboardingButton, StepProgress, ResumeInterstitial, ErrorRetry.
+- **API routes:** `GET/POST /api/onboarding` (Zod-validated save/load), `POST /api/onboarding/complete` (sets completion cookie).
+- **Supabase migration:** `user_onboarding` table with separate INSERT/SELECT/UPDATE RLS policies (no DELETE).
+- **Middleware onboarding gate:** Cookie-based check (zero extra DB queries per request), `E2E_BYPASS_ONBOARDING` env var.
+- **16 new tests** for Zustand store and Zod validation schemas.
+
+### Changed
+- **Journey Path improvements:** Rich step detail sheets for locked and completed steps. Teaching mode toggle passes metadata to backend.
+
 ## [0.1.2.1] - 2026-03-28
 
 ### Fixed
