@@ -51,6 +51,11 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
+  // Welcome + onboarding pages — pass through without auth
+  if (pathname === "/welcome" || pathname.startsWith("/welcome/")) {
+    return response
+  }
+
   // Refresh the auth session cookie so it doesn't expire mid-visit.
   const { data: { user } } = await supabase.auth.getUser()
 
