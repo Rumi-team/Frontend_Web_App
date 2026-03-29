@@ -7,6 +7,7 @@ import { useOnboardingStore } from "@/store/onboardingStore"
 interface CommunicationStyleScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const OPTIONS = [
@@ -16,7 +17,7 @@ const OPTIONS = [
   { value: "direct", label: "Direct", description: "Honest, to the point, action-oriented" },
 ]
 
-export function CommunicationStyleScreen({ onNext, onSkip }: CommunicationStyleScreenProps) {
+export function CommunicationStyleScreen({ onNext, onSkip, onBack }: CommunicationStyleScreenProps) {
   const { communicationApproach, setField } = useOnboardingStore()
   const [selected, setSelected] = useState(communicationApproach || "")
 
@@ -28,7 +29,7 @@ export function CommunicationStyleScreen({ onNext, onSkip }: CommunicationStyleS
   }
 
   return (
-    <WizardLayout onSkip={onSkip}>
+    <WizardLayout onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-2xl font-bold text-white">
           How should Rumi communicate with you?

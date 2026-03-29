@@ -46,6 +46,13 @@ export default function OnboardingPage() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSkip = useCallback(() => nextStep(), [nextStep])
+  const handleBack = useCallback(() => {
+    const prev = useOnboardingStore.getState().currentStep
+    // Don't go below step 7 (start of post-auth flow)
+    if (prev > 7) {
+      useOnboardingStore.getState().prevStep()
+    }
+  }, [])
 
   // Ensure post-auth flow starts at step 7
   useEffect(() => {
@@ -77,42 +84,42 @@ export default function OnboardingPage() {
     )
   }
 
-  // Map step number to screen component
+  // Map step number to screen component (onBack on all except step 7)
   switch (currentStep) {
     case 7:
       return <GettingToKnowYouScreen onNext={nextStep} />
     case 8:
-      return <AboutYouScreen onNext={nextStep} onSkip={handleSkip} />
+      return <AboutYouScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 9:
-      return <YourLifeScreen onNext={nextStep} onSkip={handleSkip} />
+      return <YourLifeScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 10:
-      return <SupportTypeScreen onNext={nextStep} onSkip={handleSkip} />
+      return <SupportTypeScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 11:
-      return <StrugglesScreen onNext={nextStep} onSkip={handleSkip} />
+      return <StrugglesScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 12:
-      return <LifeEventsScreen onNext={nextStep} onSkip={handleSkip} />
+      return <LifeEventsScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 13:
       return <AnalyzingScreen onComplete={nextStep} onSkip={handleSkip} />
     case 14:
-      return <ProvenResultsScreen onNext={nextStep} />
+      return <ProvenResultsScreen onNext={nextStep} onBack={handleBack} />
     case 15:
-      return <PrivacyScreen onNext={nextStep} />
+      return <PrivacyScreen onNext={nextStep} onBack={handleBack} />
     case 16:
-      return <CommitmentScreen onNext={nextStep} />
+      return <CommitmentScreen onNext={nextStep} onBack={handleBack} />
     case 17:
-      return <DailyStructureScreen onNext={nextStep} />
+      return <DailyStructureScreen onNext={nextStep} onBack={handleBack} />
     case 18:
-      return <CustomizingCoachScreen onNext={nextStep} />
+      return <CustomizingCoachScreen onNext={nextStep} onBack={handleBack} />
     case 19:
-      return <VoiceSelectionScreen onNext={nextStep} onSkip={handleSkip} />
+      return <VoiceSelectionScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 20:
-      return <CommunicationStyleScreen onNext={nextStep} onSkip={handleSkip} />
+      return <CommunicationStyleScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 21:
-      return <AICalibrationScreen onNext={nextStep} />
+      return <AICalibrationScreen onNext={nextStep} onBack={handleBack} />
     case 22:
       return <BuildingCoachScreen onComplete={nextStep} />
     case 23:
-      return <ThemeSelectionScreen onNext={nextStep} />
+      return <ThemeSelectionScreen onNext={nextStep} onBack={handleBack} />
     case 24:
       return <SetupCompleteScreen onNext={nextStep} />
     case 25:

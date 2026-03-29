@@ -7,6 +7,7 @@ import { useOnboardingStore, type SupportType } from "@/store/onboardingStore"
 interface SupportTypeScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const OPTIONS = [
@@ -16,7 +17,7 @@ const OPTIONS = [
   { value: "unsure", label: "I'm not sure yet", description: "Help me figure out what I need" },
 ]
 
-export function SupportTypeScreen({ onNext, onSkip }: SupportTypeScreenProps) {
+export function SupportTypeScreen({ onNext, onSkip, onBack }: SupportTypeScreenProps) {
   const { supportType, setField } = useOnboardingStore()
   const [selected, setSelected] = useState(supportType || "")
 
@@ -28,7 +29,7 @@ export function SupportTypeScreen({ onNext, onSkip }: SupportTypeScreenProps) {
   }
 
   return (
-    <WizardLayout step={3} totalSteps={10} onSkip={onSkip}>
+    <WizardLayout step={3} totalSteps={10} onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-2xl font-bold text-white">
           What kind of support are you looking for?

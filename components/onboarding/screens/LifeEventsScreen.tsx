@@ -7,6 +7,7 @@ import { useOnboardingStore } from "@/store/onboardingStore"
 interface LifeEventsScreenProps {
   onNext: () => void
   onSkip: () => void
+  onBack?: () => void
 }
 
 const LIFE_EVENTS = [
@@ -23,7 +24,7 @@ const LIFE_EVENTS = [
   "None of these apply",
 ]
 
-export function LifeEventsScreen({ onNext, onSkip }: LifeEventsScreenProps) {
+export function LifeEventsScreen({ onNext, onSkip, onBack }: LifeEventsScreenProps) {
   const { lifeEvents, setField } = useOnboardingStore()
   const [selected, setSelected] = useState<string[]>(lifeEvents)
 
@@ -33,7 +34,7 @@ export function LifeEventsScreen({ onNext, onSkip }: LifeEventsScreenProps) {
   }
 
   return (
-    <WizardLayout step={5} totalSteps={10} onSkip={onSkip}>
+    <WizardLayout step={5} totalSteps={10} onSkip={onSkip} onBack={onBack}>
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-2xl font-bold text-white">
           Any major life events recently?

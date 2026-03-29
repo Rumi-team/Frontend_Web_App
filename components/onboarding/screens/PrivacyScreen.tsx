@@ -1,11 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Shield, Heart, Lock, Eye } from "lucide-react"
+import { Shield, Heart, Lock, Eye, ChevronLeft } from "lucide-react"
 import { OnboardingButton } from "../shared"
 
 interface PrivacyScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 const ITEMS = [
@@ -15,9 +16,14 @@ const ITEMS = [
   { icon: Eye, title: "Private by design", desc: "Your sessions are never shared with third parties." },
 ]
 
-export function PrivacyScreen({ onNext }: PrivacyScreenProps) {
+export function PrivacyScreen({ onNext, onBack }: PrivacyScreenProps) {
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <div />
 
       <div className="w-full max-w-md">

@@ -3,12 +3,14 @@
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { OnboardingButton } from "../shared"
 import { useOnboardingStore, type CommitmentGoal } from "@/store/onboardingStore"
 
 interface CommitmentScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 const WEEKS = [1, 2, 3, 4] as const
@@ -30,7 +32,7 @@ function generateChartData(weeks: CommitmentGoal) {
   return points
 }
 
-export function CommitmentScreen({ onNext }: CommitmentScreenProps) {
+export function CommitmentScreen({ onNext, onBack }: CommitmentScreenProps) {
   const { commitmentGoal, setField } = useOnboardingStore()
   const [selected, setSelected] = useState<CommitmentGoal>(commitmentGoal)
   const chartData = useMemo(() => generateChartData(selected), [selected])
@@ -42,7 +44,12 @@ export function CommitmentScreen({ onNext }: CommitmentScreenProps) {
   }
 
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

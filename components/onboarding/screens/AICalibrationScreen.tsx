@@ -2,12 +2,14 @@
 
 import { useState, useMemo } from "react"
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer } from "recharts"
+import { ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FABArrow } from "../shared"
 import { useOnboardingStore, type RadarCalibration } from "@/store/onboardingStore"
 
 interface AICalibrationScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 const AXES: { key: keyof RadarCalibration; low: string; high: string; label: string }[] = [
@@ -18,7 +20,7 @@ const AXES: { key: keyof RadarCalibration; low: string; high: string; label: str
   { key: "supportiveChallenging", low: "Supportive", high: "Challenging", label: "Challenge" },
 ]
 
-export function AICalibrationScreen({ onNext }: AICalibrationScreenProps) {
+export function AICalibrationScreen({ onNext, onBack }: AICalibrationScreenProps) {
   const { radarCalibration, setField } = useOnboardingStore()
   const [local, setLocal] = useState<RadarCalibration>({ ...radarCalibration })
   const [axisIndex, setAxisIndex] = useState(0)
@@ -51,7 +53,12 @@ export function AICalibrationScreen({ onNext }: AICalibrationScreenProps) {
   }
 
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <h1 className="text-center text-2xl font-bold text-white">
         Fine-tune your coach
       </h1>

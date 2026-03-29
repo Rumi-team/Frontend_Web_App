@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { TrendingUp, DollarSign, Clock, Users } from "lucide-react"
+import { TrendingUp, DollarSign, Clock, Users, ChevronLeft } from "lucide-react"
 import { OnboardingButton } from "../shared"
 
 interface ProvenResultsScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 function AnimatedStat({ target, suffix = "" }: { target: number; suffix?: string }) {
@@ -38,9 +39,14 @@ function AnimatedStat({ target, suffix = "" }: { target: number; suffix?: string
   )
 }
 
-export function ProvenResultsScreen({ onNext }: ProvenResultsScreenProps) {
+export function ProvenResultsScreen({ onNext, onBack }: ProvenResultsScreenProps) {
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-between bg-[#080808] px-6 py-12">
+      {onBack && (
+        <button type="button" onClick={onBack} className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/50 hover:bg-white/5 hover:text-white/80">
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+      )}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
