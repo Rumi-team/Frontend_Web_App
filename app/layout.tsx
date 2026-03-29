@@ -21,16 +21,16 @@ const siteUrl = "https://www.rumi.team"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Rumi — Your Personal Transformational Leader",
+  title: "Rumi — AI Voice Coaching That Sticks",
   description:
-    "Meet Rumi, your AI transformational leader. Proven programs deliver lasting change — 24/7, on your phone, at a fraction of traditional coaching costs.",
+    "Have the conversation you've been avoiding. Rumi is a private AI voice coach that listens, surfaces what's holding you back, and follows up until the change sticks.",
   keywords: [
     "AI life coach",
     "AI coaching",
-    "transformational leadership",
+    "voice AI coach",
     "personal development",
     "mental wellness",
-    "voice AI coach",
+    "coaching that lasts",
     "Rumi",
   ],
   authors: [{ name: "Rumi", url: siteUrl }],
@@ -40,9 +40,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Rumi — Your Personal Transformational Leader",
+    title: "Rumi — AI Voice Coaching That Sticks",
     description:
-      "Meet Rumi, your AI transformational leader. Proven programs deliver lasting change — 24/7, on your phone, at a fraction of traditional coaching costs.",
+      "Have the conversation you've been avoiding. Rumi is a private AI voice coach that follows up until the change sticks.",
     url: siteUrl,
     siteName: "Rumi",
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: "/rumi_logo.png",
         width: 773,
         height: 427,
-        alt: "Rumi — Your Personal Transformational Leader",
+        alt: "Rumi — AI Voice Coaching That Sticks",
       },
     ],
     locale: "en_US",
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rumi — Your Personal Transformational Leader",
+    title: "Rumi — AI Voice Coaching That Sticks",
     description:
-      "Meet Rumi, your AI transformational leader. Proven programs deliver lasting change — 24/7.",
+      "Have the conversation you've been avoiding. Private AI voice coaching that follows up until it sticks.",
     images: ["/rumi_logo.png"],
   },
   // TODO: Add Google Search Console verification code here after verifying at
@@ -99,7 +99,7 @@ const jsonLd = {
         height: 427,
       },
       description:
-        "AI transformational leadership coaching — 24/7 on your phone, at a fraction of traditional coaching costs.",
+        "AI voice coaching that listens, surfaces what's holding you back, and follows up until the change sticks.",
       sameAs: ["https://rumiagent.com"],
     },
     {
