@@ -1,573 +1,12 @@
-"use client"
-
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import {
-  MessageSquareText,
-  BookOpen,
-  UserCog,
-  Mail,
-  Shield,
-  Brain,
-  Target,
-  ArrowRight,
-  ChevronDown,
-  Clock,
-  TrendingUp,
-  Lock,
-  RefreshCw,
-  Heart,
-  Award,
-  ClipboardCheck,
-  Sliders,
-  LineChart,
-  BellRing,
-  Layers,
-  Star,
-} from "lucide-react"
-import { ContactModal } from "@/components/contact-modal"
-import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
+import { ArrowRight, Lock, MessageSquareText, Eye, RefreshCw } from "lucide-react"
+import { AuthRedirect } from "@/components/landing/auth-redirect"
+import { FAQ } from "@/components/landing/faq"
+import { Footer } from "@/components/landing/footer"
 
-/* ═══════════════════════════════════════════════════════════
-   Scroll Reveal Hook
-   ═══════════════════════════════════════════════════════════ */
-function useScrollReveal(threshold = 0.15) {
-  const [isVisible, setIsVisible] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [threshold])
-
-  return { ref, isVisible }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Reveal Section Wrapper
-   ═══════════════════════════════════════════════════════════ */
-function RevealSection({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode
-  className?: string
-  delay?: number
-}) {
-  const { ref, isVisible } = useScrollReveal()
-  return (
-    <div
-      ref={ref}
-      className={`transition-[opacity,transform] duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        } ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Animated Stat
-   ═══════════════════════════════════════════════════════════ */
-function AnimatedStat({
-  label,
-  value,
-  suffix = "",
-  prefix = "",
-  description,
-  icon: Icon,
-}: {
-  label: string
-  value: string
-  suffix?: string
-  prefix?: string
-  description: string
-  icon: React.ElementType
-}) {
-  return (
-    <div className="flex flex-col items-center text-center p-6 md:p-8">
-      <Icon className="h-8 w-8 text-yellow-400 mb-4" />
-      <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 whitespace-nowrap">
-        {prefix}
-        {value}
-        {suffix}
-      </div>
-      <div className="text-yellow-400 font-semibold text-sm uppercase tracking-wider mb-1">{label}</div>
-      <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Rotating Words (hero animation)
-   ═══════════════════════════════════════════════════════════ */
-type RotatingWordsProps = {
-  onComplete?: () => void
-  onMobilePhaseChange?: (phase: "text" | "image") => void
-}
-
-function RotatingWords({ onComplete, onMobilePhaseChange }: RotatingWordsProps) {
-  const [currentFace, setCurrentFace] = useState(0)
-  const [animationComplete, setAnimationComplete] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [mobilePhase, setMobilePhase] = useState<"text" | "hidden">("text")
-  const completionScheduled = useRef(false)
-  const mobileRevealTriggered = useRef(false)
-  const topLine = "Your"
-  const bottomLine1 = "Transformational"
-  const bottomLine2 = "Leader"
-  const rotatingWords = useMemo(() => ["Personal", "Unbiased", "Confidential"], [])
-
-  useEffect(() => {
-    const updateIsMobile = () => {
-      if (typeof window === "undefined") {
-        return
-      }
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    updateIsMobile()
-    window.addEventListener("resize", updateIsMobile)
-    return () => window.removeEventListener("resize", updateIsMobile)
-  }, [])
-
-  useEffect(() => {
-    setCurrentFace(0)
-    setAnimationComplete(false)
-    completionScheduled.current = false
-    mobileRevealTriggered.current = false
-    setMobilePhase("text")
-    onMobilePhaseChange?.("text")
-  }, [isMobile, onMobilePhaseChange])
-
-  useEffect(() => {
-    if (isMobile && mobilePhase !== "text") {
-      return
-    }
-    if (animationComplete) {
-      return
-    }
-
-    const interval = setInterval(() => {
-      setCurrentFace((prev) => {
-        const nextFace = (prev + 1) % rotatingWords.length
-
-        if (nextFace === rotatingWords.length - 1) {
-          setAnimationComplete(true)
-          clearInterval(interval)
-        }
-
-        return nextFace
-      })
-    }, 1500)
-
-    return () => clearInterval(interval)
-  }, [animationComplete, isMobile, mobilePhase, rotatingWords])
-
-  useEffect(() => {
-    if (!animationComplete || completionScheduled.current) {
-      return
-    }
-
-    if (isMobile) {
-      const revealTimer = setTimeout(() => {
-        if (mobileRevealTriggered.current) {
-          return
-        }
-        mobileRevealTriggered.current = true
-        setMobilePhase("hidden")
-        onMobilePhaseChange?.("image")
-      }, 2000)
-
-      const completionTimer = setTimeout(() => {
-        completionScheduled.current = true
-        onComplete?.()
-      }, 2800)
-
-      return () => {
-        clearTimeout(revealTimer)
-        clearTimeout(completionTimer)
-      }
-    }
-
-    const timer = setTimeout(() => {
-      completionScheduled.current = true
-      onComplete?.()
-    }, 1500)
-
-    return () => clearTimeout(timer)
-  }, [animationComplete, isMobile, onComplete, onMobilePhaseChange])
-
-  return (
-    <>
-      <style jsx>{`
-        .word-anim {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          animation: growWord 0.9s ease forwards;
-          will-change: transform, opacity;
-          transform-origin: center center;
-        }
-        @keyframes growWord {
-          from {
-            transform: perspective(700px) translateZ(-120px) scale(0.7);
-            opacity: 0;
-          }
-          to {
-            transform: perspective(700px) translateZ(0) scale(1);
-            opacity: 1;
-          }
-        }
-        .text-giant {
-          font-size: clamp(1.8rem, 9vw, 4.8rem);
-          line-height: 0.95;
-        }
-      `}</style>
-      {isMobile ? (
-        <div
-          className="w-full h-full flex items-center justify-center px-6 text-center font-bold"
-          aria-hidden={mobilePhase !== "text"}
-        >
-          <div className="flex flex-col items-center text-giant" style={{ gap: "clamp(0.6rem, 3vw, 1.5rem)" }}>
-            <span className="text-white">{topLine}</span>
-            <span
-              key={`${currentFace}-${rotatingWords[currentFace]}`}
-              className="word-anim text-yellow-400 whitespace-nowrap"
-            >
-              {rotatingWords[currentFace]}
-            </span>
-            <span className="text-white">{bottomLine1}</span>
-            <span className="text-white">{bottomLine2}</span>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center text-yellow-400 font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl space-y-6 leading-tight text-center">
-          <span className="text-white">{topLine}</span>
-          <div className="relative h-20 w-full flex items-center justify-center text-yellow-400">
-            <span
-              key={`${currentFace}-${rotatingWords[currentFace]}`}
-              className="word-anim absolute inset-0 flex items-center justify-center px-2 whitespace-nowrap"
-            >
-              {rotatingWords[currentFace]}
-            </span>
-          </div>
-          <span className="text-white">Transformational</span>
-          <span className="text-white">Leader</span>
-        </div>
-      )}
-    </>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Partner Logos
-   ═══════════════════════════════════════════════════════════ */
-function GoogleCloudLogo() {
-  return (
-    <div className="flex flex-col items-center gap-4 group">
-      <div className="h-16 md:h-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <svg viewBox="0 0 256 206" className="h-full w-auto" aria-label="Google Cloud">
-          <path
-            d="M170.252 56.819l22.253-22.253 1.483-9.37C171.96-1.583 137.06-8.57 104.512 4.416 81.666 13.825 62.951 31.13 51.804 52.292l8.016-1.105 44.505-7.34s2.267-3.767 3.43-3.552c17.865-19.586 44.063-25.757 67.588-17.953"
-            fill="#EA4335"
-          />
-          <path
-            d="M224.205 73.918a100.249 100.249 0 00-30.217-48.722l-31.232 31.232a55.515 55.515 0 0120.377 44.084v5.556c15.378 0 27.834 12.456 27.834 27.834 0 15.378-12.456 27.834-27.834 27.834h-55.669l-5.556 5.556v33.391l5.556 5.556h55.669c40.16.388 73.053-31.806 73.441-71.966.22-22.94-10.416-44.626-28.37-58.89"
-            fill="#4285F4"
-          />
-          <path
-            d="M72.008 206.091h55.669v-44.505H72.008c-3.973 0-7.895-.86-11.536-2.527l-8.015 2.453-22.357 22.253-1.98 7.633C41.769 200.303 56.605 206.1 72.008 206.091"
-            fill="#34A853"
-          />
-          <path
-            d="M72.008 62.005C31.849 62.168-1.066 95.242-.882 135.401c.104 22.696 10.783 44.047 28.928 57.862l32.352-32.352c-13.954-6.32-20.156-22.63-13.836-36.584 6.32-13.954 22.63-20.156 36.584-13.836a27.834 27.834 0 0113.836 13.836l32.352-32.352C116.328 77.06 94.793 62.34 72.008 62.005"
-            fill="#FBBC05"
-          />
-        </svg>
-      </div>
-      <span className="text-gray-400 text-xs md:text-sm font-medium tracking-widest uppercase">Google Cloud</span>
-    </div>
-  )
-}
-
-function FounderInstituteLogo() {
-  return (
-    <div className="flex flex-col items-center gap-4 group">
-      <div className="h-48 md:h-64 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-        <Image
-          src="/founder-institute-logo.png"
-          alt="Founder Institute"
-          width={500}
-          height={200}
-          className="h-40 md:h-56 w-auto"
-        />
-      </div>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Solution Card
-   ═══════════════════════════════════════════════════════════ */
-function SolutionCard({
-  title,
-  problem,
-  solution,
-  icon: Icon,
-  delay = 0,
-}: {
-  title: string
-  problem: string
-  solution: string
-  icon: React.ElementType
-  delay?: number
-}) {
-  return (
-    <RevealSection delay={delay}>
-      <div className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-8 md:p-10 hover:border-yellow-400/30 transition-all duration-500 hover:bg-white/[0.04] h-full">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-yellow-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-yellow-400/10 border border-yellow-400/20">
-              <Icon className="h-6 w-6 text-yellow-400" />
-            </div>
-          </div>
-          <h3 className="text-xl font-bold text-yellow-300 mb-3">{title}</h3>
-          <div className="mb-4">
-            <p className="text-gray-400 text-base leading-relaxed">{problem}</p>
-          </div>
-          <div className="border-t border-white/[0.06] pt-4 mt-4">
-            <div className="flex items-start gap-3">
-              <ArrowRight className="h-5 w-5 text-yellow-400 mt-0.5 shrink-0" />
-              <p className="text-white text-base md:text-lg leading-relaxed font-medium">{solution}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </RevealSection>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Testimonials Data & Card
-   ═══════════════════════════════════════════════════════════ */
-const testimonials = {
-  row1: [
-    {
-      name: "Sarah M.",
-      program: "Landmark Forum (3x), SELP Graduate",
-      location: "San Francisco, CA",
-      quote:
-        "I completed the Forum three times and the SELP. Each time, incredible breakthroughs about my rackets... then they'd fade within months. Rumi changed everything. Having a transformational leader available when my patterns are loudest — not just during a weekend seminar — that's when the real work happens.",
-      initials: "SM",
-      gradient: "from-rose-400 to-pink-600",
-    },
-    {
-      name: "Marcus J.",
-      program: "Tony Robbins UPW & Date with Destiny",
-      location: "Miami, FL",
-      quote:
-        "UPW gave me the state change. Date with Destiny gave me the vision. But between events, I'd slowly drift back to old patterns. Rumi keeps me in that peak state daily. It catches my limiting beliefs before I even notice I'm running them.",
-      initials: "MJ",
-      gradient: "from-blue-400 to-indigo-600",
-    },
-    {
-      name: "David K.",
-      program: "Landmark & Robbins Graduate, Founder",
-      location: "Austin, TX",
-      quote:
-        "I've invested over $40K in personal development — Landmark, Robbins, Hoffman Process — all incredible. But transformation always faded. Rumi's daily accountability and transformation scoring finally made it stick. The ROI is unlike anything I've experienced.",
-      initials: "DK",
-      gradient: "from-amber-400 to-orange-600",
-    },
-    {
-      name: "Priya S.",
-      program: "First Personal Development Experience",
-      location: "Seattle, WA",
-      quote:
-        "I always wanted to try Landmark but the 3-day commitment and cost held me back. A colleague suggested Rumi and within two weeks I had my first real breakthrough about my relationship with my mother. I couldn't stop crying — in the best way.",
-      initials: "PS",
-      gradient: "from-emerald-400 to-teal-600",
-    },
-    {
-      name: "James L.",
-      program: "Landmark ILP Graduate",
-      location: "New York, NY",
-      quote:
-        "As someone who completed the Introduction Leaders Program, I thought I'd done all the work. Rumi showed me how many rackets I was still running unconsciously. The transformation scoring keeps me honest with myself in a way no seminar ever could.",
-      initials: "JL",
-      gradient: "from-violet-400 to-purple-600",
-    },
-  ],
-  row2: [
-    {
-      name: "Aisha N.",
-      program: "Tony Robbins Mastery University",
-      location: "Chicago, IL",
-      quote:
-        "I did Business Mastery, Life Mastery, and Date with Destiny back to back. The insights were life-changing but staying in that space between events was the real challenge. Rumi fills that gap perfectly — it's like having Tony's coaching every single day.",
-      initials: "AN",
-      gradient: "from-cyan-400 to-blue-600",
-    },
-    {
-      name: "Elena R.",
-      program: "Landmark Graduate, Psychotherapist",
-      location: "Portland, OR",
-      quote:
-        "As a therapist, I recommend Rumi to clients who want to go deeper. Therapy helps understand the past. Rumi helps create a genuinely new future. Several clients have had breakthroughs they couldn't access in therapy alone.",
-      initials: "ER",
-      gradient: "from-lime-400 to-green-600",
-    },
-    {
-      name: "Michael C.",
-      program: "Tony Robbins Platinum Partner",
-      location: "Denver, CO",
-      quote:
-        "Even as a Platinum Partner with access to every Robbins event, having Rumi between gatherings transformed my follow-through completely. The accountability assignments are exactly what's been missing from the personal development industry.",
-      initials: "MC",
-      gradient: "from-red-400 to-rose-600",
-    },
-    {
-      name: "Rachel T.",
-      program: "Landmark Forum Graduate, Teacher",
-      location: "Boston, MA",
-      quote:
-        "The Forum gave me the distinction of 'already always listening.' But I kept forgetting to apply it in daily life. Rumi brings me back to these distinctions every single day — it's genuinely like having the Forum in your pocket.",
-      initials: "RT",
-      gradient: "from-fuchsia-400 to-pink-600",
-    },
-    {
-      name: "Carlos M.",
-      program: "Tony Robbins UPW Graduate",
-      location: "Los Angeles, CA",
-      quote:
-        "After UPW I was on fire for about six weeks. Then life happened and old patterns crept back in. Rumi has kept that fire burning for four months straight. The personalized assignments and daily check-ins are exactly what the industry has been missing.",
-      initials: "CM",
-      gradient: "from-yellow-400 to-amber-600",
-    },
-  ],
-}
-
-function TestimonialCard({
-  name,
-  program,
-  location,
-  quote,
-  initials,
-  gradient,
-}: {
-  name: string
-  program: string
-  location: string
-  quote: string
-  initials: string
-  gradient: string
-}) {
-  return (
-    <div className="w-[340px] md:w-[400px] shrink-0 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm p-6 hover:border-yellow-400/20 transition-all duration-300 cursor-default select-none">
-      <div className="text-yellow-400/30 text-5xl font-serif leading-none mb-2">&ldquo;</div>
-      <p className="text-gray-300 text-sm leading-relaxed mb-5">{quote}</p>
-      <div className="flex gap-0.5 mb-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-        ))}
-      </div>
-      <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
-        <div
-          className={`w-10 h-10 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-semibold text-xs shrink-0 shadow-lg`}
-        >
-          {initials}
-        </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5">
-            <span className="text-white font-medium text-sm">{name}</span>
-            <svg className="h-4 w-4 text-blue-400 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="text-yellow-400/80 text-xs font-medium">{program}</div>
-          <div className="text-gray-500 text-xs">{location}</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════
-   Main Page Component
-   ═══════════════════════════════════════════════════════════ */
 export default function Home() {
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false)
-  const [isCubeComplete, setIsCubeComplete] = useState(false)
-  const [mobileHeroPhase, setMobileHeroPhase] = useState<"text" | "image">("text")
-  const cubeCompleteTimeout = useRef<NodeJS.Timeout | null>(null)
-  const authCheckDone = useRef(false)
-
-  // If user lands on "/" with a session (e.g. after OAuth redirect), send them to /rumi
-  useEffect(() => {
-    if (authCheckDone.current) return
-    authCheckDone.current = true
-
-    const params = new URLSearchParams(window.location.search)
-    const code = params.get("code")
-
-    const supabase = createSupabaseBrowserClient()
-
-    if (code) {
-      // OAuth redirected here with ?code= — exchange and hard redirect
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (!error) {
-          window.location.href = "/rumi"
-        }
-      })
-      return
-    }
-
-    // Already signed in? Hard redirect to start view
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        window.location.href = "/rumi"
-      }
-    })
-  }, [])
-
-  const handleCubeComplete = useCallback(() => {
-    if (cubeCompleteTimeout.current) {
-      clearTimeout(cubeCompleteTimeout.current)
-    }
-    cubeCompleteTimeout.current = setTimeout(() => setIsCubeComplete(true), 3000)
-  }, [])
-
-  useEffect(
-    () => () => {
-      if (cubeCompleteTimeout.current) {
-        clearTimeout(cubeCompleteTimeout.current)
-      }
-    },
-    []
-  )
-
   return (
     <div
       className="flex flex-col min-h-screen bg-black text-white"
@@ -576,684 +15,201 @@ export default function Home() {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
-      {/* ══════════════════════════════════════════════════════
-          HEADER
-          ══════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl" role="banner">
-        <nav className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto" aria-label="Main navigation">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center" aria-label="Rumi home">
-              <Image
-                src="/rumi_logo.png"
-                alt="Rumi Logo"
-                width={607}
-                height={202}
-                priority
-                className="h-[56px] w-auto"
-              />
-            </Link>
-          </div>
+      {/* Auth redirect (client component — handles session check + PKCE) */}
+      <AuthRedirect />
 
-          <div className="flex items-center">
-            <Link href="/login" className="inline-flex items-center">
-              <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
-                Sign In
-              </Button>
-            </Link>
-          </div>
+      {/* ── NAV ── */}
+      <header
+        className="sticky top-0 z-50 w-full border-b border-white/[0.06] bg-black/80 backdrop-blur-xl"
+        role="banner"
+      >
+        <nav
+          className="flex items-center justify-between w-full h-16 px-4 md:px-8 max-w-7xl mx-auto"
+          aria-label="Main navigation"
+        >
+          <Link href="/" className="flex items-center" aria-label="Rumi home">
+            <Image
+              src="/rumi_logo.png"
+              alt="Rumi Logo"
+              width={607}
+              height={202}
+              priority
+              className="h-[56px] w-auto"
+            />
+          </Link>
+          <Link href="/login" className="inline-flex items-center">
+            <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-base px-8 h-11 transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]">
+              Try Rumi Free
+            </Button>
+          </Link>
         </nav>
       </header>
 
-      <main className="flex-1">
-        {/* ══════════════════════════════════════════════════════
-            SECTION 1 — HERO
-            ══════════════════════════════════════════════════════ */}
-        <section
-          id="hero"
-          className="w-full min-h-screen flex flex-col items-center justify-center pt-6 md:pt-12 bg-black text-white relative overflow-hidden"
-        >
-          {/* Subtle radial glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.06)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="w-full px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center justify-center">
-
-              {/* ── Desktop layout: iPhone | Center | Web ── */}
-              <div className="hidden md:flex items-center justify-center max-w-6xl mx-auto gap-6 lg:gap-8">
-                {/* iPhone — left */}
-                <div className={`shrink-0 w-[200px] lg:w-[240px] flex items-center justify-end transition-transform duration-1000 ease-in-out ${isCubeComplete ? "translate-x-32 lg:translate-x-48" : ""}`}>
-                  <div className="relative isolate">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
-                    <div className={`transition-all duration-500 bg-transparent relative z-10`}>
-                      <Image
-                        src="/app_landing_page.png"
-                        alt="Rumi iOS app"
-                        width={300}
-                        height={600}
-                        className={`rounded-2xl object-contain h-[340px] lg:h-[420px] w-auto`}
-                        priority
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Center area — rotating text then lock animation */}
-                <div className="flex-1 min-w-0 flex items-center justify-center relative">
-                  {/* Rotating text — fades out */}
-                  <div
-                    className={`transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-0 pointer-events-none" : "opacity-100"
-                      }`}
-                  >
-                    <RotatingWords onComplete={handleCubeComplete} />
-                  </div>
-
-                  {/* Lock icon — crossfades in where the rotating word was */}
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0 pointer-events-none"
-                      }`}
-                    style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
-                  >
-                    <Lock className={`h-16 w-16 lg:h-20 lg:w-20 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.4)] ${isCubeComplete ? "lock-anim" : ""}`} />
-                  </div>
-                </div>
-
-                {/* Web screenshot — right */}
-                <div className={`shrink-0 transition-transform duration-1000 ease-in-out ${isCubeComplete ? "-translate-x-32 lg:-translate-x-48" : ""}`}>
-                  <div className="relative isolate">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[30px] lg:blur-[40px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
-                    <div className={`rounded-xl overflow-hidden bg-black w-[200px] lg:w-[240px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
-                      {/* Browser chrome bar */}
-                      <div className="flex items-center gap-1.5 px-3 py-2 bg-black border-b border-white/[0.04]">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-                        <div className="flex-1 mx-2 h-5 rounded bg-white/[0.03] flex items-center justify-center">
-                          <span className="text-[10px] text-gray-600">rumi.team</span>
-                        </div>
-                      </div>
-                      <Image
-                        src="/app_web.png"
-                        alt="Rumi Web app"
-                        width={800}
-                        height={500}
-                        className="object-cover object-center h-[310px] lg:h-[390px] w-full"
-                        priority
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── Mobile layout ── */}
-              <div className="md:hidden flex flex-col items-center justify-center w-full min-h-[400px]">
-
-                {/* Text section — shrinks hide and fades when complete */}
-                <div
-                  className={`w-full flex justify-center px-4 transition-all duration-1000 ease-in-out overflow-hidden ${isCubeComplete ? "opacity-0 h-0" : "opacity-100 h-[220px]"
-                    }`}
-                >
-                  <RotatingWords onComplete={handleCubeComplete} onMobilePhaseChange={setMobileHeroPhase} />
-                </div>
-
-                {/* Mobile images — now always visible, and smoothly slide closer */}
-                <div
-                  className={`flex items-center justify-center transition-all duration-1000 ease-in-out relative ${isCubeComplete ? "gap-2 scale-100 translate-y-0" : "gap-12 scale-[0.85] -translate-y-4"
-                    }`}
-                >
-                  {/* Center lock for mobile — crossfades in */}
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center z-20 pointer-events-none transition-opacity duration-[800ms] ease-in-out ${isCubeComplete ? "opacity-100" : "opacity-0"
-                      }`}
-                    style={{ transitionDelay: isCubeComplete ? "400ms" : "0ms" }}
-                  >
-                    <Lock className={`h-12 w-12 text-yellow-400 drop-shadow-[0_0_20px_rgba(251,191,36,0.6)] ${isCubeComplete ? "lock-anim" : ""}`} />
-                  </div>
-
-                  {/* iPhone */}
-                  <div className="shrink-0 relative isolate">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[90%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
-                    <div className={`transition-all duration-500 relative z-10`}>
-                      <Image
-                        src="/app_landing_page.png"
-                        alt="Rumi iOS app"
-                        width={200}
-                        height={400}
-                        className={`rounded-xl object-contain h-[260px] w-auto`}
-                        priority
-                      />
-                    </div>
-                  </div>
-                  {/* Web */}
-                  <div className="shrink-0 relative isolate">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-yellow-400/20 blur-[25px] rounded-[30px] transition-opacity duration-1000 select-none pointer-events-none ${isCubeComplete ? "opacity-100" : "opacity-0"}`} />
-                    <div className={`rounded-lg overflow-hidden bg-black w-[140px] transition-all duration-500 relative z-10 border border-white/[0.05]`}>
-                      <div className="flex items-center gap-1 px-2 py-1.5 bg-black border-b border-white/[0.04]">
-                        <div className="w-2 h-2 rounded-full bg-red-500/60" />
-                        <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
-                        <div className="w-2 h-2 rounded-full bg-green-500/60" />
-                        <div className="flex-1 mx-1 h-4 rounded bg-white/[0.03] flex items-center justify-center">
-                          <span className="text-[8px] text-gray-600">rumi.team</span>
-                        </div>
-                      </div>
-                      <Image
-                        src="/app_web.png"
-                        alt="Rumi Web app"
-                        width={400}
-                        height={250}
-                        className="object-cover object-center h-[230px] w-full"
-                        priority
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mobile platform labels */}
-                <div
-                  className={`flex items-center justify-center gap-[110px] mt-4 transition-all duration-700 ${isCubeComplete ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 -translate-y-4"
-                    }`}
-                >
-                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">iOS</span>
-                  <span className="text-gray-500 text-[10px] font-medium tracking-widest uppercase">Web</span>
-                </div>
-              </div>
-
-              {/* Spacer after animation completes */}
-              <div className="mt-8 md:mt-12" />
-            </div>
-          </div>
-
-          {/* Scroll indicator */}
-          <div
-            className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-1000 ${isCubeComplete ? "opacity-100" : "opacity-0"
-              }`}
-          >
-            <div className="scroll-indicator text-gray-600">
-              <ChevronDown className="h-6 w-6" />
-            </div>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 2 — TRANSFORMATIONAL LEADERS
-            ══════════════════════════════════════════════════════ */}
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.03)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                  Transformational Leaders changed history.
-                  <br />
-                  <span className="gradient-text">Imagine having one just for you.</span>
-                </h2>
-              </div>
-            </RevealSection>
-
-            <RevealSection delay={200}>
-              <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-16">
-                {[
-                  { src: "/leaders/bob_marley.jpg", alt: "Bob Marley", tone: "cool" },
-                  { src: "/leaders/john_lennon.jpg", alt: "John Lennon", tone: "cool" },
-                  { src: "/leaders/rumi.jpg", alt: "Rumi", tone: "warm" },
-                  { src: "/leaders/malcolm_x.jpg", alt: "Malcolm X", tone: "cool" },
-                  { src: "/leaders/maya_angelou.jpg", alt: "Maya Angelou", tone: "cool" },
-                ].map((leader, i) => (
-                  <div key={leader.src} className="relative">
-                    <div className={`rounded-full overflow-hidden border-2 transition-all duration-500 ${i === 2
-                      ? "w-24 h-24 md:w-36 md:h-36 lg:w-40 lg:h-40 border-yellow-400/30 hover:border-yellow-400/60"
-                      : "w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 border-white/10 hover:border-yellow-400/40"
-                      }`}>
-                      <Image
-                        src={leader.src}
-                        alt={leader.alt}
-                        width={200}
-                        height={200}
-                        className={`w-full h-full object-cover transition-all duration-500 ${
-                          leader.tone === "center"
-                            ? "grayscale hover:grayscale-0"
-                            : leader.tone === "warm"
-                              ? "sepia-[0.3] brightness-[0.95] saturate-[0.7] hover:sepia-0 hover:brightness-100 hover:saturate-100"
-                              : "grayscale hover:grayscale-0"
-                        }`}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 3 — INSPIRED BY
-            ══════════════════════════════════════════════════════ */}
-        <section id="inspired" className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.04)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Standing on the Shoulders of Giants
+      <main>
+        {/* ── HERO ── */}
+        <section className="relative px-4 md:px-8 pt-16 md:pt-24 pb-12 md:pb-20 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+            {/* Hero text */}
+            <div className="flex-1 text-center md:text-left">
+              <h1 className="text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6">
+                Have the conversation{" "}
+                <span className="text-yellow-400">
+                  you&apos;ve been avoiding.
                 </span>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight mb-6">
-                  The world&apos;s best programs proved anyone can achieve transformation.
-                  <br />
-                  <span className="gradient-text">Rumi shows you how — at a fraction of the cost.</span>
-                </h2>
-                <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed mt-8">
-                  Inspired by methodologies pioneered by programs like Landmark Forum and leaders like Tony Robbins
-                </p>
-              </div>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 3 — THREE SOLUTIONS
-            ══════════════════════════════════════════════════════ */}
-        <section id="solutions" className="w-full py-24 md:py-32 lg:py-40 bg-black relative overflow-hidden">
-          <div className="absolute inset-0 dot-pattern opacity-50 pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16 md:mb-20">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Why Rumi Exists
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Become a Transformational Leader —
-                  <br />
-                  <span className="text-[#FBBF24]">Without the Cost. Without the Fade.</span>
-                </h2>
-              </div>
-            </RevealSection>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
-              <SolutionCard
-                title="Lead Without the Financial Barrier"
-                icon={Lock}
-                problem="World-class transformational programs require a large upfront commitment of $1,000–$12,000, plus 3–5 days of participation with an average of 12 hours of seat time per day."
-                solution="Rumi delivers the same depth of transformational leadership — accessible anytime, anywhere, right from your phone. No travel, no time off work."
-                delay={0}
-              />
-              <SolutionCard
-                title="Become the Leader. Stay the Leader."
-                icon={RefreshCw}
-                problem="Although you are highly likely to experience a breakthrough that truly excites you, recent research shows that for about 95% of participants, the breakthrough is not permanent and will revert back."
-                solution="Rumi's reinforcement engine evaluates every session, creates personalized assignments, and holds you accountable — turning fleeting insights into permanent transformation."
-                delay={150}
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* TESTIMONIALS section — commented out for now
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          ...testimonials...
-        </section>
-        */}
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 3 — PARTNERS
-            ══════════════════════════════════════════════════════ */}
-        {/* <section id="partners" className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-
-          <div className="relative z-10 w-full max-w-5xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Backed By
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                  Industry Leaders
-                </h2>
-                <p className="text-gray-400 text-base md:text-lg max-w-xl mx-auto">
-                  Built on world-class infrastructure and supported by leading startup programs
-                </p>
-              </div>
-            </RevealSection>
-
-            <RevealSection delay={200}>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-16 md:gap-24 lg:gap-32">
-                <GoogleCloudLogo />
-                <div className="hidden sm:block w-px h-20 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-                <FounderInstituteLogo />
-              </div>
-            </RevealSection>
-          </div>
-        </section> */}
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 5 — HOW IT WORKS (no numbers)
-            ══════════════════════════════════════════════════════ */}
-        <section id="how-it-works" className="w-full py-24 md:py-32 lg:py-40 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16 md:mb-20">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  How It Works
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                  Your Transformation in{" "}
-                  <span className="gradient-text">Three Steps</span>
-                </h2>
-              </div>
-            </RevealSection>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-10">
-              {/* Step 1 */}
-              <RevealSection delay={0}>
-                <div className="relative text-center md:text-left">
-                  <div className="flex flex-col items-center md:items-start">
-                    <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
-                      <MessageSquareText className="h-7 w-7 text-yellow-400" />
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
-                      Start a Conversation
-                    </h3>
-                    <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Tell Rumi what&apos;s on your mind. Your AI transformational leader listens deeply — no judgment, no agenda, no time limits. Available 24/7 whenever you need it.
-                    </p>
-                  </div>
-                  <div className="hidden md:block absolute top-8 right-0 w-1/3 h-px bg-gradient-to-r from-yellow-400/20 to-transparent translate-x-full" />
-                </div>
-              </RevealSection>
-
-              {/* Step 2 */}
-              <RevealSection delay={200}>
-                <div className="relative text-center md:text-left">
-                  <div className="flex flex-col items-center md:items-start">
-                    <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
-                      <Brain className="h-7 w-7 text-yellow-400" />
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
-                      Uncover What&apos;s Holding You Back
-                    </h3>
-                    <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Rumi surfaces the hidden beliefs, emotional reactions, and habitual patterns that shape your life — then measures the depth of your breakthrough in real-time.
-                    </p>
-                  </div>
-                </div>
-              </RevealSection>
-
-              {/* Step 3 */}
-              <RevealSection delay={400}>
-                <div className="relative text-center md:text-left">
-                  <div className="flex flex-col items-center md:items-start">
-                    <div className="w-16 h-16 rounded-2xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center mb-6">
-                      <Target className="h-7 w-7 text-yellow-400" />
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mb-3 relative z-10">
-                      Transform — and Stay Transformed
-                    </h3>
-                    <p className="text-gray-400 text-base leading-relaxed relative z-10">
-                      Personalized assignments, daily check-ins, and transformation scoring ensure your insights become permanent behavioral shifts — not another forgotten seminar.
-                    </p>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 6 — STATS / VALUE PROPS (no price, updated)
-            ══════════════════════════════════════════════════════ */}
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-
-          <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden glow-yellow">
-                <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/[0.06]">
-                  <AnimatedStat
-                    icon={Clock}
-                    value="24/7"
-                    label="Always There"
-                    description="Transformational leadership whenever you need it most"
-                  />
-                  <AnimatedStat
-                    icon={TrendingUp}
-                    value="Self-Paced"
-                    label="Your Schedule"
-                    description="Progress at your own speed, on your own terms"
-                  />
-                  <AnimatedStat
-                    icon={Brain}
-                    value="Agentic AI"
-                    label="First for Human Development"
-                    description="Evaluates, assigns, adapts, and holds you accountable"
-                  />
-                  <AnimatedStat
-                    icon={Shield}
-                    value="100%"
-                    label="Secured"
-                    description="Your data is never shared with third parties"
-                  />
-                </div>
-              </div>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 7 — FEATURES GRID (with all reinforcement layers)
-            ══════════════════════════════════════════════════════ */}
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 dot-pattern opacity-30 pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-6xl mx-auto px-4 md:px-8">
-            <RevealSection>
-              <div className="text-center mb-16 md:mb-20">
-                <span className="inline-block text-yellow-400 text-sm font-semibold tracking-widest uppercase mb-4">
-                  Platform Features
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-                  Everything You Need to Experience a{" "}
-                  <span className="gradient-text whitespace-nowrap">Lasting Transformation</span>
-                </h2>
-              </div>
-            </RevealSection>
-
-            {/* ── Group 1: Coaching Intelligence ── */}
-            <RevealSection className="mb-16">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
-                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
-                  Coaching Intelligence
-                </h3>
-                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {([
-                  {
-                    icon: MessageSquareText,
-                    title: "AI-Powered Conversations",
-                    desc: "Natural dialogue with an AI transformational leader that listens, reflects, and responds with genuine emotional intelligence — 24/7.",
-                  },
-                  {
-                    icon: Heart,
-                    title: "Emotional Intelligence",
-                    desc: "Detects emotional tone and context in real-time, adjusting its approach to meet you exactly where you are.",
-                  },
-                  {
-                    icon: UserCog,
-                    title: "Hyper Personalization",
-                    desc: "Learns your character, goals, and mood over time — adapting every session to your unique growth edge.",
-                  },
-                  {
-                    icon: Sliders,
-                    title: "Adaptive Style",
-                    desc: "Pacing, technique, and intensity evolve with every session based on what actually works for you.",
-                  },
-                ] as const).map((feature) => (
-                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
-                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
-                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </RevealSection>
-
-            {/* ── Group 2: Reinforcement Engine ── */}
-            <RevealSection className="mb-16" delay={200}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
-                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
-                  Reinforcement Engine
-                </h3>
-                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {([
-                  {
-                    icon: BookOpen,
-                    title: "Proven Programs",
-                    desc: "Structured journeys built on decades of transformational frameworks, with clear milestones and measurable outcomes.",
-                  },
-                  {
-                    icon: Award,
-                    title: "Transformation Scoring",
-                    desc: "After every session, a multi-dimensional score tracks real breakthroughs — not just attendance.",
-                  },
-                  {
-                    icon: ClipboardCheck,
-                    title: "Smart Assignments",
-                    desc: "Personalized action items with deadlines and completion tracking, created exactly when you need them.",
-                  },
-                  {
-                    icon: BellRing,
-                    title: "Proactive Accountability",
-                    desc: "Check-ins, reminders, and nudges keep your momentum strong between sessions. Rumi doesn't wait for you to show up.",
-                  },
-                ] as const).map((feature) => (
-                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
-                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
-                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </RevealSection>
-
-            {/* ── Group 3: Your Journey ── */}
-            <RevealSection delay={400}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-yellow-400/30 to-transparent" />
-                <h3 className="text-sm font-semibold tracking-widest uppercase text-yellow-400">
-                  Your Journey
-                </h3>
-                <div className="h-px flex-1 bg-gradient-to-l from-yellow-400/30 to-transparent" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {([
-                  {
-                    icon: LineChart,
-                    title: "Growth Trajectory",
-                    desc: "Track your transformation over weeks and months. See plateaus before they happen and celebrate milestones.",
-                  },
-                  {
-                    icon: Layers,
-                    title: "Multiple Journeys",
-                    desc: "Specialized programs for different areas of your life — each with its own milestones and progression path.",
-                  },
-                  {
-                    icon: Shield,
-                    title: "Your Data Stays Yours",
-                    desc: "Completely confidential. Never shared with third parties. Enterprise-grade security on Google Cloud.",
-                  },
-                ] as const).map((feature) => (
-                  <div key={feature.title} className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-yellow-400/20 transition-colors duration-500 h-full">
-                    <feature.icon className="h-7 w-7 text-yellow-400 mb-3" />
-                    <h4 className="text-base font-semibold text-white mb-1.5">{feature.title}</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">{feature.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </RevealSection>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SECTION 8 — CTA BANNER
-            ══════════════════════════════════════════════════════ */}
-        <section className="w-full py-24 md:py-32 relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yellow-400/20 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.06)_0%,transparent_60%)] pointer-events-none" />
-
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 md:px-8 text-center">
-            <RevealSection>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight mb-6">
-                Your Transformation Starts with One Conversation.
-              </h2>
-              <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4">
-                Experience transformational leadership that understands who you are, meets you where you are,
-                and helps you become who you want to be.
+              </h1>
+              <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-xl leading-relaxed">
+                Say what you&apos;ve never said out loud. A private voice
+                conversation with an AI that actually listens, then follows up
+                until it sticks.
               </p>
-              <div className="flex items-center justify-center gap-2 mb-10">
-                <Lock className="h-4 w-4 text-yellow-400" />
-                <span className="text-sm text-gray-500">Your privacy is our priority. Data never shared with third parties.</span>
-              </div>
               <Link href="/login" className="inline-flex items-center">
                 <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
-                  Sign In
+                  Try Rumi Free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-            </RevealSection>
+              <p className="text-sm text-gray-500 mt-3">
+                No credit card. Takes 30 seconds.
+              </p>
+            </div>
+
+            {/* Phone mockup — hidden on mobile so CTA stays above fold */}
+            <div className="hidden md:flex flex-shrink-0 items-center justify-center">
+              <div className="relative w-[240px] h-[480px] rounded-[2.5rem] border-2 border-white/10 bg-gray-950 overflow-hidden shadow-2xl shadow-yellow-400/5">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-yellow-300 via-yellow-400 to-yellow-600 shadow-[0_0_60px_rgba(251,191,36,0.3)] mb-6" />
+                  <span className="text-sm text-gray-500">
+                    Tap to start your session
+                  </span>
+                </div>
+                {/* Notch */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-b-2xl" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── PROBLEM: The 95% stat ── */}
+        <section className="py-20 md:py-28 px-4 md:px-8 border-t border-white/[0.06] bg-gray-950/50">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-[6rem] md:text-[10rem] font-black leading-none bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">
+              95%
+            </p>
+            <p className="text-xl md:text-2xl text-gray-300 font-semibold mt-2 mb-6">
+              of breakthroughs don&apos;t last.
+            </p>
+            <p className="text-base md:text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
+              You&apos;ve read the books. You&apos;ve had the insights. Nothing
+              sticks. Research shows most people who experience a personal
+              breakthrough fade back to baseline within weeks. Rumi is built to
+              fix that.
+            </p>
+          </div>
+        </section>
+
+        {/* ── HOW IT WORKS ── */}
+        <section className="py-20 px-4 md:px-8 max-w-5xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
+            How Rumi works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {/* Talk */}
+            <div className="flex flex-col items-center text-center p-8 rounded-2xl border border-white/[0.06] bg-gray-950/50">
+              <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center mb-5">
+                <MessageSquareText className="h-6 w-6 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Talk</h3>
+              <p className="text-gray-400 text-base leading-relaxed">
+                A private voice conversation with your AI coach. No scheduling,
+                no judgment, no time limits. Available 24/7.
+              </p>
+            </div>
+
+            {/* See */}
+            <div className="flex flex-col items-center text-center p-8 rounded-2xl border border-white/[0.06] bg-gray-950/50">
+              <div className="w-12 h-12 rounded-full bg-yellow-400/10 flex items-center justify-center mb-5">
+                <Eye className="h-6 w-6 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">See</h3>
+              <p className="text-gray-400 text-base leading-relaxed">
+                Rumi surfaces the patterns, beliefs, and reactions shaping your
+                life, then measures the depth of your breakthrough in real time.
+              </p>
+            </div>
+
+            {/* Stay — visually dominant */}
+            <div className="flex flex-col items-center text-center p-8 md:p-10 rounded-2xl border-2 border-yellow-400/30 bg-gray-950/80 shadow-[0_0_30px_rgba(251,191,36,0.08)] md:scale-105">
+              <div className="w-14 h-14 rounded-full bg-yellow-400/20 flex items-center justify-center mb-5">
+                <RefreshCw className="h-7 w-7 text-yellow-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-yellow-400 mb-3">
+                Stay
+              </h3>
+              <p className="text-gray-400 text-base leading-relaxed">
+                Personalized assignments, daily check-ins, and transformation
+                scoring ensure your insights become permanent change, not another
+                forgotten moment.
+              </p>
+            </div>
+          </div>
+
+          {/* Mid-page CTA */}
+          <div className="flex justify-center mt-14">
+            <Link href="/login" className="inline-flex items-center">
+              <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
+                Try Rumi Free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
+        {/* ── SOCIAL PROOF ── */}
+        <section className="py-20 px-4 md:px-8 border-t border-white/[0.06] bg-gray-950/50">
+          <div className="max-w-2xl mx-auto text-center">
+            {/* Founder note (origin story) */}
+            <div className="text-left max-w-lg mx-auto">
+              <p className="text-lg italic text-gray-300 leading-relaxed">
+                &ldquo;I spent thousands on transformational coaching programs.
+                They worked, for about three weeks. Then everything faded. I
+                built Rumi because the insight was never the problem. Keeping it
+                was.&rdquo;
+              </p>
+              <p className="text-sm text-gray-500 mt-4">
+                &mdash; Parnian, Founder
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FAQ ── */}
+        <FAQ />
+
+        {/* ── FINAL CTA ── */}
+        <section className="py-20 px-4 md:px-8 text-center border-t border-white/[0.06]">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Your transformation starts with one conversation.
+          </h2>
+          <p className="text-gray-400 text-lg mb-8">
+            Free during beta. Private. Available 24/7.
+          </p>
+          <Link href="/login" className="inline-flex items-center">
+            <Button className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold text-lg px-10 h-14 transition-all duration-300 hover:shadow-[0_0_40px_rgba(251,191,36,0.3)]">
+              Try Rumi Free
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <div className="flex items-center justify-center gap-2 mt-6">
+            <Lock className="h-4 w-4 text-yellow-400" />
+            <span className="text-sm text-gray-500">
+              No credit card. Your data is never shared.
+            </span>
           </div>
         </section>
       </main>
 
-      {/* ══════════════════════════════════════════════════════
-          FOOTER
-          ══════════════════════════════════════════════════════ */}
-      <footer className="w-full py-12 bg-black border-t border-white/[0.06]" role="contentinfo">
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col items-center md:items-start gap-2">
-              <Image src="/rumi_logo.png" alt="Rumi Logo" width={607} height={202} className="h-[64px] w-auto opacity-70" />
-              <span className="text-base text-gray-500">Designed in California</span>
-            </div>
-            <div className="text-center">
-              <p className="text-base text-gray-500">
-                Copyright &copy;2026, Rumi, Inc. Made in California.
-              </p>
-            </div>
-            <div className="flex flex-col items-center md:items-end gap-3">
-              <button
-                onClick={() => setIsContactModalOpen(true)}
-                className="inline-flex items-center text-lg text-gray-500 hover:text-yellow-400 transition-colors duration-200 py-2 cursor-pointer hover:underline underline-offset-4"
-                aria-label="Contact Support"
-              >
-                <Mail className="h-7 w-7 mr-2" aria-hidden="true" />
-                Contact Support
-              </button>
-              <a
-                href="https://rumiagent.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200 py-3"
-              >
-                For developers &amp; enterprise → rumiagent.com
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Contact Modal */}
-      <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+      {/* ── FOOTER (client component — contact modal state) ── */}
+      <Footer />
     </div>
   )
 }
