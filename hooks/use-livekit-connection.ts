@@ -27,7 +27,7 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
   const roomRef = useRef<Room | null>(null)
   const [, setRoomVersion] = useState(0) // Force re-renders when room changes
 
-  const connect = useCallback(async (displayName?: string) => {
+  const connect = useCallback(async (displayName?: string, options?: { teaching_mode?: boolean }) => {
     setConnectionState("connecting")
     setError(null)
 
@@ -39,6 +39,7 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
         body: JSON.stringify({
           displayName,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          teaching_mode: options?.teaching_mode ?? true,
         }),
       })
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { useStepProgress, type StepInfo } from "@/hooks/use-step-progress"
 import { SectionBanner } from "./section-banner"
 import { StepNode } from "./step-node"
@@ -14,6 +14,20 @@ interface JourneyPathProps {
 export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
   const { data, loading, error, refresh } = useStepProgress()
   const [selectedStep, setSelectedStep] = useState<StepInfo | null>(null)
+
+  // Teaching mode toggle (persisted in localStorage)
+  const [teachingMode, setTeachingMode] = useState(true)
+  useEffect(() => {
+    const stored = localStorage.getItem("rumi_teaching_mode")
+    if (stored !== null) setTeachingMode(stored === "true")
+  }, [])
+  const toggleTeachingMode = useCallback(() => {
+    setTeachingMode(prev => {
+      const next = !prev
+      localStorage.setItem("rumi_teaching_mode", String(next))
+      return next
+    })
+  }, [])
   const [holdProgress, setHoldProgress] = useState(0)
   const [holdTimer, setHoldTimer] = useState<ReturnType<typeof setInterval> | null>(null)
 
@@ -85,10 +99,32 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
     <div className="flex flex-col flex-1 min-h-0">
       {/* Header */}
       <div className="px-6 pt-6 pb-4">
-        <p className="text-gray-400 text-sm">
-          {displayName ? `Welcome back, ${displayName}` : "Welcome back"}
-        </p>
-        <h1 className="text-white text-xl font-bold mt-1">Your Journey</h1>
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-gray-400 text-sm">
+              {displayName ? `Welcome back, ${displayName}` : "Welcome back"}
+            </p>
+            <h1 className="text-white text-xl font-bold mt-1">Your Journey</h1>
+          </div>
+
+          {/* Teaching mode toggle */}
+          <button
+            onClick={toggleTeachingMode}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all text-xs font-medium"
+            style={{
+              borderColor: teachingMode ? "rgba(59,130,246,0.5)" : "rgba(107,114,128,0.3)",
+              background: teachingMode ? "rgba(59,130,246,0.1)" : "transparent",
+              color: teachingMode ? "rgb(147,197,253)" : "rgb(156,163,175)",
+            }}
+            aria-label={`Visual teaching: ${teachingMode ? "on" : "off"}`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+            </svg>
+            Visual Teaching {teachingMode ? "ON" : "OFF"}
+          </button>
+        </div>
       </div>
 
       {/* Scrollable path */}
