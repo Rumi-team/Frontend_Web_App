@@ -61,7 +61,8 @@ export default function CoachPage() {
     const granted = await mic.requestPermission()
     if (!granted) return
 
-    await lk.connect(displayName ?? undefined)
+    const teachingMode = localStorage.getItem("rumi_teaching_mode") !== "false"
+    await lk.connect(displayName ?? undefined, { teaching_mode: teachingMode })
   }, [mic, lk, displayName, lyrics])
 
   const handleE2ESend = useCallback(async (text: string) => {
