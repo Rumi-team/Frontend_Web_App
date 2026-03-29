@@ -18,11 +18,8 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
   const [holdTimer, setHoldTimer] = useState<ReturnType<typeof setInterval> | null>(null)
 
   const handleStepTap = useCallback((step: StepInfo) => {
-    if (step.status === "completed") {
-      setSelectedStep(step)
-    }
-    // Current step: handled by hold-to-start below
-    // Locked: no-op (button is disabled)
+    // All steps open the detail sheet (completed shows summary, locked shows preview + lock message)
+    setSelectedStep(step)
   }, [])
 
   // Hold-to-start for current step (3s hold)
@@ -180,6 +177,7 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
       <StepSummarySheet
         step={selectedStep}
         onClose={() => setSelectedStep(null)}
+        onStartSession={onStartSession}
       />
     </div>
   )
