@@ -32,25 +32,30 @@ export async function middleware(request: NextRequest) {
 
   const { supabase, response } = createSupabaseMiddlewareClient(request)
 
-  // Login page — if already authenticated, skip to /rumi (or /onboarding if not completed)
+  // Login page — if already authenticated, skip to /phone (or /onboarding if not completed)
   // Otherwise allow through (including ?code= for PKCE exchange)
   if (pathname === "/login") {
     const { data: { user } } = await supabase.auth.getUser()
     if (user && !request.nextUrl.searchParams.has("code")) {
-      const dest = request.cookies.get("rumi_onboarding_complete") ? "/rumi" : "/onboarding"
+      const dest = request.cookies.get("rumi_onboarding_complete") ? "/phone" : "/onboarding"
       return NextResponse.redirect(new URL(dest, request.url))
     }
     return response
   }
 
-  // Landing page — if user is authenticated, redirect to /rumi (or /onboarding)
+  // Landing page — if user is authenticated, redirect to /phone (or /onboarding)
   if (pathname === "/") {
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      const dest = request.cookies.get("rumi_onboarding_complete") ? "/rumi" : "/onboarding"
+      const dest = request.cookies.get("rumi_onboarding_complete") ? "/phone" : "/onboarding"
       return NextResponse.redirect(new URL(dest, request.url))
     }
     return response
+  }
+
+  // Legacy /rumi route redirect — catches existing bookmarks
+  if (pathname === "/rumi" || pathname.startsWith("/rumi/")) {
+    return NextResponse.redirect(new URL("/phone", request.url))
   }
 
   // Welcome + onboarding pages — pass through without auth
@@ -62,7 +67,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Protected coach routes — redirect to /login if not authenticated
-  const coachRoutes = ["/rumi", "/library", "/chat", "/settings"]
+  const coachRoutes = ["/rumi", "/library", "/chat", "/settings", "/phone", "/text", "/content", "/you", "/preferences"]
   const isCoachRoute = coachRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + "/")
   )
@@ -96,5 +101,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/admin/:path*", "/login", "/onboarding/:path*", "/welcome/:path*"],
+  matcher: ["/", "/rumi/:path*", "/library/:path*", "/chat/:path*", "/settings/:path*", "/phone/:path*", "/text/:path*", "/content/:path*", "/you/:path*", "/preferences/:path*", "/admin/:path*", "/login", "/onboarding/:path*", "/welcome/:path*"],
 }
