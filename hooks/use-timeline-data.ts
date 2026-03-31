@@ -65,12 +65,24 @@ export function useTimelineData(
   const activeQuests = useSettingsStore((s) => s.activeQuests)
 
   const load = useCallback(async () => {
+    setIsLoading(true)
+
+    // Even without user IDs, show today's open quests
     if (!userId && !providerUserId) {
+      const today = new Date().toISOString().split("T")[0]
+      const todayQuests = activeQuests
+        .map((id) => ALL_QUESTS.find((q) => q.id === id))
+        .filter((q): q is Quest => q !== undefined)
+      setDays([{
+        date: today,
+        label: "Today",
+        openQuests: todayQuests,
+        completedItems: [],
+      }])
       setIsLoading(false)
       return
     }
 
-    setIsLoading(true)
     const supabase = createSupabaseBrowserClient()
 
     // Fetch sessions and journal entries in parallel
