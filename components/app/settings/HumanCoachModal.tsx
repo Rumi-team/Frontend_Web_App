@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
-import { createBrowserClient } from "@/lib/supabase-auth-browser"
+import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 import { toast } from "sonner"
 import { Users, ShieldCheck, CalendarDays, Sparkles, Check } from "lucide-react"
 
@@ -19,7 +19,7 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
     if (submitting) return
     setSubmitting(true)
     try {
-      const supabase = createBrowserClient()
+      const supabase = createSupabaseBrowserClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (!user?.email) {
         toast.error("Please sign in to join the waitlist.")
