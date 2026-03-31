@@ -21,35 +21,37 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around border-t border-gray-200/60 px-2 pb-[env(safe-area-inset-bottom)]"
-      style={{ background: "#FAF8F3" }}
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200/60 pb-[env(safe-area-inset-bottom)]"
+      style={{ background: "var(--app-bg, #FAF8F3)" }}
     >
-      {TABS.map((tab) => {
-        const isActive = pathname === tab.href || pathname.startsWith(tab.href + "/")
-        const Icon = tab.icon
+      <div className="flex items-center justify-around px-2 max-w-2xl mx-auto">
+        {TABS.map((tab) => {
+          const isActive = pathname === tab.href || pathname.startsWith(tab.href + "/")
+          const Icon = tab.icon
 
-        return (
-          <Link
-            key={tab.href}
-            href={tab.href}
-            className={`flex flex-col items-center gap-0.5 px-3 py-2 ${
-              isActive ? "text-gray-900" : "text-gray-400"
-            }`}
-          >
-            <div
-              className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${
-                isActive ? "bg-gray-800" : ""
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={`flex flex-col items-center gap-0.5 md:gap-1 px-3 py-2 md:px-4 md:py-3 ${
+                isActive ? "text-gray-900" : "text-gray-400"
               }`}
             >
-              <Icon
-                className={`h-5 w-5 ${isActive ? "text-white" : "text-gray-400"}`}
-                strokeWidth={isActive ? 2.5 : 1.5}
-              />
-            </div>
-            <span className="text-[10px] font-medium">{tab.label}</span>
-          </Link>
-        )
-      })}
+              <div
+                className={`flex h-8 w-12 md:h-10 md:w-14 items-center justify-center rounded-full transition-colors ${
+                  isActive ? "bg-gray-800" : ""
+                }`}
+              >
+                <Icon
+                  className={`h-5 w-5 md:h-6 md:w-6 ${isActive ? "text-white" : "text-gray-400"}`}
+                  strokeWidth={isActive ? 2.5 : 1.5}
+                />
+              </div>
+              <span className="text-[10px] md:text-xs font-medium">{tab.label}</span>
+            </Link>
+          )
+        })}
+      </div>
     </nav>
   )
 }

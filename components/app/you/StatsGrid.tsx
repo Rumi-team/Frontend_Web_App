@@ -7,12 +7,12 @@ export function StatsGrid() {
   const wordCount = useUserStore((s) => s.wordCount)
   const sessionsCompleted = useUserStore((s) => s.sessionsCompleted)
 
-  const moneySaved = sessionsCompleted * 5
+  const moneySaved = sessionsCompleted * 150
 
   const stats = [
     { label: "Streak", value: streak, icon: "🔥" },
     { label: "Words", value: wordCount, icon: "📝" },
-    { label: "Saved", value: `$${moneySaved}`, icon: "💚" },
+    { label: "Saved", value: `$${moneySaved.toLocaleString()}`, icon: "💚" },
   ]
 
   return (

@@ -9,7 +9,7 @@ interface CustomizeAIModalProps {
 }
 
 const VOICES = [
-  { id: "sonia", name: "Sonia" },
+  { id: "aoede", name: "Aoede" },
   { id: "david", name: "David" },
   { id: "jasmine", name: "Jasmine" },
   { id: "linda", name: "Linda" },

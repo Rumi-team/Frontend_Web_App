@@ -45,7 +45,7 @@ export function HomeScreen() {
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-between px-6 pb-6 pt-16 w-full">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-between px-6 pb-28 pt-16 w-full">
         {/* Avatar + name */}
         <div className="flex flex-col items-center gap-2">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200/80 shadow-lg">

@@ -2,6 +2,7 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { useSettingsStore } from "@/store/settingsStore"
+import { useTheme } from "next-themes"
 import { SegmentedControl } from "@/components/app/shared/SegmentedControl"
 import { Check } from "lucide-react"
 
@@ -21,6 +22,13 @@ export function AppearanceModal({ open, onOpenChange }: AppearanceModalProps) {
   const selectedTheme = useSettingsStore((s) => s.selectedTheme)
   const lightDark = useSettingsStore((s) => s.lightDark)
   const setField = useSettingsStore((s) => s.setField)
+  const { setTheme } = useTheme()
+
+  function handleLightDark(val: string) {
+    const mode = val as "light" | "dark"
+    setField("lightDark", mode)
+    setTheme(mode)
+  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -37,7 +45,7 @@ export function AppearanceModal({ open, onOpenChange }: AppearanceModalProps) {
               { value: "dark", label: "Dark" },
             ]}
             value={lightDark}
-            onChange={(val) => setField("lightDark", val as "light" | "dark")}
+            onChange={handleLightDark}
           />
         </div>
 
