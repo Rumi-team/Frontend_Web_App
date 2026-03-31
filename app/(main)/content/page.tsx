@@ -1,7 +1,7 @@
 "use client"
 
-import { QuestFeed } from "@/components/app/content/QuestFeed"
+import { ContentTimeline } from "@/components/app/content/ContentTimeline"
 
 export default function ContentPage() {
-  return <QuestFeed />
+  return <ContentTimeline />
 }

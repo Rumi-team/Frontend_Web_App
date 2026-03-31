@@ -5,6 +5,7 @@ import { useAuth } from "@/components/auth-provider"
 import { ProfileCard } from "@/components/app/you/ProfileCard"
 import { StatsGrid } from "@/components/app/you/StatsGrid"
 import { FocusAreas } from "@/components/app/you/FocusAreas"
+import { TransformationCard } from "@/components/app/you/TransformationCard"
 import { LibrarySheet } from "@/components/library/library-sheet"
 import { AssignmentsSheet } from "@/components/coach/assignments-sheet"
 import { BookOpen, ClipboardList } from "lucide-react"
@@ -15,7 +16,7 @@ export default function YouPage() {
   const [showAssignments, setShowAssignments] = useState(false)
 
   return (
-    <div className="flex flex-col gap-4 px-4 pt-8 pb-4" style={{ background: "#FAF8F3" }}>
+    <div className="flex flex-col gap-4 px-4 pt-8 pb-4" style={{ background: "var(--app-bg, #FAF8F3)" }}>
       <ProfileCard />
       <StatsGrid />
 
@@ -27,6 +28,8 @@ export default function YouPage() {
         </p>
         <p className="mt-2 text-xs text-gray-400">This is regularly updated by Rumi</p>
       </div>
+
+      <TransformationCard providerUserId={providerUserId} />
 
       <FocusAreas />
 

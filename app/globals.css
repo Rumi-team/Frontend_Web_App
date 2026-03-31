@@ -14,6 +14,7 @@ body {
 
 @layer base {
   :root {
+    --app-bg: #FAF8F3;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -49,6 +50,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
+    --app-bg: #1a1a1a;
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;

@@ -1,17 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/components/auth-provider"
 import { useSettingsStore } from "@/store/settingsStore"
+import { useTheme } from "next-themes"
 import {
   Mail, Users, Heart, Sparkles, MessageCircle, Image,
-  Sun, Moon, Lock, LogOut, Trash2, ChevronRight
+  Sun, Moon, LogOut, Trash2, ChevronRight
 } from "lucide-react"
 import { FeedbackModal } from "./FeedbackModal"
 import { EmergencyModal } from "./EmergencyModal"
 import { ManageQuestsModal } from "./ManageQuestsModal"
 import { CustomizeAIModal } from "./CustomizeAIModal"
 import { AppearanceModal } from "./AppearanceModal"
+import { HumanCoachModal } from "./HumanCoachModal"
 
 interface SettingsRowProps {
   icon: React.ReactNode
@@ -61,15 +63,28 @@ export function SettingsList() {
   const { signOut } = useAuth()
   const settings = useSettingsStore()
   const setField = useSettingsStore((s) => s.setField)
+  const { setTheme } = useTheme()
 
   const [showFeedback, setShowFeedback] = useState(false)
   const [showEmergency, setShowEmergency] = useState(false)
   const [showQuests, setShowQuests] = useState(false)
   const [showAI, setShowAI] = useState(false)
   const [showAppearance, setShowAppearance] = useState(false)
+  const [showHumanCoach, setShowHumanCoach] = useState(false)
+
+  // Sync theme on mount and when lightDark setting changes
+  useEffect(() => {
+    setTheme(settings.lightDark === "dark" ? "dark" : "light")
+  }, [settings.lightDark, setTheme])
+
+  function handleLightDarkToggle(isLight: boolean) {
+    const mode = isLight ? "light" : "dark"
+    setField("lightDark", mode)
+    setTheme(mode)
+  }
 
   return (
-    <div className="min-h-dvh pb-24" style={{ background: "#FAF8F3" }}>
+    <div className="min-h-dvh pb-24" style={{ background: "var(--app-bg, #FAF8F3)" }}>
       <h1 className="px-6 pt-8 pb-2 text-3xl font-bold text-gray-900">Settings</h1>
 
       {/* App Feedback */}
@@ -84,8 +99,10 @@ export function SettingsList() {
         <div className="mx-4 border-t border-gray-100" />
         <SettingsRow
           icon={<Users className="h-5 w-5" />}
-          title="Use the App Alongside Human Therapy"
-          description="Coming soon — we're building something special"
+          title="Use the App Alongside a Human Life Coach"
+          description="Pair your AI coaching with a certified life coach"
+          onClick={() => setShowHumanCoach(true)}
+          chevron
         />
       </div>
 
@@ -136,23 +153,7 @@ export function SettingsList() {
           title="Light/Dark Mode"
           description="Match your preference"
           toggle={settings.lightDark === "light"}
-          onToggle={(val) => setField("lightDark", val ? "light" : "dark")}
-        />
-        <div className="mx-4 border-t border-gray-100" />
-        <SettingsRow
-          icon={<Sparkles className="h-5 w-5" />}
-          title="Particles"
-          description="Floating visual effects in voice sessions"
-          toggle={settings.particles}
-          onToggle={(val) => setField("particles", val)}
-        />
-        <div className="mx-4 border-t border-gray-100" />
-        <SettingsRow
-          icon={<Sparkles className="h-5 w-5" />}
-          title="Edge Glow"
-          description="Screen edge glow responding to your voice"
-          toggle={settings.edgeGlow}
-          onToggle={(val) => setField("edgeGlow", val)}
+          onToggle={handleLightDarkToggle}
         />
         <div className="mx-4 border-t border-gray-100" />
         <SettingsRow
@@ -169,18 +170,6 @@ export function SettingsList() {
           description="Show celebration when your streak increases"
           toggle={settings.streakCelebration}
           onToggle={(val) => setField("streakCelebration", val)}
-        />
-      </div>
-
-      {/* Privacy & Security */}
-      <SectionHeader title="Privacy & Security" />
-      <div className="mx-4 rounded-2xl bg-white overflow-hidden shadow-sm">
-        <SettingsRow
-          icon={<Lock className="h-5 w-5" />}
-          title="App Lock"
-          description="Require passcode to open Rumi"
-          toggle={settings.appLock}
-          onToggle={(val) => setField("appLock", val)}
         />
       </div>
 
@@ -208,6 +197,7 @@ export function SettingsList() {
       <ManageQuestsModal open={showQuests} onOpenChange={setShowQuests} />
       <CustomizeAIModal open={showAI} onOpenChange={setShowAI} />
       <AppearanceModal open={showAppearance} onOpenChange={setShowAppearance} />
+      <HumanCoachModal open={showHumanCoach} onOpenChange={setShowHumanCoach} />
     </div>
   )
 }

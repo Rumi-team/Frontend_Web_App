@@ -63,7 +63,7 @@ function AppLayoutInner({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col" style={{ background: "#FAF8F3" }}>
+    <div className="flex min-h-dvh flex-col" style={{ background: "var(--app-bg, #FAF8F3)" }}>
       <main className="flex-1 pb-20">{children}</main>
       <BottomNav />
     </div>

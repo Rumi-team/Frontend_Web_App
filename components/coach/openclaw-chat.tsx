@@ -130,8 +130,8 @@ export function OpenClawChat({ className }: OpenClawChatProps) {
               className={cn(
                 "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
                 msg.role === "assistant"
-                  ? "bg-yellow-500/20 text-yellow-400"
-                  : "bg-white/10 text-gray-400"
+                  ? "bg-amber-100 text-amber-600"
+                  : "bg-gray-100 text-gray-500"
               )}
             >
               {msg.role === "assistant" ? (
@@ -146,15 +146,15 @@ export function OpenClawChat({ className }: OpenClawChatProps) {
               className={cn(
                 "max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
                 msg.role === "assistant"
-                  ? "bg-white/[0.06] text-gray-200 rounded-tl-sm"
-                  : "bg-yellow-500/20 text-yellow-100 rounded-tr-sm"
+                  ? "bg-gray-100 text-gray-800 rounded-tl-sm"
+                  : "bg-amber-100 text-gray-800 rounded-tr-sm"
               )}
             >
               <p className="whitespace-pre-wrap">{msg.content}</p>
               <p
                 className={cn(
                   "text-xs mt-1.5",
-                  msg.role === "assistant" ? "text-gray-600" : "text-yellow-500/50"
+                  msg.role === "assistant" ? "text-gray-500" : "text-amber-700/60"
                 )}
               >
                 {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -165,14 +165,14 @@ export function OpenClawChat({ className }: OpenClawChatProps) {
 
         {loading && (
           <div className="flex gap-3">
-            <div className="h-8 w-8 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
-              <Bot className="h-4 w-4 text-yellow-400" />
+            <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <Bot className="h-4 w-4 text-amber-600" />
             </div>
-            <div className="bg-white/[0.06] rounded-2xl rounded-tl-sm px-4 py-3">
+            <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
               <div className="flex gap-1.5 items-center h-5">
-                <span className="h-2 w-2 rounded-full bg-yellow-400/60 animate-bounce [animation-delay:0ms]" />
-                <span className="h-2 w-2 rounded-full bg-yellow-400/60 animate-bounce [animation-delay:150ms]" />
-                <span className="h-2 w-2 rounded-full bg-yellow-400/60 animate-bounce [animation-delay:300ms]" />
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-bounce [animation-delay:0ms]" />
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-bounce [animation-delay:150ms]" />
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-bounce [animation-delay:300ms]" />
               </div>
             </div>
           </div>
@@ -182,12 +182,12 @@ export function OpenClawChat({ className }: OpenClawChatProps) {
       </div>
 
       {/* Input */}
-      <div className="border-t border-white/[0.06] p-4">
+      <div className="border-t border-gray-200 p-4">
         {unavailable ? (
           <div className="flex items-center gap-2 text-sm text-gray-500 text-center justify-center py-2">
             <MessageSquare className="h-4 w-4" />
             Text coaching requires backend deployment — voice sessions at{" "}
-            <a href="/rumi" className="text-yellow-400 underline hover:text-yellow-300">
+            <a href="/rumi" className="text-amber-600 underline hover:text-amber-500">
               /rumi
             </a>{" "}
             are fully available.
@@ -202,7 +202,7 @@ export function OpenClawChat({ className }: OpenClawChatProps) {
               placeholder="Message Rumi... (Enter to send, Shift+Enter for new line)"
               rows={1}
               disabled={loading}
-              className="flex-1 resize-none rounded-xl bg-white/[0.06] border border-white/[0.08] text-white placeholder:text-gray-600 px-4 py-3 text-sm focus:outline-none focus:border-yellow-500/40 focus:ring-1 focus:ring-yellow-500/20 transition-all disabled:opacity-50 max-h-32 overflow-y-auto"
+              className="flex-1 resize-none rounded-xl bg-white border border-gray-200 text-gray-800 placeholder:text-gray-400 px-4 py-3 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-200 transition-all disabled:opacity-50 max-h-32 overflow-y-auto"
               style={{ minHeight: "48px" }}
               onInput={(e) => {
                 const el = e.currentTarget
