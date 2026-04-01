@@ -66,6 +66,7 @@ export function useTimelineData(
 
   const load = useCallback(async () => {
     setIsLoading(true)
+    try {
 
     // Even without user IDs, show today's open quests
     if (!userId && !providerUserId) {
@@ -191,7 +192,17 @@ export function useTimelineData(
     })
 
     setDays(timelineDays)
-    setIsLoading(false)
+    } catch (err) {
+      console.error("Failed to load timeline data:", err)
+      // Show today with no data rather than infinite spinner
+      const today = new Date().toISOString().split("T")[0]
+      const todayQuests = activeQuests
+        .map((id) => ALL_QUESTS.find((q) => q.id === id))
+        .filter((q): q is Quest => q !== undefined)
+      setDays([{ date: today, label: "Today", openQuests: todayQuests, completedItems: [] }])
+    } finally {
+      setIsLoading(false)
+    }
   }, [userId, providerUserId, activeQuests])
 
   useEffect(() => {
