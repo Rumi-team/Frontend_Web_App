@@ -1,7 +1,5 @@
-"use client"
-
-import { ContentTimeline } from "@/components/app/content/ContentTimeline"
+import { redirect } from "next/navigation"
 
 export default function ContentPage() {
-  return <ContentTimeline />
+  redirect("/path")
 }

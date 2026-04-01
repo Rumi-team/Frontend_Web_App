@@ -20,11 +20,11 @@ const RESOURCES = [
 export function EmergencyModal({ open, onOpenChange }: EmergencyModalProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-3xl bg-white max-h-[80vh] overflow-y-auto">
+      <SheetContent side="bottom" className="rounded-t-3xl bg-white dark:bg-gray-900 max-h-[80vh] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Emergency Resources</SheetTitle>
+          <SheetTitle className="text-gray-900 dark:text-gray-100">Emergency Resources</SheetTitle>
         </SheetHeader>
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           If you are in immediate danger, call 911. These resources are available 24/7.
         </p>
         <div className="mt-4 grid grid-cols-2 gap-3">

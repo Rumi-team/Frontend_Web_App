@@ -2,6 +2,35 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.2.0.0] - 2026-04-01 — Settings Production-Ready
+
+All Settings buttons are now functional. Your voice coach has a face. Dark mode works everywhere. Waitlist users get a real email. Streak celebrations pop with Lottie animations. The Settings page went from "prototype" to "product."
+
+### Added
+- **Delete Account:** Two-step confirmation modal with "type DELETE" safety. Supabase RPC cascade deletes all user data in a single transaction before auth removal. Redirects to a dedicated /account-deleted page.
+- **Waitlist welcome email:** "Join the Waitlist" on the Human Coach modal now sends Ali's full program email via Resend with hybrid coaching details, pricing, and 6 intake questions. Rate-limited with `email_sent` tracking to prevent duplicates.
+- **8 Gemini voice personas in Settings:** CustomizeAIModal upgraded from 4 placeholder voices to the real Gemini Live voices (Puck, Charon, Kore, Fenrir, Aoede, Leda, Orus, Zephyr) with coaching-style avatar slots and audio preview buttons.
+- **Real background image picker:** AppearanceModal now shows actual JPG photo thumbnails via next/image instead of solid color squares.
+- **Lottie streak celebrations:** celebration-effects.tsx upgraded with Lottie animation support (confetti, stars, flame), 5s cooldown between celebrations, max 3 per session, and `prefers-reduced-motion` handling.
+- **Account deleted page** at `/account-deleted` with clean post-deletion UX.
+- **4 new test suites:** delete-account API (auth, cascade rollback, idempotency), settings-patch (column whitelist, body injection prevention), waitlist-email (rate limiting, duplicate prevention), settings-debounce (coalescing, cancel before delete).
+
+### Changed
+- **Settings section order:** Personalization > Appearance > Safety > Feedback > Account (was Feedback first).
+- **App-wide dark mode:** All 7 settings modals, SettingsList, SectionHeader, SettingsRow now use `dark:` classes. Toggles have `role="switch"` and `aria-checked` for accessibility.
+- **Feedback consolidated:** FeedbackModal now writes to `user_feedback` (with `feedback_type: "general"`) instead of the separate `feedback` table. The `feedback` table has been dropped.
+- **voice_persona_id in LiveKit metadata:** Token route now passes selected voice to backend for per-user TTS.
+
+### Fixed
+- **Settings PATCH security:** Body spread vulnerability fixed with column whitelist. Unknown keys (including `user_id`) are stripped before upsert.
+- **FeedbackModal import:** Fixed `createBrowserClient` → `createSupabaseBrowserClient`.
+- **Delete Account button:** Was non-functional (no onClick handler). Now opens confirmation modal.
+
+### Migrations Applied
+- `delete_user_cascade` — RPC function for transactional account deletion
+- `waitlist_email_tracking` — `email_sent` + `email_sent_at` columns on website_waitlist
+- `consolidate_feedback` — `feedback_type`, `user_id`, `content` columns on user_feedback; dropped `feedback` table
+
 ## [0.1.4.0] - 2026-03-29
 
 ### Added

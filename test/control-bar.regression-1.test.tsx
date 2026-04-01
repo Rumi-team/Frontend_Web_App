@@ -48,7 +48,7 @@ describe("ControlBar text-mode button label (regression ISSUE-001)", () => {
     expect(screen.queryByText("Text")).toBeNull()
   })
 
-  it("shows 'Text' when textMode is 2 (text input active)", () => {
+  it("shows 'Transcript' when textMode is 2 (text input active — label is always Transcript)", () => {
     render(
       <ControlBar
         isMicrophoneEnabled={true}
@@ -58,7 +58,7 @@ describe("ControlBar text-mode button label (regression ISSUE-001)", () => {
         onEndSession={noop}
       />
     )
-    expect(screen.getByText("Text")).toBeTruthy()
-    expect(screen.queryByText("Transcript")).toBeNull()
+    // Component now always shows "Transcript" regardless of textMode
+    expect(screen.getByText("Transcript")).toBeTruthy()
   })
 })

@@ -31,6 +31,14 @@ interface SettingsState {
 
 let saveTimeout: NodeJS.Timeout | null = null
 
+/** Cancel any pending debounced save — call before account deletion */
+export function cancelPendingSave() {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout)
+    saveTimeout = null
+  }
+}
+
 function debouncedSave(state: SettingsState) {
   if (saveTimeout) clearTimeout(saveTimeout)
   saveTimeout = setTimeout(async () => {
