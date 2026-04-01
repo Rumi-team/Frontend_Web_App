@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <circle cx="60" cy="60" r="60" fill="#34D399"/>
+  <rect x="25" y="25" width="70" height="70" rx="6" fill="#A7F3D0" opacity="0.2" transform="rotate(45 60 60)"/>
+  <rect x="35" y="35" width="50" height="50" rx="4" fill="#A7F3D0" opacity="0.15" transform="rotate(22 60 60)"/>
+  <circle cx="60" cy="60" r="18" fill="#065F46" opacity="0.12"/>
+  <text x="60" y="68" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="36" font-weight="700" fill="#064E3B">O</text>
+</svg>

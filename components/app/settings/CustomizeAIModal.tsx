@@ -71,7 +71,7 @@ export function CustomizeAIModal({ open, onOpenChange }: CustomizeAIModalProps) 
                 }`}
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-full overflow-hidden" style={{ backgroundColor: voice.color + "25" }}>
-                  <Image src={`/avatars/${voice.id.toLowerCase()}.png`} alt={voice.id} width={56} height={56} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none" }} />
+                  <Image src={`/avatars/${voice.id.toLowerCase()}.svg`} alt={voice.id} width={56} height={56} className="h-full w-full object-cover" onError={(e) => { e.currentTarget.style.display = "none" }} />
                 </div>
                 <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{voice.id}</div>
                 <div className="text-[11px] text-gray-500 dark:text-gray-400">{voice.description}</div>
