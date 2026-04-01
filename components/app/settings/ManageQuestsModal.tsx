@@ -35,9 +35,9 @@ export function ManageQuestsModal({ open, onOpenChange }: ManageQuestsModalProps
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-3xl bg-white">
+      <SheetContent side="bottom" className="rounded-t-3xl bg-white dark:bg-gray-900">
         <SheetHeader>
-          <SheetTitle>Manage Quests</SheetTitle>
+          <SheetTitle className="text-gray-900 dark:text-gray-100">Manage Quests</SheetTitle>
         </SheetHeader>
         <div className="mt-4">
           <SegmentedControl

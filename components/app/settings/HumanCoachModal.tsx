@@ -49,17 +49,21 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
         source: "human_coach",
       })
 
-      // Send notification email via webhook
+      // Send notification webhook + welcome email to user (both non-blocking)
+      const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split("@")[0]
       try {
-        const webhookUrl = "/api/coach-waitlist-notify"
-        await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split("@")[0],
-            email: user.email,
+        await Promise.allSettled([
+          fetch("/api/coach-waitlist-notify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: userName, email: user.email }),
           }),
-        })
+          fetch("/api/waitlist-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: userName, email: user.email }),
+          }),
+        ])
       } catch {
         // Non-blocking — waitlist entry is already saved
       }
@@ -74,7 +78,7 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
 
   return (
     <Sheet open={open} onOpenChange={(val) => { onOpenChange(val); if (!val) setJoined(false) }}>
-      <SheetContent side="bottom" className="rounded-t-3xl bg-white">
+      <SheetContent side="bottom" className="rounded-t-3xl bg-white dark:bg-gray-900">
         <SheetHeader>
           <div className="flex items-center gap-3 mt-2">
             <Users className="h-8 w-8 text-gray-600" />
@@ -88,7 +92,7 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
               <Check className="h-8 w-8 text-green-600" />
             </div>
             <p className="text-lg font-semibold text-gray-900">You're on the list!</p>
-            <p className="text-sm text-gray-500">We'll reach out via email as soon as spots open.</p>
+            <p className="text-sm text-gray-500">Check your email for program details and next steps.</p>
           </div>
         ) : (
           <div className="mt-6 space-y-5">
