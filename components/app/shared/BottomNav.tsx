@@ -3,13 +3,14 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSessionStore } from "@/store/sessionStore"
-import { Home, Map, BookOpen, User } from "lucide-react"
+import { Phone, MessageSquare, Map, User, Settings } from "lucide-react"
 
 const TABS = [
-  { href: "/phone", label: "Home", icon: Home },
-  { href: "/path", label: "Journey", icon: Map },
-  { href: "/library", label: "Library", icon: BookOpen },
-  { href: "/you", label: "Profile", icon: User },
+  { href: "/phone", label: "Phone", icon: Phone },
+  { href: "/chat", label: "Chat", icon: MessageSquare },
+  { href: "/path", label: "Path", icon: Map },
+  { href: "/you", label: "You", icon: User },
+  { href: "/preferences", label: "Settings", icon: Settings },
 ] as const
 
 export function BottomNav() {
@@ -19,8 +20,8 @@ export function BottomNav() {
   if (isSessionActive) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-800 pb-[env(safe-area-inset-bottom)] bg-[#1A1A1A]">
-      <div className="flex items-center justify-around px-2 max-w-lg mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 dark:border-gray-800 pb-[env(safe-area-inset-bottom)] bg-[#FAF8F3] dark:bg-[#1A1A1A]">
+      <div className="flex items-center justify-around px-1 max-w-lg mx-auto">
         {TABS.map((tab) => {
           const isActive = pathname === tab.href || pathname.startsWith(tab.href + "/")
           const Icon = tab.icon
@@ -29,21 +30,31 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center gap-0.5 px-4 py-2 transition-colors ${
-                isActive ? "text-[#F5C518]" : "text-gray-500"
-              }`}
+              className="flex flex-col items-center gap-0.5 px-2 py-2 transition-colors min-w-0"
             >
               <div
                 className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${
-                  isActive ? "bg-[#F5C518]/10" : ""
+                  isActive
+                    ? "bg-gray-900 dark:bg-gray-100"
+                    : ""
                 }`}
               >
                 <Icon
-                  className={`h-5 w-5 ${isActive ? "text-[#F5C518]" : "text-gray-500"}`}
+                  className={`h-5 w-5 ${
+                    isActive
+                      ? "text-white dark:text-gray-900"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
                   strokeWidth={isActive ? 2.5 : 1.5}
                 />
               </div>
-              <span className={`text-[10px] font-semibold ${isActive ? "font-bold" : ""}`}>
+              <span
+                className={`text-[10px] ${
+                  isActive
+                    ? "font-bold text-gray-900 dark:text-gray-100"
+                    : "font-medium text-gray-500 dark:text-gray-400"
+                }`}
+              >
                 {tab.label}
               </span>
             </Link>
