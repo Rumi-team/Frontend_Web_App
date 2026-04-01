@@ -21,7 +21,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 dark:border-gray-800 pb-[env(safe-area-inset-bottom)] bg-[#FAF8F3] dark:bg-[#1A1A1A]">
-      <div className="flex items-center justify-around px-1 max-w-lg mx-auto">
+      <div className="flex items-center justify-around px-2 max-w-lg mx-auto">
         {TABS.map((tab) => {
           const isActive = pathname === tab.href || pathname.startsWith(tab.href + "/")
           const Icon = tab.icon
@@ -30,17 +30,15 @@ export function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className="flex flex-col items-center gap-0.5 px-2 py-2 transition-colors min-w-0"
+              className="flex flex-col items-center gap-1 px-3 py-2.5 transition-colors min-w-0"
             >
               <div
-                className={`flex h-8 w-12 items-center justify-center rounded-full transition-colors ${
-                  isActive
-                    ? "bg-gray-900 dark:bg-gray-100"
-                    : ""
+                className={`flex h-10 w-14 items-center justify-center rounded-full transition-colors ${
+                  isActive ? "bg-gray-900 dark:bg-gray-100" : ""
                 }`}
               >
                 <Icon
-                  className={`h-5 w-5 ${
+                  className={`h-6 w-6 ${
                     isActive
                       ? "text-white dark:text-gray-900"
                       : "text-gray-500 dark:text-gray-400"
@@ -49,7 +47,7 @@ export function BottomNav() {
                 />
               </div>
               <span
-                className={`text-[10px] ${
+                className={`text-xs ${
                   isActive
                     ? "font-bold text-gray-900 dark:text-gray-100"
                     : "font-medium text-gray-500 dark:text-gray-400"
