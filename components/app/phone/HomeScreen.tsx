@@ -75,12 +75,14 @@ export function HomeScreen() {
                 width={80}
                 height={80}
                 className="h-full w-full object-cover"
-                onError={(e) => { e.currentTarget.style.display = "none" }}
+                onError={(e) => {
+                  // Fallback to mascot if avatar 404s
+                  e.currentTarget.src = "/mascot/rumi_idle.png"
+                  e.currentTarget.onerror = null
+                }}
               />
             ) : (
-              <div className="h-full w-full flex items-center justify-center">
-                <Image src="/mascot/rumi_idle.png" alt="Rumi" width={64} height={64} className="object-cover" />
-              </div>
+              <Image src="/mascot/rumi_idle.png" alt="Rumi" width={80} height={80} className="h-full w-full object-cover" />
             )}
           </div>
           <div className="flex items-center gap-1.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full px-4 py-1.5 shadow-sm">
