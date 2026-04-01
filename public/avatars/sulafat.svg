@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <circle cx="60" cy="60" r="60" fill="#FB923C"/>
-  <path d="M20 50 Q45 30 70 45 Q90 55 100 40" stroke="#FED7AA" stroke-width="2.5" fill="none" opacity="0.4"/>
-  <path d="M15 70 Q40 55 65 65 Q85 72 105 60" stroke="#FED7AA" stroke-width="2" fill="none" opacity="0.3"/>
-  <path d="M25 88 Q50 75 75 82 Q92 88 108 78" stroke="#FED7AA" stroke-width="1.5" fill="none" opacity="0.2"/>
-  <circle cx="50" cy="50" r="10" fill="#FFEDD5" opacity="0.2"/>
-  <text x="60" y="68" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="33" font-weight="700" fill="#7C2D12">Su</text>
-</svg>
