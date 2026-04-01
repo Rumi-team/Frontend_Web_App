@@ -8,12 +8,22 @@ export async function PATCH(request: Request) {
 
   const body = await request.json()
 
+  const ALLOWED_KEYS = [
+    "selectedVoice", "aiStyle", "radarCalibration", "customInstructions",
+    "selectedTheme", "lightDark", "homeScreenQuote", "streakCelebration",
+    "activeQuests", "appLock", "backgroundMusic", "particles", "edgeGlow",
+    "hapticFeedback", "showAvatar",
+  ]
+  const sanitized = Object.fromEntries(
+    Object.entries(body).filter(([k]) => ALLOWED_KEYS.includes(k))
+  )
+
   const { error } = await supabase
     .from("user_settings")
     .upsert(
       {
         user_id: user.id,
-        ...body,
+        ...sanitized,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id" }

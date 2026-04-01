@@ -52,6 +52,7 @@ export async function POST(request: Request) {
       client_platform: "web",
       client_timezone: body.timezone ?? "UTC",
       teaching_mode: body.teaching_mode ?? true,
+      voice_persona_id: body.voice_persona_id ?? "",
     })
 
     // 4. Generate LiveKit access token
