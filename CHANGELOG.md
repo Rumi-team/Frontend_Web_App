@@ -2,6 +2,25 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.2.1.0] - 2026-04-01 — iOS Parity + Duolingo Path
+
+The web app now matches the iOS app. 5-tab navigation, iOS-style Settings and You pages, and a Duolingo-style zigzag practice path that makes daily coaching feel like a game.
+
+### Added
+- **5-tab bottom navigation** matching iOS: Phone, Chat, Path, You, Settings. Light/dark theme with pill-shaped active indicator.
+- **Chat tab** in bottom nav. Moved from (coach) to (main) route group for direct access.
+- **Duolingo-style zigzag path** with alternating node positions, star/chest/trophy node types, amber section banner ("Today's Path"), and "UP NEXT" separator for tomorrow.
+- **iOS-style You/Profile page**: large avatar with + button, Lv.1 level badge with tier name (Quiet Seed), XP progress bar with "N more to [Next Tier]", 3-stat row (Streak, Words, Saved), About You card, Focus Areas card.
+- **Privacy & Security section** in Settings with App Lock toggle.
+- **9 gender-matched avatar portraits** generated via gemini-3-pro-image-preview (Headspace/Calm illustration style).
+- **9 Gemini voice preview MP3s** via gemini-2.5-flash-preview-tts.
+
+### Changed
+- **Settings section order** now matches iOS: App Feedback > Safety > Personalization > Privacy > Appearance > Account.
+- **Settings icons moved to right side** (iOS pattern: text left, icon + chevron right).
+- **Voice roster updated** to 9 voices: Gacrux (default), Fenrir, Leda, Aoede, Enceladus, Erinome, Algenib, Achernar, Sulafat.
+- **Toggle color** changed from blue to green (iOS style).
+
 ## [0.2.0.0] - 2026-04-01 — Settings Production-Ready
 
 All Settings buttons are now functional. Your voice coach has a face. Dark mode works everywhere. Waitlist users get a real email. Streak celebrations pop with Lottie animations. The Settings page went from "prototype" to "product."

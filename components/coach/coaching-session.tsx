@@ -16,6 +16,7 @@ import { DayCompleteCelebration } from "./day-complete-celebration"
 import { TeachingCard } from "./teaching-card"
 import { AudioVisualizer } from "./audio-visualizer"
 import { MicVisualizer } from "./mic-visualizer"
+import { useUserStore } from "@/store/userStore"
 import { type MascotMood } from "./rumi-mascot"
 import {
   CelebrationEffects,
@@ -86,15 +87,26 @@ export function CoachingSession({
 
   // ── Celebration triggers ──
 
-  // 1. Step completion → breakthrough celebration + mascot cheers
+  // 1. Step completion → breakthrough celebration + mascot cheers + XP award
+  const addXP = useUserStore((s) => s.addXP)
+  const updateStreak = useUserStore((s) => s.updateStreak)
+
   useEffect(() => {
     const step = sessionControl.currentStep
     if (step !== null && prevStepRef.current !== null && step > prevStepRef.current) {
       celebrate("breakthrough")
       flashMascotMood("cheering", 4000)
+      // Award XP: phase-gate steps (5,10,15,20) get 50 XP, others get 20 XP
+      const isMilestoneStep = step % 5 === 0
+      addXP(isMilestoneStep ? 50 : 20)
     }
     prevStepRef.current = step
-  }, [sessionControl.currentStep, celebrate, flashMascotMood])
+  }, [sessionControl.currentStep, celebrate, flashMascotMood, addXP])
+
+  // Update streak on session mount (user started a session today)
+  useEffect(() => {
+    updateStreak()
+  }, [updateStreak])
 
   // 2. Day complete → milestone celebration
   useEffect(() => {
