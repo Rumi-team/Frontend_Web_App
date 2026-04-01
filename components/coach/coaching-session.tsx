@@ -23,10 +23,12 @@ import {
   StreakBadge,
   useCelebration,
 } from "./celebration-effects"
+import type { AgentState } from "@/hooks/use-livekit-connection"
 
 interface CoachingSessionProps {
   room: Room
   isMicrophoneEnabled: boolean
+  agentState: AgentState | null
   onToggleMic: () => void
   onDisconnect: () => void
   onRequestFeedback: (sessionId: string) => void
@@ -38,6 +40,7 @@ interface CoachingSessionProps {
 export function CoachingSession({
   room,
   isMicrophoneEnabled,
+  agentState,
   onToggleMic,
   onDisconnect,
   onRequestFeedback,
@@ -57,13 +60,15 @@ export function CoachingSession({
   const centerAreaRef = useRef<HTMLDivElement>(null)
   const prevStepRef = useRef<number | null>(null)
   const prevHighlightCountRef = useRef(0)
+  const lastInsightTimeRef = useRef(0)
   const mascotTimerRef = useRef<ReturnType<typeof setTimeout>>()
   // One-shot guard — feedback may only be requested once per session mount
   const feedbackRequestedRef = useRef(false)
 
   const sessionControl = useSessionControl(room)
   const { messages, sendMessage } = useChatMessages(room)
-  const { state: celebrationState, streak, celebrate, clear: clearCelebration } = useCelebration()
+  const { state: celebrationState, celebrate, clear: clearCelebration } = useCelebration()
+  const dailyStreak = useUserStore((s) => s.streak)
 
   // Responsive orb size — fits inside the center area without overlapping visualizers
   useEffect(() => {
@@ -123,10 +128,12 @@ export function CoachingSession({
     if (!latest) return
 
     const highlightCount = latest.styledSegments.filter((s) => s.isHighlight).length
-    if (highlightCount > 0 && highlightCount !== prevHighlightCountRef.current) {
-      // Agent highlighted something — likely acknowledging a good point
+    const now = Date.now()
+    if (highlightCount > 0 && highlightCount !== prevHighlightCountRef.current && now - lastInsightTimeRef.current > 15000) {
+      // Agent highlighted something — min 15s between insight celebrations to avoid spam
       celebrate("insight")
       flashMascotMood("impressed", 3000)
+      lastInsightTimeRef.current = now
     }
     prevHighlightCountRef.current = highlightCount
   }, [messages, celebrate, flashMascotMood])
@@ -271,16 +278,17 @@ export function CoachingSession({
 
       <ControlBar
         isMicrophoneEnabled={isMicrophoneEnabled}
+        agentState={agentState}
         textMode={textMode}
         onToggleMic={onToggleMic}
         onCycleTextMode={cycleTextMode}
         onEndSession={handleEndSession}
       />
 
-      {/* Streak badge — top-right when active */}
-      {streak >= 2 && !showSaveOverlay && (
+      {/* Daily streak badge — top-right when active */}
+      {dailyStreak >= 2 && !showSaveOverlay && (
         <div className="absolute top-4 right-4 z-40 animate-mascot-entrance">
-          <StreakBadge count={streak} />
+          <StreakBadge count={dailyStreak} />
         </div>
       )}
 

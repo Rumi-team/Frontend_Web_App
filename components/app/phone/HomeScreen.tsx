@@ -88,9 +88,9 @@ export function HomeScreen() {
 
       {/* Mascot greeting */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
+        <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
           style={{ background: "linear-gradient(135deg, #7B68EE, #9B8FFF)", border: "3px solid #F5C518" }}>
-          <Image src="/rumi_mascot.png" alt="Rumi" width={40} height={40} className="rounded-full" />
+          <Image src="/mascot/rumi_idle.png" alt="Rumi" width={48} height={48} className="object-cover" />
         </div>
         <div className="flex-1 bg-[#242424] rounded-[14px] rounded-tl-[4px] p-3">
           <p className="text-sm text-white">

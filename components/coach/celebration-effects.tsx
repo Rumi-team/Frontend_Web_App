@@ -175,7 +175,7 @@ export function StreakBadge({ count }: { count: number }) {
       }}
     >
       <span className="text-lg">&#x1F525;</span>
-      <span className="text-base font-bold text-white">{count} streak</span>
+      <span className="text-base font-bold text-white">{count} day streak</span>
     </div>
   )
 }
@@ -183,12 +183,12 @@ export function StreakBadge({ count }: { count: number }) {
 // ── Celebration Pools (randomized each time) ────────────────────────────────
 
 const INSIGHT_POOL = [
-  { text: "Insight!", points: 5 },
-  { text: "Awareness!", points: 8 },
+  { text: "Great Insight!", points: 5 },
+  { text: "Self-Awareness!", points: 8 },
   { text: "Clarity!", points: 10 },
-  { text: "Wisdom!", points: 7 },
-  { text: "Seeing!", points: 6 },
-  { text: "Distinction!", points: 9 },
+  { text: "Deep Reflection!", points: 7 },
+  { text: "Nice Connection!", points: 6 },
+  { text: "Key Realization!", points: 9 },
 ]
 
 const BREAKTHROUGH_POOL = [

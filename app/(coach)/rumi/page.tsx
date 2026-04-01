@@ -210,6 +210,7 @@ export default function CoachPage() {
             <CoachingSession
               room={lk.room}
               isMicrophoneEnabled={lk.isMicrophoneEnabled}
+              agentState={lk.agentState}
               onToggleMic={lk.toggleMicrophone}
               onDisconnect={lk.disconnect}
               onRequestFeedback={handleRequestFeedback}
