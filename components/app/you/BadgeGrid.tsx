@@ -1,15 +1,18 @@
 "use client"
 
+import Image from "next/image"
+
 // Badge definitions matching the DB seed in DESIGN.md
+// Icons are Gemini-generated PNGs in /public/badges/
 const BADGES = [
-  { id: "first_light", name: "First Light", icon: "🌟", description: "Complete your first session" },
-  { id: "7_day_flame", name: "7-Day Flame", icon: "🔥", description: "7-day streak" },
-  { id: "pattern_breaker", name: "Pattern Breaker", icon: "👁", description: "Complete Step 5" },
-  { id: "identity_shift", name: "Identity Shift", icon: "🪞", description: "Complete Step 7" },
-  { id: "the_declaration", name: "The Declaration", icon: "📜", description: "Complete Step 15" },
-  { id: "transformer", name: "Transformer", icon: "👑", description: "Complete all 20 steps" },
-  { id: "streak_master", name: "Streak Master", icon: "💎", description: "30-day streak" },
-  { id: "deep_diver", name: "Deep Diver", icon: "🤿", description: "3+ exchanges on a deep step" },
+  { id: "first_light", name: "First Light", image: "/badges/first_light.png", description: "Complete your first session" },
+  { id: "7_day_flame", name: "7-Day Flame", image: "/badges/7_day_flame.png", description: "7-day streak" },
+  { id: "pattern_breaker", name: "Pattern Breaker", image: "/badges/pattern_breaker.png", description: "Complete Step 5" },
+  { id: "identity_shift", name: "Identity Shift", image: "/badges/identity_shift.png", description: "Complete Step 7" },
+  { id: "the_declaration", name: "The Declaration", image: "/badges/the_declaration.png", description: "Complete Step 15" },
+  { id: "transformer", name: "Transformer", image: "/badges/transformer.png", description: "Complete all 20 steps" },
+  { id: "streak_master", name: "Streak Master", image: "/badges/streak_master.png", description: "30-day streak" },
+  { id: "deep_diver", name: "Deep Diver", image: "/badges/deep_diver.png", description: "3+ exchanges on a deep step" },
 ] as const
 
 interface BadgeGridProps {
@@ -37,14 +40,20 @@ export function BadgeGrid({ earnedBadgeIds = [] }: BadgeGridProps) {
               title={`${badge.name}: ${badge.description}`}
             >
               <div
-                className={`w-16 h-16 rounded-[14px] flex items-center justify-center text-2xl transition-all ${
+                className={`w-16 h-16 rounded-[14px] flex items-center justify-center overflow-hidden transition-all ${
                   isEarned
                     ? "border-2 border-[#F5C518] bg-[#242424]"
-                    : "border-2 border-gray-700 bg-[#1A1A1A] opacity-40"
+                    : "border-2 border-gray-700 bg-[#1A1A1A] opacity-40 grayscale"
                 }`}
                 style={isEarned ? { boxShadow: "0 0 12px rgba(245,197,24,0.3)" } : undefined}
               >
-                {badge.icon}
+                <Image
+                  src={badge.image}
+                  alt={badge.name}
+                  width={56}
+                  height={56}
+                  className="object-cover"
+                />
               </div>
               <span className={`text-[9px] font-semibold text-center leading-tight ${
                 isEarned ? "text-white" : "text-gray-600"
