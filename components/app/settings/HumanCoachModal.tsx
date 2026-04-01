@@ -32,7 +32,6 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
         .from("website_waitlist")
         .select("email")
         .eq("email", user.email)
-        .eq("source", "human_coach")
         .maybeSingle()
 
       if (existing) {
@@ -46,13 +45,13 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
       await supabase.from("website_waitlist").insert({
         email: user.email,
         name: user.user_metadata?.full_name || user.user_metadata?.name || user.email.split("@")[0],
-        source: "human_coach",
+        message: "human_coach",
       })
 
-      // Send notification webhook + welcome email to user (both non-blocking)
+      // Send notification webhook + welcome email to user
       const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split("@")[0]
       try {
-        await Promise.allSettled([
+        const [notifyResult, emailResult] = await Promise.allSettled([
           fetch("/api/coach-waitlist-notify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -64,8 +63,18 @@ export function HumanCoachModal({ open, onOpenChange }: HumanCoachModalProps) {
             body: JSON.stringify({ name: userName, email: user.email }),
           }),
         ])
-      } catch {
-        // Non-blocking — waitlist entry is already saved
+        // Log email failures visibly so they can be debugged
+        if (emailResult.status === "rejected") {
+          console.error("Waitlist email failed:", emailResult.reason)
+        } else if (emailResult.status === "fulfilled" && !emailResult.value.ok) {
+          const errBody = await emailResult.value.json().catch(() => ({}))
+          console.error("Waitlist email API error:", emailResult.value.status, errBody)
+        }
+        if (notifyResult.status === "rejected") {
+          console.error("Waitlist notify failed:", notifyResult.reason)
+        }
+      } catch (e) {
+        console.error("Waitlist notification error:", e)
       }
 
       setJoined(true)

@@ -22,7 +22,6 @@ export async function POST(request: Request) {
       .from("website_waitlist")
       .select("id, email_sent")
       .eq("email", email)
-      .eq("source", "human_coach")
       .maybeSingle()
 
     if (!entry) {
