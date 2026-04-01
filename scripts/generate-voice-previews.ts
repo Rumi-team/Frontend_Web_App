@@ -1,136 +1,113 @@
 /**
  * Generate voice preview MP3s for each Gemini voice persona.
  *
- * Requires: GEMINI_API_KEY env var
+ * Uses Gemini 2.5 Flash TTS model with native voice support.
+ * Requires: GOOGLE_API_KEY or GEMINI_API_KEY env var
  * Usage: npx tsx scripts/generate-voice-previews.ts
  *
- * Each voice says a short coaching intro that matches its personality.
  * Output: public/audio/personas/{VoiceId}.mp3
  */
 
+import * as fs from "fs"
+
 const VOICES = [
-  { id: "Puck", text: "Hey! I'm so glad you're here. Let's make today count, what's on your mind?" },
+  { id: "Puck", text: "Hey! I'm so glad you're here. Let's make today count. What's on your mind?" },
   { id: "Charon", text: "Welcome. Take a breath. I'm here to help you think things through, at your own pace." },
   { id: "Kore", text: "Hi there. It's good to see you. Whatever you're carrying today, you don't have to carry it alone." },
   { id: "Fenrir", text: "Let's get to it. What's the one thing that, if you tackled it today, would change everything?" },
   { id: "Aoede", text: "Hello, beautiful soul. There's something poetic about choosing to grow. What's stirring in you today?" },
   { id: "Leda", text: "Good to have you here. Let's take this step by step. What would you like to focus on?" },
   { id: "Orus", text: "Welcome. The fact that you're here says something about who you're becoming. What's present for you?" },
-  { id: "Zephyr", text: "Hey friend! Life's a journey and you just showed up for another chapter. What's up?" },
+  { id: "Zephyr", text: "Hey friend! Life's a journey and you just showed up for another chapter. What's the vibe today?" },
 ]
 
-async function generatePreview(voice: { id: string; text: string }) {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) throw new Error("GEMINI_API_KEY not set")
-
-  console.log(`Generating preview for ${voice.id}...`)
-
-  // Use Gemini TTS endpoint
-  const response = await fetch(
-    `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: { text: voice.text },
-        voice: {
-          languageCode: "en-US",
-          name: `en-US-${voice.id}`,
-        },
-        audioConfig: {
-          audioEncoding: "MP3",
-          speakingRate: 1.0,
-          pitch: 0,
-        },
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    const error = await response.text()
-    console.error(`Failed for ${voice.id}: ${error}`)
-    // Try Gemini Live API format instead
-    console.log(`Trying alternative API for ${voice.id}...`)
-    return generateWithGeminiLive(voice, apiKey)
-  }
-
-  const data = await response.json()
-  if (data.audioContent) {
-    const buffer = Buffer.from(data.audioContent, "base64")
-    const fs = await import("fs")
-    const outPath = `public/audio/personas/${voice.id}.mp3`
-    fs.writeFileSync(outPath, buffer)
-    console.log(`  Saved: ${outPath} (${buffer.length} bytes)`)
-  }
+const API_KEY = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
+if (!API_KEY) {
+  console.error("Set GOOGLE_API_KEY or GEMINI_API_KEY env var")
+  process.exit(1)
 }
 
-async function generateWithGeminiLive(
-  voice: { id: string; text: string },
-  apiKey: string
-) {
-  // Gemini 2.0 Flash with audio output
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `Say the following in a warm, coaching voice as ${voice.id}: "${voice.text}"`,
-              },
-            ],
-          },
-        ],
-        generationConfig: {
-          responseModalities: ["AUDIO"],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: {
-                voiceName: voice.id,
+async function generatePreview(voice: { id: string; text: string }) {
+  console.log(`Generating preview for ${voice.id}...`)
+
+  // Try Gemini 2.5 Flash TTS (supports native voice output)
+  const models = [
+    "gemini-2.5-flash-preview-tts",
+    "gemini-2.0-flash-exp",
+    "gemini-2.0-flash",
+  ]
+
+  for (const model of models) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: voice.text }],
+            }],
+            generationConfig: {
+              responseModalities: ["AUDIO"],
+              speechConfig: {
+                voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName: voice.id },
+                },
               },
             },
-          },
-        },
-      }),
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ error: { message: response.statusText } }))
+        console.log(`  ${model}: ${err.error?.message || "failed"}`)
+        continue
+      }
+
+      const data = await response.json()
+      const audioPart = data.candidates?.[0]?.content?.parts?.find(
+        (p: { inlineData?: { mimeType: string } }) =>
+          p.inlineData?.mimeType?.startsWith("audio/")
+      )
+
+      if (audioPart?.inlineData?.data) {
+        const buffer = Buffer.from(audioPart.inlineData.data, "base64")
+        const outPath = `public/audio/personas/${voice.id}.mp3`
+        fs.writeFileSync(outPath, buffer)
+        console.log(`  Saved: ${outPath} (${(buffer.length / 1024).toFixed(1)} KB) via ${model}`)
+        return true
+      }
+
+      console.log(`  ${model}: no audio in response`)
+    } catch (err) {
+      console.log(`  ${model}: ${err instanceof Error ? err.message : "error"}`)
     }
-  )
-
-  if (!response.ok) {
-    console.error(`  Alternative API also failed for ${voice.id}: ${await response.text()}`)
-    return
   }
 
-  const data = await response.json()
-  const audioPart = data.candidates?.[0]?.content?.parts?.find(
-    (p: { inlineData?: { mimeType: string } }) => p.inlineData?.mimeType?.startsWith("audio/")
-  )
-
-  if (audioPart?.inlineData?.data) {
-    const buffer = Buffer.from(audioPart.inlineData.data, "base64")
-    const fs = await import("fs")
-    const outPath = `public/audio/personas/${voice.id}.mp3`
-    fs.writeFileSync(outPath, buffer)
-    console.log(`  Saved: ${outPath} (${buffer.length} bytes)`)
-  } else {
-    console.error(`  No audio in response for ${voice.id}`)
-  }
+  console.log(`  All models failed for ${voice.id}`)
+  return false
 }
 
 async function main() {
   console.log("Generating voice previews for 8 Gemini personas...\n")
 
+  fs.mkdirSync("public/audio/personas", { recursive: true })
+
+  let success = 0
   for (const voice of VOICES) {
-    try {
-      await generatePreview(voice)
-    } catch (err) {
-      console.error(`Error generating ${voice.id}:`, err)
-    }
+    if (await generatePreview(voice)) success++
   }
 
-  console.log("\nDone! Check public/audio/personas/")
+  console.log(`\nDone! ${success}/8 generated. Check public/audio/personas/`)
+
+  if (success === 0) {
+    console.log("\nTroubleshooting:")
+    console.log("1. Enable 'Generative Language API' at https://console.cloud.google.com/apis")
+    console.log("2. Or enable 'Cloud Text-to-Speech API' for the standard TTS endpoint")
+    console.log("3. Make sure your API key has access to audio generation models")
+  }
 }
 
 main()
