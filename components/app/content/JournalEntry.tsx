@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { useUserStore } from "@/store/userStore"
-import { createBrowserClient } from "@/lib/supabase-auth-browser"
+import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 import { ArrowLeft, ChevronRight } from "lucide-react"
 import { toast } from "sonner"
 
@@ -31,7 +31,7 @@ export function JournalEntry({ questId, prompt, xpReward }: JournalEntryProps) {
     localStorage.setItem(`rumi-journal-draft-${questId}`, savedContent)
 
     try {
-      const supabase = createBrowserClient()
+      const supabase = createSupabaseBrowserClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         await supabase.from("journal_entries").insert({
