@@ -2,6 +2,12 @@
 
 All notable changes to the Frontend Web App are documented here.
 
+## [0.2.1.1] - 2026-04-01 — QA Bug Fixes
+
+### Fixed
+- **Path tab loading spinner resolved.** Infinite re-render loop in `useTimelineData` caused by Zustand selector reference instability. Fixed with useRef pattern.
+- **Phone tab avatar fallback.** When no voice persona selected or avatar 404s, now shows Rumi mascot instead of empty circle.
+
 ## [0.2.1.0] - 2026-04-01 — iOS Parity + Duolingo Path
 
 The web app now matches the iOS app. 5-tab navigation, iOS-style Settings and You pages, and a Duolingo-style zigzag practice path that makes daily coaching feel like a game.
