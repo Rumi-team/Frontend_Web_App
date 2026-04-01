@@ -11,14 +11,15 @@
 import * as fs from "fs"
 
 const VOICES = [
-  { id: "Puck", text: "Hey! I'm so glad you're here. Let's make today count. What's on your mind?" },
-  { id: "Charon", text: "Welcome. Take a breath. I'm here to help you think things through, at your own pace." },
-  { id: "Kore", text: "Hi there. It's good to see you. Whatever you're carrying today, you don't have to carry it alone." },
+  { id: "Gacrux", text: "Welcome. I'm right here with you. Whatever's going on, let's sit with it together. What's present for you?" },
   { id: "Fenrir", text: "Let's get to it. What's the one thing that, if you tackled it today, would change everything?" },
-  { id: "Aoede", text: "Hello, beautiful soul. There's something poetic about choosing to grow. What's stirring in you today?" },
   { id: "Leda", text: "Good to have you here. Let's take this step by step. What would you like to focus on?" },
-  { id: "Orus", text: "Welcome. The fact that you're here says something about who you're becoming. What's present for you?" },
-  { id: "Zephyr", text: "Hey friend! Life's a journey and you just showed up for another chapter. What's the vibe today?" },
+  { id: "Aoede", text: "Hello, beautiful soul. There's something poetic about choosing to grow. What's stirring in you today?" },
+  { id: "Enceladus", text: "Take a moment. The answers you're looking for are already closer than you think. What's on your mind?" },
+  { id: "Erinome", text: "Hi there. It's good to see you. Whatever you're carrying today, you don't have to carry it alone." },
+  { id: "Algenib", text: "Let's think clearly about this. What's the real challenge, and what does the evidence tell you?" },
+  { id: "Achernar", text: "Hey! I'm so glad you showed up. Today has so much potential. What are we working on?" },
+  { id: "Sulafat", text: "Take a breath. Sometimes the quietest moments hold the deepest insights. What's been on your mind lately?" },
 ]
 
 const API_KEY = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY

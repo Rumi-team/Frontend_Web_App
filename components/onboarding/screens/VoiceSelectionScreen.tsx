@@ -22,14 +22,15 @@ interface GeminiVoice {
 
 // Real Gemini Live API voices — these IDs pass directly to the backend
 const VOICES: GeminiVoice[] = [
-  { id: "Puck", description: "Bright & upbeat", personality: "Energetic, encouraging", color: "#FFD41A" },
-  { id: "Charon", description: "Warm & resonant", personality: "Thoughtful, grounded", color: "#F59E0B" },
-  { id: "Kore", description: "Gentle & calm", personality: "Patient, nurturing", color: "#A78BFA" },
+  { id: "Gacrux", description: "Warm & grounding", personality: "Steady, present", color: "#34D399" },
   { id: "Fenrir", description: "Bold & direct", personality: "Confident, action-oriented", color: "#EF4444" },
-  { id: "Aoede", description: "Lyrical & flowing", personality: "Creative, expressive", color: "#EC4899" },
   { id: "Leda", description: "Calm & steady", personality: "Composed, reassuring", color: "#60A5FA" },
-  { id: "Orus", description: "Deep & grounded", personality: "Wise, contemplative", color: "#34D399" },
-  { id: "Zephyr", description: "Light & breezy", personality: "Friendly, approachable", color: "#FB923C" },
+  { id: "Aoede", description: "Lyrical & flowing", personality: "Creative, expressive", color: "#EC4899" },
+  { id: "Enceladus", description: "Deep & resonant", personality: "Wise, contemplative", color: "#8B5CF6" },
+  { id: "Erinome", description: "Gentle & nurturing", personality: "Patient, empathetic", color: "#F59E0B" },
+  { id: "Algenib", description: "Clear & focused", personality: "Analytical, precise", color: "#06B6D4" },
+  { id: "Achernar", description: "Bright & uplifting", personality: "Optimistic, energizing", color: "#FFD41A" },
+  { id: "Sulafat", description: "Soft & reflective", personality: "Thoughtful, introspective", color: "#FB923C" },
 ]
 
 export function VoiceSelectionScreen({ onNext, onSkip, onBack }: VoiceSelectionScreenProps) {

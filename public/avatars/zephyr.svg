@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <circle cx="60" cy="60" r="60" fill="#FB923C"/>
-  <path d="M20 45 Q45 25 70 40 Q90 50 100 35" stroke="#FED7AA" stroke-width="3" fill="none" opacity="0.5"/>
-  <path d="M15 65 Q40 50 65 60 Q85 68 105 55" stroke="#FED7AA" stroke-width="2.5" fill="none" opacity="0.4"/>
-  <path d="M25 85 Q50 70 75 80 Q95 88 110 75" stroke="#FED7AA" stroke-width="2" fill="none" opacity="0.3"/>
-  <text x="60" y="68" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="36" font-weight="700" fill="#7C2D12">Z</text>
-</svg>

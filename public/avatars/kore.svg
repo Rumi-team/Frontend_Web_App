@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <circle cx="60" cy="60" r="60" fill="#A78BFA"/>
-  <ellipse cx="60" cy="55" rx="40" ry="35" fill="#DDD6FE" opacity="0.3"/>
-  <ellipse cx="55" cy="65" rx="25" ry="20" fill="#DDD6FE" opacity="0.2"/>
-  <circle cx="75" cy="40" r="12" fill="#C4B5FD" opacity="0.4"/>
-  <circle cx="40" cy="75" r="8" fill="#C4B5FD" opacity="0.3"/>
-  <text x="60" y="68" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="36" font-weight="700" fill="#4C1D95">K</text>
-</svg>

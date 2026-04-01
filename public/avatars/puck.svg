@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
-  <circle cx="60" cy="60" r="60" fill="#FFD41A"/>
-  <circle cx="60" cy="60" r="52" fill="#FFF3C4" opacity="0.4"/>
-  <circle cx="42" cy="48" r="8" fill="#F59E0B" opacity="0.6"/>
-  <circle cx="78" cy="42" r="6" fill="#F59E0B" opacity="0.4"/>
-  <circle cx="60" cy="72" r="10" fill="#F59E0B" opacity="0.3"/>
-  <path d="M40 55 Q60 30 80 55 Q60 45 40 55Z" fill="#fff" opacity="0.5"/>
-  <text x="60" y="68" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="36" font-weight="700" fill="#92400E">P</text>
-</svg>
