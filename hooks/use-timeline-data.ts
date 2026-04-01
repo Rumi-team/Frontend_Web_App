@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { createSupabaseBrowserClient } from "@/lib/supabase-auth-browser"
 import { useSettingsStore } from "@/store/settingsStore"
 import { ALL_QUESTS, type Quest } from "@/lib/constants/quests"
@@ -63,6 +63,9 @@ export function useTimelineData(
   const [days, setDays] = useState<TimelineDay[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const activeQuests = useSettingsStore((s) => s.activeQuests)
+  // Use ref to avoid activeQuests in useCallback deps (prevents infinite re-render loop)
+  const activeQuestsRef = useRef(activeQuests)
+  activeQuestsRef.current = activeQuests
 
   const load = useCallback(async () => {
     setIsLoading(true)
@@ -71,7 +74,7 @@ export function useTimelineData(
     // Even without user IDs, show today's open quests
     if (!userId && !providerUserId) {
       const today = new Date().toISOString().split("T")[0]
-      const todayQuests = activeQuests
+      const todayQuests = activeQuestsRef.current
         .map((id) => ALL_QUESTS.find((q) => q.id === id))
         .filter((q): q is Quest => q !== undefined)
       setDays([{
@@ -158,7 +161,7 @@ export function useTimelineData(
 
     // Build timeline days
     const today = new Date().toISOString().split("T")[0]
-    const todayQuests = activeQuests
+    const todayQuests = activeQuestsRef.current
       .map((id) => ALL_QUESTS.find((q) => q.id === id))
       .filter((q): q is Quest => q !== undefined)
 
@@ -196,14 +199,14 @@ export function useTimelineData(
       console.error("Failed to load timeline data:", err)
       // Show today with no data rather than infinite spinner
       const today = new Date().toISOString().split("T")[0]
-      const todayQuests = activeQuests
+      const todayQuests = activeQuestsRef.current
         .map((id) => ALL_QUESTS.find((q) => q.id === id))
         .filter((q): q is Quest => q !== undefined)
       setDays([{ date: today, label: "Today", openQuests: todayQuests, completedItems: [] }])
     } finally {
       setIsLoading(false)
     }
-  }, [userId, providerUserId, activeQuests])
+  }, [userId, providerUserId])
 
   useEffect(() => {
     load()
