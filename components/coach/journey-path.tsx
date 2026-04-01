@@ -40,7 +40,7 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <div className="w-8 h-8 border-2 border-yellow-500/30 border-t-yellow-500 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#F5C518]/30 border-t-[#F5C518] rounded-full animate-spin" />
       </div>
     )
   }
@@ -53,7 +53,8 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
         </p>
         <button
           onClick={onStartSession}
-          className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-semibold rounded-full"
+          className="px-8 py-3 bg-[#F5C518] text-[#1A1A1A] font-extrabold rounded-full uppercase tracking-wide"
+          style={{ boxShadow: "0 4px 0 #C49B00", fontFamily: "var(--font-nunito, Nunito), sans-serif" }}
         >
           Start Session
         </button>
@@ -72,10 +73,10 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
       <div className="px-6 pt-6 pb-2">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-[#9E9E9E] text-sm">
               {displayName ? `Welcome back, ${displayName}` : "Welcome back"}
             </p>
-            <h1 className="text-white text-xl font-bold mt-1">Your Journey</h1>
+            <h1 className="text-[#F5C518] text-xl font-bold mt-1" style={{ fontFamily: "var(--font-nunito, Nunito), sans-serif" }}>Your Journey</h1>
           </div>
 
           {/* Teaching mode toggle */}
@@ -165,13 +166,15 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
                         `}
                         style={{
                           background: step.status === "completed"
-                            ? "linear-gradient(135deg, #f59e0b, #d97706)"
+                            ? "#4CAF50"
                             : isCurrent
-                              ? "linear-gradient(135deg, #fbbf24, #f59e0b)"
+                              ? "#F5C518"
                               : "rgba(55,65,81,0.5)",
                           boxShadow: isCurrent
-                            ? "0 0 20px rgba(251,191,36,0.4), 0 0 40px rgba(251,191,36,0.15)"
-                            : undefined,
+                            ? "0 0 20px rgba(245,197,24,0.4), 0 0 40px rgba(245,197,24,0.15), 0 4px 0 #C49B00"
+                            : step.status === "completed"
+                              ? "0 4px 0 #388E3C"
+                              : undefined,
                         }}
                         aria-label={
                           isCurrent
@@ -183,7 +186,7 @@ export function JourneyPath({ displayName, onStartSession }: JourneyPathProps) {
                       >
                         {/* Pulsing ring for current */}
                         {isCurrent && (
-                          <div className="absolute inset-0 rounded-full border-2 border-yellow-400/50 animate-ping" />
+                          <div className="absolute inset-0 rounded-full border-2 border-[#F5C518]/50 animate-ping" />
                         )}
 
                         {/* Inner content */}

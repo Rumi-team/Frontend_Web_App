@@ -14,6 +14,17 @@ body {
 
 @layer base {
   :root {
+    --rumi-gold: #F5C518;
+    --rumi-gold-dark: #C49B00;
+    --deep-black: #1A1A1A;
+    --warm-cream: #FFF8E1;
+    --streak-orange: #FF6B35;
+    --tier-purple: #7B68EE;
+    --growth-green: #4CAF50;
+    --xp-gold: #FFD700;
+    --heart-red: #EF5350;
+    --surface-dark: #242424;
+    --text-muted: #9E9E9E;
     --app-bg: #FAF8F3;
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;

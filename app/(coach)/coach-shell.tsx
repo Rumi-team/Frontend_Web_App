@@ -8,6 +8,8 @@ import { AuthProvider, useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Mic, BookOpen, LogOut, Loader2, Eye, EyeOff, Mail, Lock, Settings, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { BottomNav } from "@/components/app/shared/BottomNav"
+import { StatsHeader } from "@/components/app/shared/StatsHeader"
 
 // E2E testing bypass — only active in local development (NODE_ENV guard)
 const isE2ETesting =
@@ -346,99 +348,15 @@ function CoachShellInner({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-black">
-      {/* Top nav */}
-      <nav className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
-        <div className="flex items-center gap-1">
-          <Link href="/rumi">
-            <Image
-              src="/rumi_logo.png"
-              alt="Rumi"
-              width={303}
-              height={101}
-              priority
-              className="h-6 w-auto"
-            />
-          </Link>
-        </div>
+    <div className="flex min-h-screen flex-col bg-[#1A1A1A]">
+      {/* Stats header — XP, streak, level */}
+      <StatsHeader />
 
-        <div className="flex items-center gap-1">
-          <Link href="/rumi">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-gray-400 hover:text-white",
-                pathname === "/rumi" && "text-yellow-400 hover:text-yellow-300"
-              )}
-            >
-              <Mic className="mr-1.5 h-4 w-4" />
-              Coach
-            </Button>
-          </Link>
-          <Link href="/library">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-gray-400 hover:text-white",
-                pathname?.startsWith("/library") &&
-                  "text-yellow-400 hover:text-yellow-300"
-              )}
-            >
-              <BookOpen className="mr-1.5 h-4 w-4" />
-              Library
-            </Button>
-          </Link>
-          <Link href="/chat">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-gray-400 hover:text-white",
-                pathname?.startsWith("/chat") && "text-yellow-400 hover:text-yellow-300"
-              )}
-            >
-              <MessageSquare className="mr-1.5 h-4 w-4" />
-              Chat
-            </Button>
-          </Link>
-          <Link href="/settings">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={cn(
-                "text-gray-400 hover:text-white",
-                pathname?.startsWith("/settings") &&
-                  "text-yellow-400 hover:text-yellow-300"
-              )}
-            >
-              <Settings className="mr-1.5 h-4 w-4" />
-              Settings
-            </Button>
-          </Link>
-        </div>
+      {/* Content — padded for bottom nav */}
+      <main className="flex-1 pb-20">{children}</main>
 
-        <div className="flex items-center gap-2">
-          {displayName && (
-            <span className="text-xs text-gray-500 hidden sm:inline">
-              {displayName}
-            </span>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={signOut}
-            aria-label="Sign out"
-            className="text-gray-500 hover:text-white"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
-      </nav>
-
-      {/* Content */}
-      <main className="flex-1">{children}</main>
+      {/* Bottom tab navigation */}
+      <BottomNav />
     </div>
   )
 }

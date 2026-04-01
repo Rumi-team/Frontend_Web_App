@@ -11,6 +11,16 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+  			'rumi-gold': '#F5C518',
+  			'rumi-gold-dark': '#C49B00',
+  			'deep-black': '#1A1A1A',
+  			'warm-cream': '#FFF8E1',
+  			'streak-orange': '#FF6B35',
+  			'tier-purple': '#7B68EE',
+  			'growth-green': '#4CAF50',
+  			'xp-gold': '#FFD700',
+  			'heart-red': '#EF5350',
+  			'surface-dark': '#242424',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -62,10 +72,19 @@ const config: Config = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+  		fontFamily: {
+  			display: ['Nunito', 'system-ui', 'sans-serif'],
+  			body: ['DM Sans', 'system-ui', 'sans-serif'],
+  			mono: ['Geist Mono', 'monospace'],
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			sm: 'calc(var(--radius) - 4px)',
+  			'rumi-sm': '8px',
+  			'rumi-md': '14px',
+  			'rumi-lg': '20px',
+  			'rumi-xl': '28px',
   		},
   		keyframes: {
   			'accordion-down': {
