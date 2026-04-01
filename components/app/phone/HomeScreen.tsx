@@ -14,9 +14,20 @@ const THEME_IMAGES: Record<string, string> = {
 }
 
 const QUOTES = [
-  { text: "The only way out is through.", author: "Robert Frost" },
+  // Rumi
+  { text: "The wound is the place where the Light enters you.", author: "Rumi" },
+  { text: "What you seek is seeking you.", author: "Rumi" },
+  { text: "Don't be satisfied with stories, how things have gone with others. Unfold your own myth.", author: "Rumi" },
+  { text: "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.", author: "Rumi" },
+  { text: "You were born with wings. Why prefer to crawl through life?", author: "Rumi" },
+  // Transformational leaders
   { text: "What you resist, persists.", author: "Carl Jung" },
-  { text: "Be the change you wish to see.", author: "Gandhi" },
+  { text: "The only way out is through.", author: "Robert Frost" },
+  { text: "Between stimulus and response there is a space. In that space is our freedom.", author: "Viktor Frankl" },
+  { text: "When you change the way you look at things, the things you look at change.", author: "Wayne Dyer" },
+  { text: "The cave you fear to enter holds the treasure you seek.", author: "Joseph Campbell" },
+  { text: "No problem can be solved from the same level of consciousness that created it.", author: "Albert Einstein" },
+  { text: "Until you make the unconscious conscious, it will direct your life and you will call it fate.", author: "Carl Jung" },
 ]
 
 export function HomeScreen() {
@@ -27,7 +38,9 @@ export function HomeScreen() {
   const startSession = useSessionStore((s) => s.startSession)
 
   const bgImage = THEME_IMAGES[selectedTheme] || THEME_IMAGES.forest_light
-  const quote = QUOTES[0]
+  // Rotate quotes daily based on date
+  const dayIndex = new Date().getDate() % QUOTES.length
+  const quote = QUOTES[dayIndex]
   const initial = (displayName || "U").charAt(0).toUpperCase()
 
   const handleSlideComplete = () => {
@@ -42,7 +55,7 @@ export function HomeScreen() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Content */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-between px-6 pb-28 pt-16 w-full">
@@ -59,11 +72,11 @@ export function HomeScreen() {
 
         {/* Quote */}
         {showQuote && (
-          <div className="flex flex-col items-center gap-1 text-center">
-            <p className="text-lg italic text-white/90 font-serif">
+          <div className="flex flex-col items-center gap-1 text-center" style={{ textShadow: "0 1px 8px rgba(0,0,0,0.7)" }}>
+            <p className="text-lg italic text-white font-serif">
               {quote.text}
             </p>
-            <p className="text-sm text-white/60">{quote.author}</p>
+            <p className="text-sm text-white/80">{quote.author}</p>
           </div>
         )}
 
