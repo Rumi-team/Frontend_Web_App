@@ -22,7 +22,7 @@ const VoiceSelectionScreen = dynamic(() => import("@/components/onboarding/scree
 const CommunicationStyleScreen = dynamic(() => import("@/components/onboarding/screens/CommunicationStyleScreen").then(m => ({ default: m.CommunicationStyleScreen })))
 const AICalibrationScreen = dynamic(() => import("@/components/onboarding/screens/AICalibrationScreen").then(m => ({ default: m.AICalibrationScreen })), { ssr: false })
 const BuildingCoachScreen = dynamic(() => import("@/components/onboarding/screens/BuildingCoachScreen").then(m => ({ default: m.BuildingCoachScreen })))
-const ThemeSelectionScreen = dynamic(() => import("@/components/onboarding/screens/ThemeSelectionScreen").then(m => ({ default: m.ThemeSelectionScreen })))
+const AvatarCreatorScreen = dynamic(() => import("@/components/onboarding/screens/AvatarCreatorScreen").then(m => ({ default: m.AvatarCreatorScreen })))
 const SetupCompleteScreen = dynamic(() => import("@/components/onboarding/screens/SetupCompleteScreen").then(m => ({ default: m.SetupCompleteScreen })))
 const ConnectingScreen = dynamic(() => import("@/components/onboarding/screens/ConnectingScreen").then(m => ({ default: m.ConnectingScreen })))
 
@@ -119,7 +119,7 @@ export default function OnboardingPage() {
     case 22:
       return <BuildingCoachScreen onComplete={nextStep} />
     case 23:
-      return <ThemeSelectionScreen onNext={nextStep} onBack={handleBack} />
+      return <AvatarCreatorScreen onNext={nextStep} onSkip={handleSkip} onBack={handleBack} />
     case 24:
       return <SetupCompleteScreen onNext={nextStep} />
     case 25:
