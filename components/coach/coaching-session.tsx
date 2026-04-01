@@ -6,7 +6,7 @@ import { useSessionControl } from "@/hooks/use-session-control"
 import { useChatMessages } from "@/hooks/use-chat-messages"
 import { AgentTranscript } from "./agent-transcript"
 import { ControlBar } from "./control-bar"
-import { TextInput } from "./text-input"
+// TextInput removed — text coaching available via Chat tab
 import { ProgramSelection } from "./program-selection"
 import { StepProgress } from "./step-progress"
 import { SessionOrb } from "./session-orb"
@@ -45,10 +45,9 @@ export function CoachingSession({
   remoteAudioTrack,
 }: CoachingSessionProps) {
   // 0 = default (no transcript, no text input)
-  // 1 = transcript visible
-  // 2 = text input visible
+  // 1 = transcript visible (text input removed — use Chat tab instead)
   const [textMode, setTextMode] = useState<0 | 1 | 2>(0)
-  const cycleTextMode = () => setTextMode((m) => ((m + 1) % 3) as 0 | 1 | 2)
+  const cycleTextMode = () => setTextMode((m) => (m === 0 ? 1 : 0) as 0 | 1 | 2)
   const [showSaveOverlay, setShowSaveOverlay] = useState(false)
   const [showLockedOverlay, setShowLockedOverlay] = useState(false)
   const [mascotMood, setMascotMood] = useState<MascotMood>("idle")
@@ -257,9 +256,6 @@ export function CoachingSession({
           <MicVisualizer isMicEnabled={isMicrophoneEnabled} />
         )}
       </div>
-
-      {/* Text input — mode 2 only */}
-      {textMode === 2 && <TextInput onSend={sendMessage} />}
 
       <ControlBar
         isMicrophoneEnabled={isMicrophoneEnabled}
