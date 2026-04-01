@@ -2,17 +2,30 @@
 
 import { Mic, MicOff, MessageSquare, PhoneOff } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { AgentState } from "@/hooks/use-livekit-connection"
 
 interface ControlBarProps {
   isMicrophoneEnabled: boolean
+  agentState: AgentState | null
   textMode: 0 | 1 | 2
   onToggleMic: () => void
   onCycleTextMode: () => void
   onEndSession: () => void
 }
 
+function getMicLabel(isMicEnabled: boolean, agentState: AgentState | null): string {
+  if (!isMicEnabled) return "Muted"
+  switch (agentState) {
+    case "speaking": return "Speaking"
+    case "thinking": return "Thinking..."
+    case "listening": return "Listening"
+    default: return "Listening"
+  }
+}
+
 export function ControlBar({
   isMicrophoneEnabled,
+  agentState,
   textMode,
   onToggleMic,
   onCycleTextMode,
@@ -85,9 +98,11 @@ export function ControlBar({
         </button>
         <span className={cn(
           "text-sm font-medium tracking-wide",
-          isMicrophoneEnabled ? "text-yellow-400/80" : "text-red-400/70"
+          !isMicrophoneEnabled ? "text-red-400/70"
+            : agentState === "speaking" ? "text-white/50"
+            : "text-yellow-400/80"
         )}>
-          {isMicrophoneEnabled ? "Listening" : "Muted"}
+          {getMicLabel(isMicrophoneEnabled, agentState)}
         </span>
       </div>
 

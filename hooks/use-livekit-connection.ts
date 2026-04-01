@@ -1,13 +1,16 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { Room, RoomEvent, Track, type RemoteTrackPublication } from "livekit-client"
+import { Room, RoomEvent, Track, ParticipantEvent, type RemoteTrackPublication, type RemoteParticipant } from "livekit-client"
 import type { ConnectionState, ConnectionDetails } from "@/lib/types/livekit"
+
+export type AgentState = "initializing" | "listening" | "thinking" | "speaking"
 
 interface UseLiveKitConnectionReturn {
   connectionState: ConnectionState
   room: Room | null
   isMicrophoneEnabled: boolean
+  agentState: AgentState | null
   connect: (displayName?: string) => Promise<void>
   disconnect: () => Promise<void>
   forceDisconnect: () => Promise<void>
@@ -23,6 +26,7 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
   const [error, setError] = useState<string | null>(null)
   const [remoteAudioTrack, setRemoteAudioTrack] =
     useState<MediaStreamTrack | null>(null)
+  const [agentState, setAgentState] = useState<AgentState | null>(null)
 
   const roomRef = useRef<Room | null>(null)
   const [, setRoomVersion] = useState(0) // Force re-renders when room changes
@@ -72,9 +76,28 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
         }
       })
 
+      // Track agent state from participant attributes (lk.agent.state)
+      const updateAgentState = (participant: RemoteParticipant) => {
+        const state = participant.attributes?.["lk.agent.state"] as AgentState | undefined
+        if (state) setAgentState(state)
+      }
+
+      room.on(RoomEvent.ParticipantConnected, (participant: RemoteParticipant) => {
+        updateAgentState(participant)
+        participant.on(ParticipantEvent.AttributesChanged, () => updateAgentState(participant))
+      })
+
+      room.on(RoomEvent.ParticipantAttributesChanged, (changed, participant) => {
+        if ("lk.agent.state" in changed) {
+          const state = changed["lk.agent.state"] as AgentState | undefined
+          if (state) setAgentState(state)
+        }
+      })
+
       room.on(RoomEvent.Disconnected, () => {
         setConnectionState("disconnected")
         setRemoteAudioTrack(null)
+        setAgentState(null)
       })
 
       room.on(RoomEvent.Reconnecting, () => {
@@ -147,6 +170,7 @@ export function useLiveKitConnection(): UseLiveKitConnectionReturn {
     connectionState,
     room: roomRef.current,
     isMicrophoneEnabled,
+    agentState,
     connect,
     disconnect,
     forceDisconnect,
