@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
-import { Play, Pause, ChevronLeft } from "lucide-react"
+import { Play, Pause, ChevronLeft, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { OnboardingButton } from "../shared"
 import { useOnboardingStore } from "@/store/onboardingStore"
@@ -33,30 +33,84 @@ const VOICES: GeminiVoice[] = [
   { id: "Sulafat", description: "Soft & reflective", personality: "Thoughtful, introspective", color: "#FB923C" },
 ]
 
+type AudioState = "idle" | "loading" | "playing" | "error"
+
 export function VoiceSelectionScreen({ onNext, onSkip, onBack }: VoiceSelectionScreenProps) {
   const { voicePersonaId, setField } = useOnboardingStore()
   const [selected, setSelected] = useState(voicePersonaId || "")
-  const [playing, setPlaying] = useState<string | null>(null)
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const [audioState, setAudioState] = useState<AudioState>("idle")
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  function handlePlay(personaId: string) {
-    // Stop current audio
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.removeAttribute("src")
+        audioRef.current = null
+      }
+    }
+  }, [])
+
+  const stopAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause()
-      audioRef.current = null
+      audioRef.current.currentTime = 0
     }
+    setPlayingId(null)
+    setAudioState("idle")
+  }, [])
 
-    if (playing === personaId) {
-      setPlaying(null)
+  const handlePlay = useCallback((personaId: string) => {
+    // Toggle off if already playing this voice
+    if (playingId === personaId) {
+      stopAudio()
       return
     }
 
-    // Placeholder: in production, load from /audio/personas/{id}.mp3
-    setPlaying(personaId)
-    // Auto-stop after 3s (placeholder for actual audio)
-    const timeout = setTimeout(() => setPlaying(null), 3000)
-    return () => clearTimeout(timeout)
-  }
+    // Stop current audio
+    if (audioRef.current) {
+      audioRef.current.pause()
+    }
+
+    setPlayingId(personaId)
+    setAudioState("loading")
+
+    // Create single Audio instance or reuse existing
+    if (!audioRef.current) {
+      audioRef.current = new Audio()
+    }
+
+    const audio = audioRef.current
+
+    const handleCanPlay = () => {
+      setAudioState("playing")
+      audio.play().catch(() => {
+        setAudioState("error")
+        setPlayingId(null)
+      })
+    }
+
+    const handleEnded = () => {
+      setPlayingId(null)
+      setAudioState("idle")
+    }
+
+    const handleError = () => {
+      setAudioState("error")
+      setPlayingId(null)
+    }
+
+    // Remove old listeners before adding new ones
+    audio.oncanplaythrough = handleCanPlay
+    audio.onended = handleEnded
+    audio.onerror = handleError
+
+    // Set source and load
+    audio.src = `/audio/personas/${personaId}.mp3`
+    audio.load()
+  }, [playingId, stopAudio])
 
   function handleSelect(id: string) {
     setSelected(id)
@@ -64,6 +118,7 @@ export function VoiceSelectionScreen({ onNext, onSkip, onBack }: VoiceSelectionS
 
   function handleNext() {
     if (selected) {
+      stopAudio()
       setField("voicePersonaId", selected)
       onNext()
     }
@@ -113,21 +168,30 @@ export function VoiceSelectionScreen({ onNext, onSkip, onBack }: VoiceSelectionS
             <div className="text-[11px] text-white/50">{voice.description}</div>
             <div className="text-[10px] text-white/30">{voice.personality}</div>
 
-            {/* Play preview */}
+            {/* Play preview button */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation()
                 handlePlay(voice.id)
               }}
-              className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/10"
+              className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
             >
-              {playing === voice.id ? (
+              {playingId === voice.id && audioState === "loading" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-[#FFD41A]" />
+              ) : playingId === voice.id && audioState === "playing" ? (
                 <Pause className="h-3.5 w-3.5 text-[#FFD41A]" />
               ) : (
                 <Play className="h-3.5 w-3.5 text-white/60" />
               )}
             </button>
+
+            {/* Error indicator */}
+            {playingId === voice.id && audioState === "error" && (
+              <span className="absolute right-2 top-10 text-[9px] text-red-400">
+                No preview
+              </span>
+            )}
           </motion.button>
         ))}
       </div>
@@ -140,7 +204,10 @@ export function VoiceSelectionScreen({ onNext, onSkip, onBack }: VoiceSelectionS
         </OnboardingButton>
         <button
           type="button"
-          onClick={onSkip}
+          onClick={() => {
+            stopAudio()
+            onSkip()
+          }}
           className="text-sm text-white/40 hover:text-white/60"
         >
           Skip for now
