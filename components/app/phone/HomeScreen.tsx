@@ -5,7 +5,6 @@ import { useAuth } from "@/components/auth-provider"
 import { useUserStore } from "@/store/userStore"
 import { useSessionStore } from "@/store/sessionStore"
 import { useSettingsStore } from "@/store/settingsStore"
-import Image from "next/image"
 import { SlideToStart } from "@/components/app/shared/SlideToStart"
 
 const THEME_IMAGES: Record<string, string> = {
@@ -53,12 +52,11 @@ export function HomeScreen() {
     <div className="relative flex flex-col min-h-[calc(100dvh-72px)] overflow-hidden">
       {/* Full-screen background image */}
       <div className="absolute inset-0">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={bgImage}
-          alt="Background"
-          fill
-          className="object-cover"
-          priority
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-black/30" />
       </div>
@@ -68,22 +66,16 @@ export function HomeScreen() {
         {/* Top: Rumi avatar + name badge */}
         <div className="flex flex-col items-center gap-2 pt-4">
           <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-white/30 shadow-lg bg-white/10">
-            {avatarSrc ? (
-              <Image
-                src={avatarSrc}
-                alt="Rumi"
-                width={80}
-                height={80}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  // Fallback to mascot if avatar 404s
-                  e.currentTarget.src = "/mascot/rumi_idle.png"
-                  e.currentTarget.onerror = null
-                }}
-              />
-            ) : (
-              <Image src="/mascot/rumi_idle.png" alt="Rumi" width={80} height={80} className="h-full w-full object-cover" />
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={avatarSrc || "/mascot/rumi_idle.png"}
+              alt="Rumi"
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/mascot/rumi_idle.png"
+                e.currentTarget.onerror = null
+              }}
+            />
           </div>
           <div className="flex items-center gap-1.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full px-4 py-1.5 shadow-sm">
             <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Rumi</span>
