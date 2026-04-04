@@ -12,7 +12,6 @@ interface AgentTranscriptProps {
 export function AgentTranscript({ messages }: AgentTranscriptProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const soundRef = useRef<HTMLAudioElement>(null)
   const [mascotReady, setMascotReady] = useState(false)
   const [mascotExiting, setMascotExiting] = useState(false)
   const didPlaySound = useRef(false)
@@ -64,18 +63,12 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
     ? allMessages[allMessages.length - 1]
     : null
 
-  // When first agent message arrives, play ready sound + exit animation
+  // When first agent message arrives, trigger exit animation (no sound)
   useEffect(() => {
     if (latestMessage && !didPlaySound.current) {
       didPlaySound.current = true
-      // Play the Duolingo "correct!" sound
-      try {
-        soundRef.current?.play()
-      } catch {
-        // Autoplay may be blocked
-      }
       setMascotReady(true)
-      // Exit animation after sound
+      // Exit animation
       const timer = setTimeout(() => setMascotExiting(true), 1000)
       return () => clearTimeout(timer)
     }
@@ -85,8 +78,6 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
   if (!latestMessage) {
     return (
       <div className="flex h-full items-center justify-center">
-        {/* Hidden audio element for ready sound */}
-        <audio ref={soundRef} src="/sounds/agent-ready.mp3" preload="auto" />
 
         <div className={cn(
           "flex flex-col items-center gap-6 transition-all duration-500",
@@ -152,8 +143,6 @@ export function AgentTranscript({ messages }: AgentTranscriptProps) {
 
   return (
     <div ref={scrollRef} onScroll={handleScroll} className="h-full overflow-y-auto flex flex-col gap-3 px-10 py-8">
-      {/* Ready sound (plays once on first agent message) */}
-      <audio ref={soundRef} src="/sounds/agent-ready.mp3" preload="auto" />
 
       {allMessages.map((msg, idx) => {
         const isAgent = msg.content.type === "agent"

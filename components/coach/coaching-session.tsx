@@ -121,7 +121,7 @@ export function CoachingSession({
     }
   }, [sessionControl.showDayComplete, celebrate, flashMascotMood])
 
-  // 3. Highlighted text in agent messages → insight spark + mascot impressed
+  // 3. Highlighted text in agent messages → mascot impressed (no popup, per user feedback)
   useEffect(() => {
     const agentMessages = messages.filter((m) => m.content.type === "agent")
     const latest = agentMessages[agentMessages.length - 1]
@@ -130,13 +130,11 @@ export function CoachingSession({
     const highlightCount = latest.styledSegments.filter((s) => s.isHighlight).length
     const now = Date.now()
     if (highlightCount > 0 && highlightCount !== prevHighlightCountRef.current && now - lastInsightTimeRef.current > 15000) {
-      // Agent highlighted something — min 15s between insight celebrations to avoid spam
-      celebrate("insight")
       flashMascotMood("impressed", 3000)
       lastInsightTimeRef.current = now
     }
     prevHighlightCountRef.current = highlightCount
-  }, [messages, celebrate, flashMascotMood])
+  }, [messages, flashMascotMood])
 
   // 4. When agent is speaking, mascot listens
   useEffect(() => {
@@ -162,15 +160,35 @@ export function CoachingSession({
     }
   }, [remoteAudioTrack])
 
-  // Show feedback form when end_conversation fires (feedback comes first, save overlay after)
-  // feedbackRequestedRef ensures this fires at most once per session mount, regardless of
-  // feedbackDone toggling (e.g. during save → disconnect sequencing).
+  // Show feedback form AFTER farewell speech completes (not immediately on end_conversation).
+  // The agent says goodbye first, then farewell_complete fires, then we show feedback.
+  // feedbackRequestedRef ensures this fires at most once per session mount.
   useEffect(() => {
-    if (sessionControl.endConversationCount > 0 && !feedbackDone && !feedbackRequestedRef.current) {
-      feedbackRequestedRef.current = true
-      onRequestFeedback(room.name || "unknown")
+    if (sessionControl.farewellComplete && !feedbackDone && !feedbackRequestedRef.current) {
+      // Wait for Rumi to fully finish speaking before showing the rating screen
+      const timer = setTimeout(() => {
+        if (!feedbackRequestedRef.current) {
+          feedbackRequestedRef.current = true
+          onRequestFeedback(room.name || "unknown")
+        }
+      }, 3500)
+      return () => clearTimeout(timer)
     }
-  }, [sessionControl.endConversationCount, feedbackDone, onRequestFeedback, room])
+  }, [sessionControl.farewellComplete, feedbackDone, onRequestFeedback, room])
+
+  // Fallback: if end_conversation fires but farewell_complete never came (unexpected disconnect),
+  // show feedback after a short delay
+  useEffect(() => {
+    if (sessionControl.endConversationCount > 0 && !sessionControl.farewellComplete && !feedbackRequestedRef.current) {
+      const fallback = setTimeout(() => {
+        if (!feedbackRequestedRef.current) {
+          feedbackRequestedRef.current = true
+          onRequestFeedback(room.name || "unknown")
+        }
+      }, 3000)
+      return () => clearTimeout(fallback)
+    }
+  }, [sessionControl.endConversationCount, sessionControl.farewellComplete, onRequestFeedback, room])
 
   // After feedback is done, show save overlay
   useEffect(() => {

@@ -69,7 +69,7 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 export function SettingsList() {
-  const { signOut } = useAuth()
+  const { signOut, userEmail } = useAuth()
   const settings = useSettingsStore()
   const setField = useSettingsStore((s) => s.setField)
   const { setTheme } = useTheme()
@@ -139,6 +139,12 @@ export function SettingsList() {
       {/* Account */}
       <SectionHeader title="Account" />
       <div className="mx-4 rounded-2xl bg-white dark:bg-gray-900 overflow-hidden shadow-sm dark:shadow-gray-800/20">
+        {userEmail && (
+          <>
+            <SettingsRow icon={<Mail className="h-5 w-5" />} title="Email" description={userEmail} />
+            <div className="mx-4 border-t border-gray-100 dark:border-gray-800" />
+          </>
+        )}
         <SettingsRow icon={<LogOut className="h-5 w-5" />} title="Log Out" description="Sign out of your account" onClick={signOut} />
         <div className="mx-4 border-t border-gray-100 dark:border-gray-800" />
         <SettingsRow icon={<Trash2 className="h-5 w-5" />} title="Delete Account" description="Permanently delete your account and data" onClick={() => setShowDeleteAccount(true)} danger />

@@ -11,6 +11,7 @@ interface UserState {
   addXP: (amount: number) => void
   addWordCount: (delta: number) => void
   updateStreak: () => void
+  validateStreak: () => void
   incrementSessionsCompleted: () => void
   hydrate: (data: Partial<UserState>) => void
   setFocusAreas: (areas: string[]) => void
@@ -83,10 +84,26 @@ export const useUserStore = create<UserState>()(
           // Consecutive day — increment
           set({ streak: state.streak + 1, lastSessionDate: today })
         } else {
-          // Gap or first session — reset to 1
+          // Gap or first session — start a new streak at 1
           set({ streak: 1, lastSessionDate: today })
         }
         debouncedSave(get())
+      },
+
+      /** Reset streak to 0 if the user missed yesterday. Call on app load. */
+      validateStreak: () => {
+        const state = get()
+        const today = getToday()
+        const yesterday = getYesterday()
+
+        if (
+          state.lastSessionDate &&
+          state.lastSessionDate !== today &&
+          state.lastSessionDate !== yesterday &&
+          state.streak > 0
+        ) {
+          set({ streak: 0 })
+        }
       },
 
       incrementSessionsCompleted: () => {

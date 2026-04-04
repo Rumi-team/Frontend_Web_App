@@ -184,11 +184,7 @@ export function FeedbackOverlay({ sessionId, onComplete }: FeedbackOverlayProps)
                     transition-all duration-200 border-2
                     ${npsScore === i
                       ? "border-yellow-400 bg-yellow-400/20 text-yellow-300 scale-110"
-                      : i <= 6
-                        ? "border-white/10 bg-white/5 text-gray-400 hover:border-red-400/30 hover:bg-red-400/10"
-                        : i <= 8
-                          ? "border-white/10 bg-white/5 text-gray-300 hover:border-yellow-400/30 hover:bg-yellow-400/10"
-                          : "border-white/10 bg-white/5 text-white hover:border-green-400/30 hover:bg-green-400/10"
+                      : "border-white/10 bg-white/5 text-gray-300 hover:border-white/30 hover:bg-white/10"
                     }`}
                   style={{
                     animation: visible

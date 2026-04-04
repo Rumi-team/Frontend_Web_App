@@ -58,6 +58,34 @@ export default function ActiveSessionPage() {
     }
   }, [lk.connectionState, lk.room])
 
+  // Keep screen awake during active session (prevents battery saver from killing speech)
+  useEffect(() => {
+    if (lk.connectionState !== "connected") return
+    let wakeLock: WakeLockSentinel | null = null
+
+    async function requestWakeLock() {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLock = await navigator.wakeLock.request("screen")
+        }
+      } catch {
+        // WakeLock may fail silently on some browsers
+      }
+    }
+
+    requestWakeLock()
+    // Re-acquire on visibility change (wake lock is released when tab is hidden)
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") requestWakeLock()
+    }
+    document.addEventListener("visibilitychange", handleVisibility)
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility)
+      wakeLock?.release()
+    }
+  }, [lk.connectionState])
+
   // Handle disconnect
   useEffect(() => {
     if (lk.connectionState === "disconnected" && hadActiveSession && !showFeedback) {
