@@ -19,6 +19,7 @@ interface UseSessionControlReturn {
   sessionSaveStage: string | null
   visualizationImages: VisualizationImageData[]
   endConversationCount: number
+  farewellComplete: boolean
   isSessionComplete: boolean
   // Session gating
   currentDay: number
@@ -52,6 +53,7 @@ export function useSessionControl(
     VisualizationImageData[]
   >([])
   const [endConversationCount, setEndConversationCount] = useState(0)
+  const [farewellComplete, setFarewellComplete] = useState(false)
   const [isSessionComplete, setIsSessionComplete] = useState(false)
   // Session gating state
   const [currentDay, setCurrentDay] = useState(1)
@@ -90,6 +92,10 @@ export function useSessionControl(
 
       case "show_future_visualization":
         if (msg.images) setVisualizationImages(msg.images)
+        break
+
+      case "farewell_complete":
+        setFarewellComplete(true)
         break
 
       case "end_conversation":
@@ -188,6 +194,7 @@ export function useSessionControl(
     sessionSaveStage,
     visualizationImages,
     endConversationCount,
+    farewellComplete,
     isSessionComplete,
     currentDay,
     totalDays,

@@ -1,6 +1,24 @@
 import { NextResponse } from "next/server"
 import { createSupabaseServerClient } from "@/lib/supabase-auth"
 
+export async function GET() {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const { data, error } = await supabase
+    .from("user_progress")
+    .select("xp, streak, word_count, sessions_completed, last_session_date")
+    .eq("user_id", user.id)
+    .single()
+
+  if (error && error.code !== "PGRST116") {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(data ?? { xp: 0, streak: 0, word_count: 0, sessions_completed: 0, last_session_date: null })
+}
+
 export async function PATCH(request: Request) {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()

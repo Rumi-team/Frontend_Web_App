@@ -4,7 +4,21 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Lock, MessageSquareText, Eye, RefreshCw } from "lucide-react"
 import { AuthRedirect } from "@/components/landing/auth-redirect"
 import { FAQ } from "@/components/landing/faq"
+import { faqs } from "@/lib/faq-data"
 import { Footer } from "@/components/landing/footer"
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+}
 
 export default function Home() {
   return (
@@ -15,6 +29,12 @@ export default function Home() {
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
+      {/* FAQ structured data for Google rich snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* Auth redirect (client component — handles session check + PKCE) */}
       <AuthRedirect />
 

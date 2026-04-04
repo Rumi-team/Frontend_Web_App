@@ -43,12 +43,10 @@ export function Footer() {
                 Contact Support
               </button>
               <a
-                href="https://rumiagent.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/about"
                 className="text-sm text-gray-600 hover:text-gray-400 transition-colors duration-200 py-3"
               >
-                For developers &amp; enterprise → rumiagent.com
+                About Rumi
               </a>
             </div>
           </div>

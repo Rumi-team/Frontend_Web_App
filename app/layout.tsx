@@ -17,7 +17,7 @@ export const viewport: Viewport = {
   themeColor: "#000000",
 }
 
-const siteUrl = "https://www.rumi.team"
+const siteUrl = "https://rumiagent.com"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -28,10 +28,14 @@ export const metadata: Metadata = {
     "AI life coach",
     "AI coaching",
     "voice AI coach",
-    "personal development",
-    "mental wellness",
+    "AI coach for anxiety",
+    "AI coach for overthinking",
+    "AI coach between therapy sessions",
+    "personal development AI",
+    "mental wellness AI",
     "coaching that lasts",
     "Rumi",
+    "rumi agent",
   ],
   authors: [{ name: "Rumi", url: siteUrl }],
   creator: "Rumi",
@@ -100,7 +104,11 @@ const jsonLd = {
       },
       description:
         "AI voice coaching that listens, surfaces what's holding you back, and follows up until the change sticks.",
-      sameAs: ["https://rumiagent.com"],
+      sameAs: [
+        "https://www.rumi.team",
+        "https://rumi.team",
+        "https://rumi.build",
+      ],
     },
     {
       "@type": "WebSite",
@@ -115,13 +123,15 @@ const jsonLd = {
       "@type": "SoftwareApplication",
       name: "Rumi",
       applicationCategory: "LifestyleApplication",
-      operatingSystem: "iOS, Android, Web",
+      operatingSystem: "iOS, Web",
       url: siteUrl,
       offers: {
         "@type": "Offer",
         price: "0",
         priceCurrency: "USD",
       },
+      description:
+        "AI voice coach that listens, surfaces patterns, and follows up until the change sticks. Available 24/7.",
     },
   ],
 }
