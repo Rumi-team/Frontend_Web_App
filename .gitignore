@@ -38,3 +38,4 @@ supabase/.temp/
 settings.local.json
 .gstack/
 .env*.local
+supabase/.temp/
