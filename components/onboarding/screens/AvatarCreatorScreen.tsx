@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Sparkles, Loader2, RefreshCw } from "lucide-react"
+import { Sparkles, Loader2, RefreshCw, Camera } from "lucide-react"
 import { useOnboardingStore } from "@/store/onboardingStore"
 
 const SKIN_TONES = [
@@ -37,8 +37,40 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
   const [selectedTone, setSelectedTone] = useState(3)
   const [selectedExpression, setSelectedExpression] = useState("determined")
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [genState, setGenState] = useState<GenerationState>("idle")
   const [genError, setGenError] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handlePhotoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Resize to 256x256 via canvas
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const img = new window.Image()
+      img.onload = () => {
+        const canvas = document.createElement("canvas")
+        canvas.width = 256
+        canvas.height = 256
+        const ctx = canvas.getContext("2d")
+        if (!ctx) return
+
+        // Center crop: use the smaller dimension to fill the square
+        const size = Math.min(img.width, img.height)
+        const sx = (img.width - size) / 2
+        const sy = (img.height - size) / 2
+        ctx.drawImage(img, sx, sy, size, size, 0, 0, 256, 256)
+
+        const dataUrl = canvas.toDataURL("image/png")
+        setUploadedImage(dataUrl)
+        setGeneratedImage(null) // clear AI-generated if any
+      }
+      img.src = event.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }, [])
 
   const generateAvatar = useCallback(async () => {
     setGenState("generating")
@@ -76,19 +108,20 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
   const handleContinue = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("rumi_avatar", JSON.stringify({
-        base: generatedImage || avatars[selectedAvatar],
+        base: uploadedImage || generatedImage || avatars[selectedAvatar],
         skinTone: SKIN_TONES[selectedTone],
         expression: selectedExpression,
         gender: gender || "neutral",
         isGenerated: !!generatedImage,
+        isUploaded: !!uploadedImage,
       }))
     }
     onNext()
   }
 
   // Determine which image to show in the preview
-  const previewSrc = generatedImage || avatars[selectedAvatar]
-  const isGenerated = !!generatedImage
+  const previewSrc = uploadedImage || generatedImage || avatars[selectedAvatar]
+  const isCustom = !!uploadedImage || !!generatedImage
 
   return (
     <div className="flex flex-col min-h-dvh bg-[#1A1A1A] px-6 py-8">
@@ -132,11 +165,11 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
                 <Loader2 className="w-8 h-8 text-white animate-spin" />
                 <span className="text-[10px] text-white/60">Creating...</span>
               </div>
-            ) : isGenerated ? (
+            ) : isCustom ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={previewSrc}
-                alt="AI-generated avatar"
+                alt="Custom avatar"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -150,8 +183,17 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
             )}
           </div>
 
-          {/* AI badge on generated avatars */}
-          {isGenerated && genState === "done" && (
+          {/* Badge on custom avatars */}
+          {uploadedImage && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -bottom-1 -right-1 flex items-center gap-1 rounded-full bg-[#4CAF50] px-2 py-0.5"
+            >
+              <Camera className="w-3 h-3 text-white" />
+            </motion.div>
+          )}
+          {!uploadedImage && generatedImage && genState === "done" && (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -162,6 +204,27 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
             </motion.div>
           )}
         </div>
+      </div>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handlePhotoUpload}
+        className="hidden"
+      />
+
+      {/* Upload your photo button */}
+      <div className="flex justify-center mb-3">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-white/10"
+        >
+          <Camera className="w-4 h-4" />
+          {uploadedImage ? "Change photo" : "Upload your photo"}
+        </button>
       </div>
 
       {/* Generate with AI button */}
@@ -197,8 +260,8 @@ export function AvatarCreatorScreen({ onNext, onSkip, onBack }: AvatarCreatorScr
         </p>
       )}
 
-      {/* Manual avatar selection (hidden when AI avatar is active) */}
-      {!isGenerated && (
+      {/* Manual avatar selection (hidden when custom avatar is active) */}
+      {!isCustom && (
         <>
           <div className="mb-6">
             <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">

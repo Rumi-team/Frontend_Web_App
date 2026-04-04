@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/rumi", "/admin", "/debug"],
+      disallow: ["/rumi", "/admin", "/debug", "/phone", "/onboarding"],
     },
-    sitemap: "https://www.rumi.team/sitemap.xml",
+    sitemap: "https://rumiagent.com/sitemap.xml",
   }
 }

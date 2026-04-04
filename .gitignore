@@ -37,3 +37,4 @@ supabase/.temp/
 .claude/agents/
 settings.local.json
 .gstack/
+.env*.local

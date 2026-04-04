@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useAuth } from "@/components/auth-provider"
 import { useUserStore } from "@/store/userStore"
 import { getLevelInfo } from "@/lib/levels"
@@ -13,13 +14,32 @@ const LEVEL_NAMES: Record<number, string> = {
 }
 
 export function ProfileCard() {
-  const { displayName } = useAuth()
+  const { displayName, user } = useAuth()
   const xp = useUserStore((s) => s.xp)
   const streak = useUserStore((s) => s.streak)
   const sessionsCompleted = useUserStore((s) => s.sessionsCompleted)
   const level = getLevelInfo(xp)
   const initial = (displayName || "U").charAt(0).toUpperCase()
   const tierName = LEVEL_NAMES[level.level] || "Seeker"
+
+  // Avatar: user metadata > localStorage > initial letter
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  useEffect(() => {
+    const metaAvatar = user?.user_metadata?.avatar_url
+    if (metaAvatar) {
+      setAvatarUrl(metaAvatar)
+      return
+    }
+    try {
+      const stored = localStorage.getItem("rumi_avatar")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.isUploaded || parsed.isGenerated) {
+          setAvatarUrl(parsed.base)
+        }
+      }
+    } catch { /* ignore parse errors */ }
+  }, [user])
 
   const progressPercent = level.xpToNext > 0
     ? ((xp - (level.xp - level.xpToNext)) / level.xpToNext) * 100
@@ -29,7 +49,7 @@ export function ProfileCard() {
     <div className="flex flex-col items-center gap-4">
       {/* Avatar */}
       <div
-        className="flex h-22 w-22 items-center justify-center rounded-full text-4xl"
+        className="flex h-22 w-22 items-center justify-center rounded-full text-4xl overflow-hidden"
         style={{
           width: 88, height: 88,
           background: "linear-gradient(135deg, #F5C518, #FF6B35)",
@@ -37,7 +57,12 @@ export function ProfileCard() {
           boxShadow: "0 0 0 4px rgba(245,197,24,0.2)",
         }}
       >
-        <span className="font-bold text-[#1A1A1A]">{initial}</span>
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+        ) : (
+          <span className="font-bold text-[#1A1A1A]">{initial}</span>
+        )}
       </div>
       <h2
         className="text-xl font-extrabold text-white"
